@@ -141,7 +141,8 @@ struct EditableCodeEditor: View {
                     language: Language.detect(from: file.fileExtension),
                     theme: appState.theme,
                     fontSize: appState.fontSize,
-                    tabSize: 4
+                    tabSize: appState.tabSize,
+                    wordWrap: appState.wordWrap
                 )
                 .frame(minWidth: max(geo.size.width - 52 - (showMinimap ? 80 : 0), 100),
                        minHeight: geo.size.height)

@@ -7,6 +7,7 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
     let theme: ZedTheme
     let fontSize: CGFloat
     let tabSize: Int
+    let wordWrap: Bool
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -27,6 +28,7 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
         tv.spellCheckingType = .no
         tv.keyboardType = .asciiCapable
         tv.typingAttributes = context.coordinator.baseAttributes()
+        applyWordWrap(to: tv)
         applyHighlighting(to: tv, text: text)
         return tv
     }
@@ -46,6 +48,17 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
         }
         // Always keep typing attributes in sync with theme/font changes
         tv.typingAttributes = context.coordinator.baseAttributes()
+        applyWordWrap(to: tv)
+    }
+
+    private func applyWordWrap(to tv: UITextView) {
+        if wordWrap {
+            tv.textContainer.widthTracksTextView = true
+            tv.textContainer.size = CGSize(width: tv.bounds.width, height: CGFloat.greatestFiniteMagnitude)
+        } else {
+            tv.textContainer.widthTracksTextView = false
+            tv.textContainer.size = CGSize(width: 10_000, height: CGFloat.greatestFiniteMagnitude)
+        }
     }
 
     func applyHighlighting(to tv: UITextView, text: String) {

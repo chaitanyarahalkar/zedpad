@@ -4,8 +4,6 @@ struct StatusBar: View {
     @EnvironmentObject private var appState: AppState
     let file: FileNode
     let text: String
-    @State private var wordWrap: Bool = true
-    @State private var tabSize: Int = 4
     @State private var showTabSizePicker: Bool = false
 
     private var language: Language { Language.detect(from: file.fileExtension) }
@@ -69,15 +67,15 @@ struct StatusBar: View {
 
             // Word wrap toggle
             Button {
-                wordWrap.toggle()
+                appState.wordWrap.toggle()
             } label: {
                 HStack(spacing: 3) {
-                    Image(systemName: wordWrap ? "text.alignleft" : "text.alignright")
+                    Image(systemName: appState.wordWrap ? "text.alignleft" : "text.alignright")
                         .font(.system(size: 10))
-                    Text(wordWrap ? "Wrap" : "No Wrap")
+                    Text(appState.wordWrap ? "Wrap" : "No Wrap")
                         .font(.system(size: 11, design: .monospaced))
                 }
-                .foregroundColor(wordWrap ? appState.theme.accentColor : appState.theme.secondaryText)
+                .foregroundColor(appState.wordWrap ? appState.theme.accentColor : appState.theme.secondaryText)
             }
             .buttonStyle(.plain)
             .padding(.horizontal, 8)
@@ -89,7 +87,7 @@ struct StatusBar: View {
             Button {
                 showTabSizePicker.toggle()
             } label: {
-                Text("Tab: \(tabSize)")
+                Text("Tab: \(appState.tabSize)")
                     .font(.system(size: 11, design: .monospaced))
                     .foregroundColor(appState.theme.secondaryText)
             }
@@ -103,14 +101,14 @@ struct StatusBar: View {
                         .padding(.bottom, 4)
                     ForEach([2, 4, 8], id: \.self) { size in
                         Button {
-                            tabSize = size
+                            appState.tabSize = size
                             showTabSizePicker = false
                         } label: {
                             HStack {
                                 Text("\(size) spaces")
                                     .font(.system(size: 13, design: .monospaced))
                                     .foregroundColor(appState.theme.primaryText)
-                                if tabSize == size {
+                                if appState.tabSize == size {
                                     Spacer()
                                     Image(systemName: "checkmark")
                                         .font(.system(size: 11))

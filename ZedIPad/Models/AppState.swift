@@ -10,6 +10,8 @@ class AppState: ObservableObject {
     @Published var showingCommandPalette: Bool = false
     @Published var rootDirectory: FileNode?
     @Published var fontSize: CGFloat = 13
+    @Published var wordWrap: Bool = true
+    @Published var tabSize: Int = 4
 
     static let maxRecentFiles = 10
 
