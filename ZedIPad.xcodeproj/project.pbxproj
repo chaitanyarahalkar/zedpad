@@ -19,6 +19,7 @@
 		81AB21F25F7EC6504580641F /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9B0FAC05DC1D35AA9DCA54 /* AppState.swift */; };
 		8253663503A53BE96A1C7233 /* SyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A020E50F16B36CC347369F /* SyntaxHighlighter.swift */; };
 		A866823054B6B14DB981EE35 /* ZedTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67E46B495E25E6217FF25A3 /* ZedTheme.swift */; };
+		B6FED1FF882A52BBB2A539DE /* AppStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861232D3A6E236B24FB58AF6 /* AppStateTests.swift */; };
 		BB7408102C38A671495FA79B /* StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D3D01EDFE66F20C52A79E8 /* StatusBar.swift */; };
 		C6B0A2BA6343BB85C8139450 /* FindBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F6757DE64A4DC288AA4E73 /* FindBar.swift */; };
 		D010B57E16CA4878E94073D7 /* ZedIPadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ABE1097F78F5F2D88C6ED6 /* ZedIPadTests.swift */; };
@@ -53,6 +54,7 @@
 		75493B44C98BA18098F448D8 /* ZedIPadApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedIPadApp.swift; sourceTree = "<group>"; };
 		81C07753EFC99AC808CBBA62 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8262E3CEF14213A3440DF912 /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
+		861232D3A6E236B24FB58AF6 /* AppStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
 		9C2730516C350802B76ECE40 /* FileNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNode.swift; sourceTree = "<group>"; };
 		A8F6757DE64A4DC288AA4E73 /* FindBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindBar.swift; sourceTree = "<group>"; };
 		ACC057E28CEB65864F8BA49E /* ZedIPad.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ZedIPad.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -164,6 +166,7 @@
 		EBE537289F554A8B75786E37 /* ZedIPadTests */ = {
 			isa = PBXGroup;
 			children = (
+				861232D3A6E236B24FB58AF6 /* AppStateTests.swift */,
 				45ABE1097F78F5F2D88C6ED6 /* ZedIPadTests.swift */,
 			);
 			path = ZedIPadTests;
@@ -284,6 +287,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6FED1FF882A52BBB2A539DE /* AppStateTests.swift in Sources */,
 				D010B57E16CA4878E94073D7 /* ZedIPadTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
