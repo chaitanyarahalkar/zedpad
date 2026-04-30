@@ -11,6 +11,7 @@
 		18F3AA8F0CBE1662F4BBC29D /* FileTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31317BE6864153C6C9217FAD /* FileTreeView.swift */; };
 		2482F8B4235A057E6E344027 /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8262E3CEF14213A3440DF912 /* EditorView.swift */; };
 		349198853B4115EE9C2F8385 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A780289895491B0F15B073 /* RootView.swift */; };
+		3E4833058ADE233559478114 /* AppStateExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8216CAE4066CDE5CE0E782BC /* AppStateExtendedTests.swift */; };
 		443EF3BFC4DD389A4C80E132 /* FileNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C2730516C350802B76ECE40 /* FileNode.swift */; };
 		4A754D924AA04930C65C7104 /* ZedIPadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75493B44C98BA18098F448D8 /* ZedIPadApp.swift */; };
 		4C86AB1A000A6BC67BC66D24 /* ZedIPadUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5169392D04E943F9B2A54C /* ZedIPadUITests.swift */; };
@@ -59,6 +60,7 @@
 		726DED8829C8C98CE55EC5C3 /* BreadcrumbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreadcrumbView.swift; sourceTree = "<group>"; };
 		75493B44C98BA18098F448D8 /* ZedIPadApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedIPadApp.swift; sourceTree = "<group>"; };
 		81C07753EFC99AC808CBBA62 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8216CAE4066CDE5CE0E782BC /* AppStateExtendedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateExtendedTests.swift; sourceTree = "<group>"; };
 		8262E3CEF14213A3440DF912 /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
 		861232D3A6E236B24FB58AF6 /* AppStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
 		9C2730516C350802B76ECE40 /* FileNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNode.swift; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 		EBE537289F554A8B75786E37 /* ZedIPadTests */ = {
 			isa = PBXGroup;
 			children = (
+				8216CAE4066CDE5CE0E782BC /* AppStateExtendedTests.swift */,
 				861232D3A6E236B24FB58AF6 /* AppStateTests.swift */,
 				B0267F220B1112F84B48F882 /* EditorComponentTests.swift */,
 				45ABE1097F78F5F2D88C6ED6 /* ZedIPadTests.swift */,
@@ -299,6 +302,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E4833058ADE233559478114 /* AppStateExtendedTests.swift in Sources */,
 				B6FED1FF882A52BBB2A539DE /* AppStateTests.swift in Sources */,
 				638D65F1A4F4D4B6C8E18A26 /* EditorComponentTests.swift in Sources */,
 				D010B57E16CA4878E94073D7 /* ZedIPadTests.swift in Sources */,
