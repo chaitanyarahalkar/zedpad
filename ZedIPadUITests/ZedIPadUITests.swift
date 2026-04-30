@@ -364,6 +364,43 @@ final class ZedIPadUITests: XCTestCase {
         }
         XCTAssertTrue(app.exists)
     }
+
+    func testSolarizedDarkTheme() throws {
+        let paletteButton = app.buttons["Open command palette"]
+        if paletteButton.waitForExistence(timeout: 3) {
+            paletteButton.tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            let solarized = app.staticTexts["Solarized Dark Theme"]
+            if solarized.waitForExistence(timeout: 2) {
+                solarized.tap()
+                Thread.sleep(forTimeInterval: 0.4)
+                saveScreenshot(named: "25_solarized_dark")
+            }
+        }
+        XCTAssertTrue(app.exists)
+    }
+
+    func testLightThemeScreenshot() throws {
+        let themeButton = app.buttons["Toggle theme"]
+        if themeButton.waitForExistence(timeout: 3) {
+            themeButton.tap()
+            Thread.sleep(forTimeInterval: 0.3)
+            // Open a file to show the light theme editor
+            let sources = app.staticTexts["Sources"]
+            if sources.waitForExistence(timeout: 2) {
+                sources.tap()
+                Thread.sleep(forTimeInterval: 0.3)
+            }
+            if app.staticTexts["main.swift"].waitForExistence(timeout: 2) {
+                app.staticTexts["main.swift"].tap()
+                Thread.sleep(forTimeInterval: 0.5)
+                saveScreenshot(named: "26_light_theme_editor")
+            }
+            // Switch back to dark
+            themeButton.tap()
+        }
+        XCTAssertTrue(app.exists)
+    }
 }
 
 extension XCUIElement {
