@@ -332,4 +332,51 @@ final class ZedIPadUITests: XCTestCase {
         }
         XCTAssertTrue(app.exists)
     }
+
+    func testFileFilterSearch() throws {
+        let filterField = app.textFields["Filter files..."]
+        if filterField.waitForExistence(timeout: 3) {
+            filterField.tap()
+            filterField.typeText("swift")
+            Thread.sleep(forTimeInterval: 0.5)
+            saveScreenshot(named: "22_file_filter_swift")
+            filterField.clearText()
+            filterField.typeText("json")
+            Thread.sleep(forTimeInterval: 0.4)
+            saveScreenshot(named: "23_file_filter_json")
+        } else {
+            saveScreenshot(named: "22_filter_not_found")
+        }
+        XCTAssertTrue(app.exists)
+    }
+
+    func testOneDarkTheme() throws {
+        let paletteButton = app.buttons["Open command palette"]
+        if paletteButton.waitForExistence(timeout: 3) {
+            paletteButton.tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            let oneDark = app.staticTexts["One Dark Theme"]
+            if oneDark.waitForExistence(timeout: 2) {
+                oneDark.tap()
+                Thread.sleep(forTimeInterval: 0.4)
+                saveScreenshot(named: "24_one_dark_theme")
+            }
+        }
+        XCTAssertTrue(app.exists)
+    }
+}
+
+extension XCUIElement {
+    func clearText() {
+        guard let currentValue = self.value as? String, !currentValue.isEmpty else { return }
+        self.tap()
+        let selectAll = XCUIApplication().menuItems["Select All"]
+        if selectAll.waitForExistence(timeout: 0.5) {
+            selectAll.tap()
+            self.typeText(XCUIKeyboardKey.delete.rawValue)
+        } else {
+            let deleteString = String(repeating: XCUIKeyboardKey.delete.rawValue, count: currentValue.count)
+            self.typeText(deleteString)
+        }
+    }
 }
