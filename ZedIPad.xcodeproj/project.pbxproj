@@ -22,6 +22,7 @@
 		4A754D924AA04930C65C7104 /* ZedIPadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75493B44C98BA18098F448D8 /* ZedIPadApp.swift */; };
 		4C86AB1A000A6BC67BC66D24 /* ZedIPadUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5169392D04E943F9B2A54C /* ZedIPadUITests.swift */; };
 		56C2571637B99E66AD9E84AB /* ColorExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A576771F239D7566794E9678 /* ColorExtensionTests.swift */; };
+		5976C6BFDFFC3574390E4519 /* ScalaLuaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A7DF5C1324DCF808590712 /* ScalaLuaTests.swift */; };
 		638D023EFE19440A2EA2050A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 81C07753EFC99AC808CBBA62 /* Assets.xcassets */; };
 		638D65F1A4F4D4B6C8E18A26 /* EditorComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0267F220B1112F84B48F882 /* EditorComponentTests.swift */; };
 		79A3F653B18384C6A540C578 /* SplitEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5635805377C6A34E00D91B /* SplitEditorView.swift */; };
@@ -95,6 +96,7 @@
 		ABD9868182765CDCFBBF7ED4 /* SplitEditorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitEditorTests.swift; sourceTree = "<group>"; };
 		ACC057E28CEB65864F8BA49E /* ZedIPad.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ZedIPad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0267F220B1112F84B48F882 /* EditorComponentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorComponentTests.swift; sourceTree = "<group>"; };
+		B0A7DF5C1324DCF808590712 /* ScalaLuaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScalaLuaTests.swift; sourceTree = "<group>"; };
 		B67E46B495E25E6217FF25A3 /* ZedTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedTheme.swift; sourceTree = "<group>"; };
 		BA0130685F91B26A39682C02 /* FileSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchBar.swift; sourceTree = "<group>"; };
 		C0827ADAAC9563AB5683E50D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -225,6 +227,7 @@
 				A352C8D2EB39553EF1035FCD /* FindReplaceTests.swift */,
 				DE76762D650856FE7B729F35 /* GoKotlinTests.swift */,
 				61A2C2204AA7D50E09C43D18 /* HTMLCSSTests.swift */,
+				B0A7DF5C1324DCF808590712 /* ScalaLuaTests.swift */,
 				ABD9868182765CDCFBBF7ED4 /* SplitEditorTests.swift */,
 				9326D2D85F56F824FB542792 /* SQLTests.swift */,
 				61EA73F47B511D5A25ACB96A /* StatusBarTests.swift */,
@@ -362,6 +365,7 @@
 				90A91BC3DAC9B232BECFE388 /* GoKotlinTests.swift in Sources */,
 				298760A6D91E241CFE6A00B5 /* HTMLCSSTests.swift in Sources */,
 				4710290455E261DE0E6D83A0 /* SQLTests.swift in Sources */,
+				5976C6BFDFFC3574390E4519 /* ScalaLuaTests.swift in Sources */,
 				261A7ADBD4FBBB49A6053FD0 /* SplitEditorTests.swift in Sources */,
 				FC9059566C5D51191D7CE3FB /* StatusBarTests.swift in Sources */,
 				BCA33A2B70F6B18C3D186D76 /* SyntaxHighlighterExtendedTests.swift in Sources */,
