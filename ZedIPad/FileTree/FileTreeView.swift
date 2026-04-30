@@ -118,48 +118,51 @@ struct FileTreeRowView: View {
     private var isActive: Bool { appState.activeFile?.id == node.id }
 
     var body: some View {
-        HStack(spacing: 4) {
-            Rectangle().fill(Color.clear).frame(width: CGFloat(depth) * 16)
+        // Button coexists correctly with .contextMenu on iPadOS — .onTapGesture does not
+        Button(action: { onTap?() }) {
+            HStack(spacing: 4) {
+                Rectangle().fill(Color.clear).frame(width: CGFloat(depth) * 16)
 
-            if node.type == .directory {
-                Image(systemName: node.isExpanded ? "chevron.down" : "chevron.right")
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundColor(appState.theme.secondaryText)
-                    .frame(width: 12)
-            } else {
-                Spacer().frame(width: 12)
+                if node.type == .directory {
+                    Image(systemName: node.isExpanded ? "chevron.down" : "chevron.right")
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundColor(appState.theme.secondaryText)
+                        .frame(width: 12)
+                } else {
+                    Spacer().frame(width: 12)
+                }
+
+                Image(systemName: node.icon)
+                    .font(.system(size: 13))
+                    .foregroundColor(iconColor)
+                    .frame(width: 16)
+
+                Text(node.name)
+                    .font(.system(size: 13, design: .monospaced))
+                    .foregroundColor(isActive ? appState.theme.accentColor : appState.theme.primaryText)
+                    .lineLimit(1)
+
+                if node.isDirty {
+                    Circle()
+                        .fill(appState.theme.accentColor)
+                        .frame(width: 6, height: 6)
+                }
+
+                Spacer()
+
+                if let meta = node.metadata, node.type == .file {
+                    Text(meta.formattedSize)
+                        .font(.system(size: 10))
+                        .foregroundColor(appState.theme.secondaryText)
+                        .padding(.trailing, 4)
+                }
             }
-
-            Image(systemName: node.icon)
-                .font(.system(size: 13))
-                .foregroundColor(iconColor)
-                .frame(width: 16)
-
-            Text(node.name)
-                .font(.system(size: 13, design: .monospaced))
-                .foregroundColor(isActive ? appState.theme.accentColor : appState.theme.primaryText)
-                .lineLimit(1)
-
-            if node.isDirty {
-                Circle()
-                    .fill(appState.theme.accentColor)
-                    .frame(width: 6, height: 6)
-            }
-
-            Spacer()
-
-            if let meta = node.metadata, node.type == .file {
-                Text(meta.formattedSize)
-                    .font(.system(size: 10))
-                    .foregroundColor(appState.theme.secondaryText)
-                    .padding(.trailing, 4)
-            }
+            .padding(.vertical, 3)
+            .padding(.horizontal, 8)
+            .background(isActive ? appState.theme.accentColor.opacity(0.15) : Color.clear)
+            .contentShape(Rectangle())
         }
-        .padding(.vertical, 3)
-        .padding(.horizontal, 8)
-        .background(isActive ? appState.theme.accentColor.opacity(0.15) : Color.clear)
-        .contentShape(Rectangle())
-        .onTapGesture { onTap?() }
+        .buttonStyle(.plain)
         .contextMenu {
             // New file / folder inside a directory
             if node.type == .directory {
