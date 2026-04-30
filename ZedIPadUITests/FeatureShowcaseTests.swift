@@ -38,23 +38,23 @@ final class FeatureShowcaseTests: XCTestCase {
         app.terminate()
     }
 
-    // MARK: - 1. Syntax Highlighting
+    // MARK: - 1a. Syntax Highlighting (Light Theme)
 
-    func testSyntaxHighlighting() throws {
-        // Light theme first
+    func testSyntaxHighlightingLight() throws {
         let themeButton = app.buttons["Toggle theme"]
         if themeButton.waitForExistence(timeout: 3) {
             themeButton.tap()
-            Thread.sleep(forTimeInterval: 0.5)
+            Thread.sleep(forTimeInterval: 0.6)
         }
         expandSourcesAndOpenFile("Editor.swift")
         save("1_syntax_highlighting_light")
+    }
 
-        // Dark theme
-        if themeButton.waitForExistence(timeout: 2) {
-            themeButton.tap()
-            Thread.sleep(forTimeInterval: 0.5)
-        }
+    // MARK: - 1b. Syntax Highlighting (Dark Theme)
+
+    func testSyntaxHighlightingDark() throws {
+        // Dark is the default — just open the file
+        expandSourcesAndOpenFile("Editor.swift")
         save("2_syntax_highlighting_dark")
     }
 
