@@ -109,7 +109,8 @@ struct EditorTab: View {
 struct EditableCodeEditor: View {
     @EnvironmentObject private var appState: AppState
     @ObservedObject var file: FileNode
-    @State private var lineCount: Int = 1
+    @State private var scrollFraction: CGFloat = 0
+    @State private var showMinimap: Bool = true
 
     var body: some View {
         GeometryReader { geo in
@@ -121,23 +122,31 @@ struct EditableCodeEditor: View {
                 Divider()
                     .background(appState.theme.borderColor)
 
-                // Editable text area with syntax overlay
+                // Editable text area
                 ZStack(alignment: .topLeading) {
-                    // Background
                     appState.theme.editorBackground
 
-                    // Editable TextEditor (provides actual editing)
                     TextEditor(text: Binding(
                         get: { file.content },
                         set: { file.content = $0 }
                     ))
-                    .font(.system(size: 13, design: .monospaced))
+                    .font(.system(size: appState.fontSize, design: .monospaced))
                     .foregroundColor(appState.theme.primaryText)
                     .scrollContentBackground(.hidden)
                     .background(Color.clear)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 10)
-                    .frame(minWidth: geo.size.width - 52, minHeight: geo.size.height)
+                    .frame(minWidth: max(geo.size.width - 52 - (showMinimap ? 80 : 0), 100),
+                           minHeight: geo.size.height)
+                }
+
+                // Minimap
+                if showMinimap {
+                    MinimapView(
+                        text: file.content,
+                        language: Language.detect(from: file.fileExtension),
+                        scrollFraction: $scrollFraction
+                    )
                 }
             }
         }
