@@ -159,6 +159,27 @@ struct PaletteCommand: Identifiable {
             shortcut: nil,
             action: { state in state.theme = .solarizedDark }
         ),
+        PaletteCommand(
+            title: "Increase Font Size",
+            subtitle: "Make text larger",
+            icon: "textformat.size.larger",
+            shortcut: "⌘+",
+            action: { state in state.increaseFontSize() }
+        ),
+        PaletteCommand(
+            title: "Decrease Font Size",
+            subtitle: "Make text smaller",
+            icon: "textformat.size.smaller",
+            shortcut: "⌘-",
+            action: { state in state.decreaseFontSize() }
+        ),
+        PaletteCommand(
+            title: "Reset Font Size",
+            subtitle: "Reset to default (13pt)",
+            icon: "textformat.size",
+            shortcut: nil,
+            action: { state in state.fontSize = 13 }
+        ),
     ]
 }
 
