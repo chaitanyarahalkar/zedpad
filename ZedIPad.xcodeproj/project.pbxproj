@@ -34,6 +34,7 @@
 		26BE8D92A37B3700D56B7680 /* FileSystemIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333383A16EF5608B39600C90 /* FileSystemIntegrationTests.swift */; };
 		298760A6D91E241CFE6A00B5 /* HTMLCSSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A2C2204AA7D50E09C43D18 /* HTMLCSSTests.swift */; };
 		2AE91793279BF84230DB1265 /* ZedIPadFinalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAA8038BE1BED914A763671 /* ZedIPadFinalTests.swift */; };
+		2C3C6BCA99B0597296217CFF /* BugAssessmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58CB52C793FFA662BCE72500 /* BugAssessmentTests.swift */; };
 		2CB28A8489489E1FC88D0D18 /* FileSaveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6191A4395E9F73FE1121F0 /* FileSaveTests.swift */; };
 		30965DF7F29D55B1AC3140F4 /* FilePathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB4B87E65DAB987F41560510 /* FilePathTests.swift */; };
 		33DD1B3F38DAA8EAE7EFE07E /* FindStateAdvancedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5AF4F94B292CC1EEB5D056 /* FindStateAdvancedTests.swift */; };
@@ -212,6 +213,7 @@
 		546C4301602323AA070F07FC /* MinimapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimapView.swift; sourceTree = "<group>"; };
 		5507FC1A898E2220B59B67E2 /* SyntaxHighlightFinalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxHighlightFinalTests.swift; sourceTree = "<group>"; };
 		572D8E795FBDB8DD4ED0EA38 /* AppStateThemeTransitionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateThemeTransitionTests.swift; sourceTree = "<group>"; };
+		58CB52C793FFA662BCE72500 /* BugAssessmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugAssessmentTests.swift; sourceTree = "<group>"; };
 		5BEC84A54406B6FDFD48A55E /* SyntaxConsistencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxConsistencyTests.swift; sourceTree = "<group>"; };
 		5D099DB79357FB5B3ECC6345 /* FinalIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalIntegrationTests.swift; sourceTree = "<group>"; };
 		5E22863EF62024D3433DEA1F /* UnicodeHandlingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnicodeHandlingTests.swift; sourceTree = "<group>"; };
@@ -415,6 +417,7 @@
 		93DD48D57D1980D5F1E56C15 /* ZedIPadUITests */ = {
 			isa = PBXGroup;
 			children = (
+				58CB52C793FFA662BCE72500 /* BugAssessmentTests.swift */,
 				BFED5952CA220E850CABDD9A /* LandscapeUITests.swift */,
 				E7906E825B6CA83F85A400B9 /* TerminalUITests.swift */,
 				5E5169392D04E943F9B2A54C /* ZedIPadUITests.swift */,
@@ -669,13 +672,16 @@
 				TargetAttributes = {
 					3ECC2E5C6AD0AACFE834C070 = {
 						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
 					};
 					996B7BBDB58E7EEDFB365060 = {
 						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
 						TestTargetID = B4AAD97A73BF55997260CF3E;
 					};
 					B4AAD97A73BF55997260CF3E = {
 						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -825,6 +831,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C3C6BCA99B0597296217CFF /* BugAssessmentTests.swift in Sources */,
 				E4BED900F68681969466F422 /* LandscapeUITests.swift in Sources */,
 				D8DCB15EEB652BA5BBB7BEAB /* TerminalUITests.swift in Sources */,
 				4C86AB1A000A6BC67BC66D24 /* ZedIPadUITests.swift in Sources */,
@@ -943,9 +950,10 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
@@ -1098,9 +1106,10 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGNING_REQUIRED = NO;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "";
