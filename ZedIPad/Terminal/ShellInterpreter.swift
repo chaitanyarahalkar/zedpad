@@ -82,6 +82,8 @@ class ShellInterpreter: ObservableObject {
         case "head":         return cmdHeadTail(args, head: true)
         case "tail":         return cmdHeadTail(args, head: false)
         case "open":         return cmdOpen(args)
+        case "git":          return cmdGit(args)
+        case "ssh":          return cmdSSH(args)
         case "help":         return helpText
         case "exit", "quit": return "__EXIT__"
         default:
@@ -291,6 +293,16 @@ class ShellInterpreter: ObservableObject {
         let lines = content.components(separatedBy: "\n")
         let selected = head ? Array(lines.prefix(n)) : Array(lines.suffix(n))
         return selected.joined(separator: "\n")
+    }
+
+    private func cmdGit(_ args: [String]) -> String {
+        let git = GitService(repoURL: cwd)
+        return git.handleGitCommand(args)
+    }
+
+    private func cmdSSH(_ args: [String]) -> String {
+        guard let target = args.first else { return ANSI.red("ssh: missing host argument") }
+        return "__SSH__:\(target)"
     }
 
     private func cmdOpen(_ args: [String]) -> String {

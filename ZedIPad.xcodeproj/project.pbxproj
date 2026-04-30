@@ -83,6 +83,7 @@
 		8253663503A53BE96A1C7233 /* SyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A020E50F16B36CC347369F /* SyntaxHighlighter.swift */; };
 		86D7DDEEFDA9AF1C0CC6070D /* FindReplaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A352C8D2EB39553EF1035FCD /* FindReplaceTests.swift */; };
 		86F4F63D12DFD3DD6D15E845 /* FileSystemExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3B142C7B9AE451D8EA55F4 /* FileSystemExtendedTests.swift */; };
+		88E1C104F4BD0D2A128E1DD2 /* GitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 430EBAB10BB120F75B2FB5C1 /* GitService.swift */; };
 		891DE4D68C5ACBC3DCFF7C29 /* SyntaxHighlightBatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D95FE101C0DE121EC83E12 /* SyntaxHighlightBatchTests.swift */; };
 		8CD09AE6636C97D983272681 /* SyntaxHighlightFinalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5507FC1A898E2220B59B67E2 /* SyntaxHighlightFinalTests.swift */; };
 		8E34E7220826EECF5C7E35A0 /* DocumentPickerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADC3E1F3F7F2D971502F60A /* DocumentPickerTests.swift */; };
@@ -184,6 +185,7 @@
 		3B58451C86C9132DEC4AC600 /* CodeSnippetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeSnippetTests.swift; sourceTree = "<group>"; };
 		3BCBD03F7372D83A1E9C51A7 /* AppStatePersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStatePersistenceTests.swift; sourceTree = "<group>"; };
 		40A3BF2940907DCB6CAD0F61 /* SyntaxHighlighterStressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxHighlighterStressTests.swift; sourceTree = "<group>"; };
+		430EBAB10BB120F75B2FB5C1 /* GitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitService.swift; sourceTree = "<group>"; };
 		45550456792FF7DBC3289778 /* SearchBarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarTests.swift; sourceTree = "<group>"; };
 		45ABE1097F78F5F2D88C6ED6 /* ZedIPadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedIPadTests.swift; sourceTree = "<group>"; };
 		4646935C5746A9BC23C330C6 /* AppStateRecentFilesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateRecentFilesTests.swift; sourceTree = "<group>"; };
@@ -320,6 +322,7 @@
 				E4DF395A0399A635384384C7 /* Editor */,
 				44A5264358249FBE0036D3AD /* FileSystem */,
 				36F7FE7CDAF15D6758589BB0 /* FileTree */,
+				92D2D0BA286E8932C1694F13 /* Git */,
 				98AB5C7371A2E08236BC9CAE /* Models */,
 				A2E705E36DBC06B56C4E4A3E /* Search */,
 				D111564D1919E5DA99A60337 /* SSH */,
@@ -360,6 +363,14 @@
 				B67E46B495E25E6217FF25A3 /* ZedTheme.swift */,
 			);
 			path = Theme;
+			sourceTree = "<group>";
+		};
+		92D2D0BA286E8932C1694F13 /* Git */ = {
+			isa = PBXGroup;
+			children = (
+				430EBAB10BB120F75B2FB5C1 /* GitService.swift */,
+			);
+			path = Git;
 			sourceTree = "<group>";
 		};
 		93DD48D57D1980D5F1E56C15 /* ZedIPadUITests */ = {
@@ -786,6 +797,7 @@
 				18F3AA8F0CBE1662F4BBC29D /* FileTreeView.swift in Sources */,
 				ECBB3411BFD93CB5EA0A2F8E /* FileWatcher.swift in Sources */,
 				C6B0A2BA6343BB85C8139450 /* FindBar.swift in Sources */,
+				88E1C104F4BD0D2A128E1DD2 /* GitService.swift in Sources */,
 				46B41F9E242EA7C142C33F67 /* GlobalSearchView.swift in Sources */,
 				554E69EC647EA96C65E4310A /* GoToLineView.swift in Sources */,
 				EB654C113F9AD4CB74926B68 /* KeyboardShortcuts.swift in Sources */,
