@@ -40,7 +40,26 @@ struct EditorView: View {
             FindShortcutButton(showFind: $showingFind)
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                Button {
+                    // Undo via UITextView undoManager
+                    UIApplication.shared.sendAction(#selector(UndoManager.undo), to: nil, from: nil, for: nil)
+                } label: {
+                    Image(systemName: "arrow.uturn.backward")
+                        .foregroundColor(appState.theme.primaryText)
+                }
+                .accessibilityLabel("Undo")
+                .keyboardShortcut("z", modifiers: .command)
+
+                Button {
+                    UIApplication.shared.sendAction(#selector(UndoManager.redo), to: nil, from: nil, for: nil)
+                } label: {
+                    Image(systemName: "arrow.uturn.forward")
+                        .foregroundColor(appState.theme.primaryText)
+                }
+                .accessibilityLabel("Redo")
+                .keyboardShortcut("z", modifiers: [.command, .shift])
+
                 Button {
                     withAnimation(.easeInOut(duration: 0.2)) {
                         showingFind.toggle()
