@@ -9,6 +9,7 @@ struct RootView: View {
             FileTreeView()
                 .navigationTitle("Files")
                 .navigationBarTitleDisplayMode(.inline)
+                .navigationSplitViewColumnWidth(min: 220, ideal: 260, max: 320)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         ThemeToggleButton()
@@ -25,7 +26,7 @@ struct RootView: View {
                 WelcomeView()
             }
         }
-        .navigationSplitViewStyle(.balanced)
+        .navigationSplitViewStyle(.prominentDetail)
         .tint(appState.theme.accentColor)
         .sheet(isPresented: $appState.showingCommandPalette) {
             CommandPaletteView()

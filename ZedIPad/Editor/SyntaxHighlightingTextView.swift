@@ -65,7 +65,7 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
 
         // Apply syntax tokens
         for token in tokens {
-            guard let nsRange = NSRange(token.range, in: text) else { continue }
+            let nsRange = NSRange(token.range, in: text)
             attrs.addAttribute(.foregroundColor,
                 value: UIColor(token.color),
                 range: nsRange)
