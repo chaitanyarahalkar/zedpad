@@ -13,7 +13,8 @@ struct RootView: View {
                     ToolbarItem(placement: .navigationBarLeading) {
                         ThemeToggleButton()
                     }
-                    ToolbarItem(placement: .navigationBarTrailing) {
+                    ToolbarItemGroup(placement: .navigationBarTrailing) {
+                        DocumentPickerButton()
                         CommandPaletteButton()
                     }
                 }
