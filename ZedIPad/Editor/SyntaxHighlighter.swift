@@ -30,6 +30,8 @@ class SyntaxHighlighter {
         case .c: return highlightC(text)
         case .cpp: return highlightCpp(text)
         case .sql: return highlightSQL(text)
+        case .scala: return highlightScala(text)
+        case .lua: return highlightLua(text)
         case .unknown: return []
         }
     }
@@ -403,6 +405,52 @@ class SyntaxHighlighter {
         return tokens
     }
 
+    private func highlightScala(_ text: String) -> [SyntaxToken] {
+        var tokens: [SyntaxToken] = []
+        let keywords = ["abstract", "case", "catch", "class", "def", "do", "else", "extends",
+                        "false", "final", "finally", "for", "forSome", "if", "implicit",
+                        "import", "lazy", "match", "new", "null", "object", "override",
+                        "package", "private", "protected", "return", "sealed", "super",
+                        "this", "throw", "trait", "try", "true", "type", "val", "var",
+                        "while", "with", "yield", "given", "using", "enum", "extension",
+                        "inline", "opaque", "transparent"]
+        let types = ["Int", "Long", "Double", "Float", "Boolean", "Char", "Byte", "Short",
+                     "String", "Unit", "Any", "AnyRef", "AnyVal", "Nothing", "Null",
+                     "List", "Map", "Set", "Seq", "Option", "Some", "None", "Either",
+                     "Future", "Try", "Success", "Failure"]
+        tokens += tokenizeKeywords(text, keywords: keywords, color: theme.syntaxKeyword)
+        tokens += tokenizeKeywords(text, keywords: types, color: theme.syntaxType)
+        tokens += tokenizeStrings(text)
+        tokens += tokenizeComments(text)
+        tokens += tokenizeNumbers(text)
+        return tokens
+    }
+
+    private func highlightLua(_ text: String) -> [SyntaxToken] {
+        var tokens: [SyntaxToken] = []
+        let keywords = ["and", "break", "do", "else", "elseif", "end", "false", "for",
+                        "function", "goto", "if", "in", "local", "nil", "not", "or",
+                        "repeat", "return", "then", "true", "until", "while",
+                        "require", "print", "type", "pairs", "ipairs", "next",
+                        "pcall", "error", "assert", "tostring", "tonumber",
+                        "table", "string", "math", "os", "io", "coroutine"]
+        tokens += tokenizeKeywords(text, keywords: keywords, color: theme.syntaxKeyword)
+        tokens += tokenizeStrings(text)
+        tokens += tokenizeHashComments(text) // -- is Lua line comment
+        tokens += tokenizeNumbers(text)
+        // -- comment (Lua uses --)
+        let luaComment = "--[^\n]*"
+        if let regex = try? NSRegularExpression(pattern: luaComment) {
+            let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            for match in matches {
+                if let range = Range(match.range, in: text) {
+                    tokens.append(SyntaxToken(range: range, color: theme.syntaxComment))
+                }
+            }
+        }
+        return tokens
+    }
+
     // MARK: - Tokenizers
 
     private func tokenizeKeywords(_ text: String, keywords: [String], color: Color) -> [SyntaxToken] {
@@ -488,7 +536,7 @@ class SyntaxHighlighter {
 }
 
 enum Language: String {
-    case swift, javascript, typescript, python, rust, markdown, json, yaml, bash, ruby, html, css, go, kotlin, c, cpp, sql, unknown
+    case swift, javascript, typescript, python, rust, markdown, json, yaml, bash, ruby, html, css, go, kotlin, c, cpp, sql, scala, lua, unknown
 
     static func detect(from extension: String) -> Language {
         switch `extension`.lowercased() {
@@ -509,6 +557,8 @@ enum Language: String {
         case "c", "h": return .c
         case "cpp", "cc", "cxx", "hpp", "hxx": return .cpp
         case "sql": return .sql
+        case "scala", "sc": return .scala
+        case "lua": return .lua
         default: return .unknown
         }
     }

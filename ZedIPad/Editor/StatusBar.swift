@@ -151,6 +151,8 @@ struct StatusBar: View {
         case .c: return "C"
         case .cpp: return "C++"
         case .sql: return "SQL"
+        case .scala: return "Scala"
+        case .lua: return "Lua"
         case .unknown: return file.fileExtension.isEmpty ? "Plain Text" : file.fileExtension.uppercased()
         }
     }
