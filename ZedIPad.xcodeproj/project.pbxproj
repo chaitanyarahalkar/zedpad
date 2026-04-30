@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04A013F176B26344C6C96CF8 /* TerminalEmulatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D087B486A08FEC9744E39948 /* TerminalEmulatorView.swift */; };
 		06F679DF59FDD5A713B88B21 /* MinimapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546C4301602323AA070F07FC /* MinimapView.swift */; };
 		099614817DA0C2FDF2A12E0B /* ScrollAndGutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54336AA13D5265DA24C3C104 /* ScrollAndGutterTests.swift */; };
 		09E0E3E31120C6B35CF70F06 /* MultiLanguageSyntaxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF27724BF6DA22447492E3EA /* MultiLanguageSyntaxTests.swift */; };
@@ -253,6 +254,7 @@
 		CCD8AF502C8F941CEB87FCA2 /* FileSystemFinalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemFinalTests.swift; sourceTree = "<group>"; };
 		CF229EBD5768201FFEDBF84B /* ComprehensiveModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComprehensiveModelTests.swift; sourceTree = "<group>"; };
 		CF27724BF6DA22447492E3EA /* MultiLanguageSyntaxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLanguageSyntaxTests.swift; sourceTree = "<group>"; };
+		D087B486A08FEC9744E39948 /* TerminalEmulatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalEmulatorView.swift; sourceTree = "<group>"; };
 		D11D1922AC9292E5A1E6A868 /* CommandPaletteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandPaletteView.swift; sourceTree = "<group>"; };
 		D755FDC7B0C92E414FA40AF2 /* ThemeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeTests.swift; sourceTree = "<group>"; };
 		D77199844286F53ABB83A10C /* HighlightAccuracyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightAccuracyTests.swift; sourceTree = "<group>"; };
@@ -310,6 +312,7 @@
 				36F7FE7CDAF15D6758589BB0 /* FileTree */,
 				98AB5C7371A2E08236BC9CAE /* Models */,
 				A2E705E36DBC06B56C4E4A3E /* Search */,
+				CD86AFED7616A8E52BE768AE /* Terminal */,
 				6D2CE72FDF189CE34AEE9CB6 /* Theme */,
 			);
 			path = ZedIPad;
@@ -373,6 +376,14 @@
 				98D433155C6F6907120296BC /* GlobalSearchView.swift */,
 			);
 			path = Search;
+			sourceTree = "<group>";
+		};
+		CD86AFED7616A8E52BE768AE /* Terminal */ = {
+			isa = PBXGroup;
+			children = (
+				D087B486A08FEC9744E39948 /* TerminalEmulatorView.swift */,
+			);
+			path = Terminal;
 			sourceTree = "<group>";
 		};
 		D272D8CB37885F8232C4E4A8 /* Products */ = {
@@ -761,6 +772,7 @@
 				BB7408102C38A671495FA79B /* StatusBar.swift in Sources */,
 				8253663503A53BE96A1C7233 /* SyntaxHighlighter.swift in Sources */,
 				B9BE48018BE20427A2348A14 /* SyntaxHighlightingTextView.swift in Sources */,
+				04A013F176B26344C6C96CF8 /* TerminalEmulatorView.swift in Sources */,
 				7B674F021E269F627A6D7B9B /* WelcomeView.swift in Sources */,
 				4A754D924AA04930C65C7104 /* ZedIPadApp.swift in Sources */,
 				A866823054B6B14DB981EE35 /* ZedTheme.swift in Sources */,
