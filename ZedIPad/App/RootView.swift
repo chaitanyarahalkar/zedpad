@@ -5,6 +5,87 @@ struct RootView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
 
     var body: some View {
+        GeometryReader { geo in
+            if geo.size.width > geo.size.height {
+                LandscapeLayout()
+            } else {
+                PortraitLayout(columnVisibility: $columnVisibility)
+            }
+        }
+        .ignoresSafeArea()
+        .tint(appState.theme.accentColor)
+        .sheet(isPresented: $appState.showingCommandPalette) {
+            CommandPaletteView()
+        }
+    }
+}
+
+// MARK: - Landscape: plain HStack, bypasses NavigationSplitView rotation bug
+
+struct LandscapeLayout: View {
+    @EnvironmentObject private var appState: AppState
+    @State private var sidebarWidth: CGFloat = 280
+
+    var body: some View {
+        // No NavigationStack/NavigationSplitView — bypasses iOS 26 rotation transform bug
+        HStack(spacing: 0) {
+            // Sidebar column
+            VStack(spacing: 0) {
+                // Manual toolbar
+                HStack {
+                    ThemeToggleButton()
+                    Spacer()
+                    DocumentPickerButton()
+                    CommandPaletteButton()
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(appState.theme.sidebarBackground)
+                .overlay(Rectangle().fill(appState.theme.borderColor).frame(height: 1), alignment: .bottom)
+
+                SidebarContainerView()
+            }
+            .frame(width: sidebarWidth)
+            .background(appState.theme.sidebarBackground)
+
+            // Drag handle
+            Rectangle()
+                .fill(appState.theme.borderColor)
+                .frame(width: 1)
+                .overlay(
+                    Rectangle()
+                        .fill(Color.clear)
+                        .frame(width: 14)
+                        .gesture(
+                            DragGesture()
+                                .onChanged { value in
+                                    sidebarWidth = max(200, min(420, sidebarWidth + value.translation.width))
+                                }
+                        )
+                )
+
+            // Detail column
+            VStack(spacing: 0) {
+                if let file = appState.activeFile {
+                    EditorView(file: file)
+                } else {
+                    WelcomeView()
+                }
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .background(appState.theme.editorBackground)
+        .ignoresSafeArea()
+    }
+}
+
+// MARK: - Portrait: NavigationSplitView (works correctly in portrait)
+
+struct PortraitLayout: View {
+    @EnvironmentObject private var appState: AppState
+    @Binding var columnVisibility: NavigationSplitViewVisibility
+
+    var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
             SidebarContainerView()
                 .navigationSplitViewColumnWidth(min: 220, ideal: 260, max: 320)
@@ -25,10 +106,6 @@ struct RootView: View {
             }
         }
         .navigationSplitViewStyle(.balanced)
-        .tint(appState.theme.accentColor)
-        .sheet(isPresented: $appState.showingCommandPalette) {
-            CommandPaletteView()
-        }
         .overlay(alignment: .topLeading) {
             VStack {
                 CommandPaletteShortcutButton()
@@ -37,6 +114,8 @@ struct RootView: View {
         }
     }
 }
+
+// MARK: - Sidebar container (shared between layouts)
 
 struct SidebarContainerView: View {
     @EnvironmentObject private var appState: AppState
