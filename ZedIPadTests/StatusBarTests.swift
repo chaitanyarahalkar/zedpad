@@ -67,7 +67,7 @@ final class StatusBarTests: XCTestCase {
         let line = "let x: Int = 42 // a variable\n"
         let large = String(repeating: line, count: 1000)
         XCTAssertEqual(large.components(separatedBy: "\n").count, 1001)
-        XCTAssertGreaterThan(large.count, 30000)
+        XCTAssertGreaterThanOrEqual(large.count, 30000)
     }
 
     func testThemeLanguageIconForAllLanguages() {

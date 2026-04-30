@@ -148,6 +148,8 @@ struct StatusBar: View {
         case .css: return "CSS"
         case .go: return "Go"
         case .kotlin: return "Kotlin"
+        case .c: return "C"
+        case .cpp: return "C++"
         case .unknown: return file.fileExtension.isEmpty ? "Plain Text" : file.fileExtension.uppercased()
         }
     }

@@ -27,6 +27,8 @@ class SyntaxHighlighter {
         case .css: return highlightCSS(text)
         case .go: return highlightGo(text)
         case .kotlin: return highlightKotlin(text)
+        case .c: return highlightC(text)
+        case .cpp: return highlightCpp(text)
         case .unknown: return []
         }
     }
@@ -315,6 +317,55 @@ class SyntaxHighlighter {
         return tokens
     }
 
+    private func highlightC(_ text: String) -> [SyntaxToken] {
+        var tokens: [SyntaxToken] = []
+        let keywords = ["auto", "break", "case", "char", "const", "continue", "default",
+                        "do", "double", "else", "enum", "extern", "float", "for", "goto",
+                        "if", "inline", "int", "long", "register", "return", "short",
+                        "signed", "sizeof", "static", "struct", "switch", "typedef",
+                        "union", "unsigned", "void", "volatile", "while", "NULL",
+                        "#include", "#define", "#ifdef", "#ifndef", "#endif", "#pragma"]
+        tokens += tokenizeKeywords(text, keywords: keywords, color: theme.syntaxKeyword)
+        tokens += tokenizeStrings(text)
+        tokens += tokenizeComments(text)
+        tokens += tokenizeNumbers(text)
+        // Preprocessor directives
+        let ppPattern = "^#[a-zA-Z_]+"
+        if let regex = try? NSRegularExpression(pattern: ppPattern, options: .anchorsMatchLines) {
+            let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            for match in matches {
+                if let range = Range(match.range, in: text) {
+                    tokens.append(SyntaxToken(range: range, color: theme.syntaxType))
+                }
+            }
+        }
+        return tokens
+    }
+
+    private func highlightCpp(_ text: String) -> [SyntaxToken] {
+        var tokens: [SyntaxToken] = []
+        let keywords = ["auto", "bool", "break", "case", "catch", "char", "class", "const",
+                        "constexpr", "continue", "default", "delete", "do", "double",
+                        "else", "enum", "explicit", "export", "extern", "false", "float",
+                        "for", "friend", "goto", "if", "inline", "int", "long", "mutable",
+                        "namespace", "new", "noexcept", "nullptr", "operator", "override",
+                        "private", "protected", "public", "return", "short", "sizeof",
+                        "static", "static_assert", "static_cast", "struct", "switch",
+                        "template", "this", "throw", "true", "try", "typedef", "typeid",
+                        "typename", "union", "using", "virtual", "void", "volatile", "while"]
+        let types = ["string", "vector", "map", "set", "unordered_map", "unordered_set",
+                     "list", "deque", "queue", "stack", "pair", "tuple", "optional",
+                     "variant", "any", "shared_ptr", "unique_ptr", "weak_ptr",
+                     "size_t", "int8_t", "int16_t", "int32_t", "int64_t",
+                     "uint8_t", "uint16_t", "uint32_t", "uint64_t"]
+        tokens += tokenizeKeywords(text, keywords: keywords, color: theme.syntaxKeyword)
+        tokens += tokenizeKeywords(text, keywords: types, color: theme.syntaxType)
+        tokens += tokenizeStrings(text)
+        tokens += tokenizeComments(text)
+        tokens += tokenizeNumbers(text)
+        return tokens
+    }
+
     // MARK: - Tokenizers
 
     private func tokenizeKeywords(_ text: String, keywords: [String], color: Color) -> [SyntaxToken] {
@@ -400,7 +451,7 @@ class SyntaxHighlighter {
 }
 
 enum Language: String {
-    case swift, javascript, typescript, python, rust, markdown, json, yaml, bash, ruby, html, css, go, kotlin, unknown
+    case swift, javascript, typescript, python, rust, markdown, json, yaml, bash, ruby, html, css, go, kotlin, c, cpp, unknown
 
     static func detect(from extension: String) -> Language {
         switch `extension`.lowercased() {
@@ -418,6 +469,8 @@ enum Language: String {
         case "css": return .css
         case "go": return .go
         case "kt", "kts": return .kotlin
+        case "c", "h": return .c
+        case "cpp", "cc", "cxx", "hpp", "hxx": return .cpp
         default: return .unknown
         }
     }

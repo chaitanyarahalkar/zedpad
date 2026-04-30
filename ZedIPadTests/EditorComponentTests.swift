@@ -25,6 +25,10 @@ final class EditorComponentTests: XCTestCase {
             ("cpp", .unknown),
             ("go", .go),
             ("kt", .kotlin),
+            ("c", .c),
+            ("cpp", .cpp),
+            ("cc", .cpp),
+            ("h", .c),
         ]
         for (ext, expected) in cases {
             XCTAssertEqual(Language.detect(from: ext), expected, "Mismatch for extension: \(ext)")
