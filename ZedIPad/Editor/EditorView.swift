@@ -46,7 +46,7 @@ struct EditorView: View {
 
             EditableCodeEditor(file: file)
 
-            StatusBar(file: file, text: file.content)
+            StatusBar(file: file)
         }
         .background(appState.theme.editorBackground)
         .overlay(alignment: .topLeading) {

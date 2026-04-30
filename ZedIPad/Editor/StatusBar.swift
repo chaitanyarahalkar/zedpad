@@ -2,15 +2,14 @@ import SwiftUI
 
 struct StatusBar: View {
     @EnvironmentObject private var appState: AppState
-    let file: FileNode
-    let text: String
+    @ObservedObject var file: FileNode  // observes file.content changes live
     @State private var showTabSizePicker: Bool = false
 
     private var language: Language { Language.detect(from: file.fileExtension) }
-    private var lineCount: Int { text.components(separatedBy: "\n").count }
-    private var charCount: Int { text.count }
+    private var lineCount: Int { file.content.components(separatedBy: "\n").count }
+    private var charCount: Int { file.content.count }
     private var wordCount: Int {
-        text.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }.count
+        file.content.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }.count
     }
 
     var body: some View {
