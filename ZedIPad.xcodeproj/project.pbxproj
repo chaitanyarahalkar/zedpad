@@ -47,6 +47,7 @@
 		4A754D924AA04930C65C7104 /* ZedIPadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75493B44C98BA18098F448D8 /* ZedIPadApp.swift */; };
 		4BAB49032C84264914E1B04A /* ComprehensiveModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF229EBD5768201FFEDBF84B /* ComprehensiveModelTests.swift */; };
 		4C86AB1A000A6BC67BC66D24 /* ZedIPadUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5169392D04E943F9B2A54C /* ZedIPadUITests.swift */; };
+		4E3410988DAFDA33DBCB91A3 /* ExternalChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2DDA72C3BD0A342DD279D5 /* ExternalChangeView.swift */; };
 		539C97C2430FD1FB3360E0A6 /* GoToLineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3779077B7AB382FC732E3509 /* GoToLineTests.swift */; };
 		53B6809B99DE478761E26A51 /* ZedThemeColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCDE519A82519B504D4A578 /* ZedThemeColorTests.swift */; };
 		554E69EC647EA96C65E4310A /* GoToLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5284868E370B48D6FF77BB /* GoToLineView.swift */; };
@@ -189,6 +190,7 @@
 		6812812B2E6DD1F62E47A82F /* AppWorkflowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWorkflowTests.swift; sourceTree = "<group>"; };
 		6945059795DDAEC0E929D034 /* FileSystemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemTests.swift; sourceTree = "<group>"; };
 		6A6B990F0C327F24843582A6 /* ZedIPadUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ZedIPadUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6C2DDA72C3BD0A342DD279D5 /* ExternalChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalChangeView.swift; sourceTree = "<group>"; };
 		6DC2728F898E227391F701FC /* MiscModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiscModelTests.swift; sourceTree = "<group>"; };
 		6F9B0FAC05DC1D35AA9DCA54 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		6FCDE519A82519B504D4A578 /* ZedThemeColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedThemeColorTests.swift; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 		44A5264358249FBE0036D3AD /* FileSystem */ = {
 			isa = PBXGroup;
 			children = (
+				6C2DDA72C3BD0A342DD279D5 /* ExternalChangeView.swift */,
 				0D272789375E0BE571235204 /* FileMetadata.swift */,
 				70706320B396AA6CB339B3AA /* FileSystemService.swift */,
 				F8D589AB03D968D3A92118F3 /* FileWatcher.swift */,
@@ -705,6 +708,7 @@
 				0D82851B81E88C0E8E54F23D /* CommandPaletteView.swift in Sources */,
 				7A3AA2A7873CCD8AF62337CD /* DocumentPicker.swift in Sources */,
 				2482F8B4235A057E6E344027 /* EditorView.swift in Sources */,
+				4E3410988DAFDA33DBCB91A3 /* ExternalChangeView.swift in Sources */,
 				0FB3B76828BA31E33AC886F8 /* FileMetadata.swift in Sources */,
 				443EF3BFC4DD389A4C80E132 /* FileNode.swift in Sources */,
 				3E73B33F8BA24CF186C99A5B /* FileSearchBar.swift in Sources */,

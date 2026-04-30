@@ -5,7 +5,9 @@ struct EditorView: View {
     let file: FileNode
     @State private var showingFind: Bool = false
     @State private var saveError: String? = nil
+    @State private var fileChangedExternally: Bool = false
     @StateObject private var goToLine = GoToLineState()
+    @State private var watcher: FileWatcher? = nil
 
     private var lineCount: Int { file.content.components(separatedBy: "\n").count }
 
@@ -15,6 +17,16 @@ struct EditorView: View {
 
             Divider()
                 .background(appState.theme.borderColor)
+
+            if fileChangedExternally {
+                ExternalChangeBanner {
+                    reloadFromDisk()
+                    fileChangedExternally = false
+                } onDismiss: {
+                    fileChangedExternally = false
+                }
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
 
             if showingFind {
                 FindBar(isVisible: $showingFind, file: file)
@@ -88,6 +100,30 @@ struct EditorView: View {
         }
         .navigationTitle(file.name)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear { startWatching() }
+        .onDisappear { stopWatching() }
+    }
+
+    private func startWatching() {
+        guard let url = file.fileURL else { return }
+        let w = FileWatcher(url: url)
+        w.onChange = {
+            withAnimation { fileChangedExternally = true }
+        }
+        w.start()
+        watcher = w
+    }
+
+    private func stopWatching() {
+        watcher?.stop()
+        watcher = nil
+    }
+
+    private func reloadFromDisk() {
+        guard let url = file.fileURL,
+              let content = try? FileSystemService.shared.readFile(at: url) else { return }
+        file.content = content
+        file.isDirty = false
     }
 
     private func saveFile() {
