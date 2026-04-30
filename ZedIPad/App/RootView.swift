@@ -12,6 +12,10 @@ struct RootView: View {
                 PortraitLayout(columnVisibility: $columnVisibility)
             }
         }
+        // FAB floats globally above all content, always at bottom-right
+        .overlay(alignment: .bottomTrailing) {
+            TerminalFAB()
+        }
         .tint(appState.theme.accentColor)
         .sheet(isPresented: $appState.showingCommandPalette) {
             CommandPaletteView()
@@ -88,9 +92,6 @@ struct LandscapeLayout: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .overlay(alignment: .bottomTrailing) {
-                TerminalFAB()
-            }
         }
         .background(appState.theme.editorBackground.ignoresSafeArea())
     }

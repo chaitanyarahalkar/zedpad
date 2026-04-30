@@ -163,6 +163,7 @@ struct FileTreeRowView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .highPriorityGesture(TapGesture().onEnded { onTap?() })
         .contextMenu {
             // New file / folder inside a directory
             if node.type == .directory {
