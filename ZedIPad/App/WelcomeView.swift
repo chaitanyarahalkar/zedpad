@@ -49,7 +49,7 @@ struct WelcomeView: View {
                     ShortcutHint(keys: "⌘+", description: "Increase font size")
                     ShortcutHint(keys: "⌘-", description: "Decrease font size")
                 }
-                .padding(.horizontal, 40)
+                .padding(.horizontal, 32)
                 .padding(.bottom, 32)
             }
         }
@@ -73,7 +73,7 @@ struct WelcomeSectionHeader: View {
                 .foregroundColor(appState.theme.secondaryText)
             Spacer()
         }
-        .padding(.horizontal, 40)
+        .padding(.horizontal, 32)
         .padding(.bottom, 8)
     }
 }

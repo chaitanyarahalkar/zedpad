@@ -79,7 +79,7 @@ class TerminalSession: ObservableObject, Identifiable {
 struct TerminalPanel: View {
     @EnvironmentObject private var appState: AppState
     @StateObject private var manager = TerminalPanelManager()
-    @State private var panelHeight: CGFloat = 280
+    @State private var panelHeight: CGFloat = max(280, UIScreen.main.bounds.height * 0.35)
 
     var body: some View {
         VStack(spacing: 0) {
