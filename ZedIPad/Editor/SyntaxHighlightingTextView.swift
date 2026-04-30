@@ -10,6 +10,7 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
     let wordWrap: Bool
     var highlightRanges: [NSRange] = []
     var scrollToRange: NSRange? = nil
+    var onScrollOffsetChange: ((CGFloat) -> Void)? = nil
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -136,6 +137,10 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
 
         func textViewDidChangeSelection(_ textView: UITextView) {
             updateCurrentLineHighlight(in: textView)
+        }
+
+        func scrollViewDidScroll(_ scrollView: UIScrollView) {
+            parent.onScrollOffsetChange?(scrollView.contentOffset.y)
         }
 
         func baseAttributes() -> [NSAttributedString.Key: Any] {

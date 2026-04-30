@@ -164,12 +164,13 @@ struct EditableCodeEditor: View {
     @ObservedObject var file: FileNode
     @State private var scrollFraction: CGFloat = 0
     @State private var showMinimap: Bool = true
+    @State private var gutterScrollOffset: CGFloat = 0
 
     var body: some View {
         GeometryReader { geo in
             HStack(alignment: .top, spacing: 0) {
-                // Line numbers gutter
-                LineNumberGutter(text: file.content, theme: appState.theme)
+                // Line numbers gutter (synced with editor scroll)
+                LineNumberGutter(text: file.content, theme: appState.theme, scrollOffset: gutterScrollOffset)
                     .frame(width: 52)
 
                 Divider()
@@ -187,7 +188,8 @@ struct EditableCodeEditor: View {
                     tabSize: appState.tabSize,
                     wordWrap: appState.wordWrap,
                     highlightRanges: appState.findHighlightRanges,
-                    scrollToRange: appState.findScrollToRange
+                    scrollToRange: appState.findScrollToRange,
+                    onScrollOffsetChange: { offset in gutterScrollOffset = offset }
                 )
                 .frame(minWidth: max(geo.size.width - 52 - (showMinimap ? 80 : 0), 100),
                        minHeight: geo.size.height)
@@ -211,27 +213,43 @@ struct EditableCodeEditor: View {
 struct LineNumberGutter: View {
     let text: String
     let theme: ZedTheme
+    var scrollOffset: CGFloat = 0
 
     private var lineCount: Int {
         text.components(separatedBy: "\n").count
     }
+    private let lineHeight: CGFloat = 18  // ~font size 13 + 2*padding
 
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(alignment: .trailing, spacing: 0) {
-                ForEach(1...max(lineCount, 1), id: \.self) { line in
-                    Text("\(line)")
-                        .font(.system(size: 13, design: .monospaced))
-                        .foregroundColor(theme.lineNumberText)
-                        .padding(.vertical, 1)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
+        GeometryReader { geo in
+            let totalLines = max(lineCount, 1)
+            let firstVisible = max(0, Int(scrollOffset / lineHeight))
+            let visibleLines = Int(ceil(geo.size.height / lineHeight)) + 2
+            let lastVisible = min(totalLines, firstVisible + visibleLines)
+
+            ZStack(alignment: .topTrailing) {
+                theme.sidebarBackground
+
+                VStack(alignment: .trailing, spacing: 0) {
+                    // Spacer for lines above visible area
+                    Rectangle()
+                        .fill(Color.clear)
+                        .frame(height: CGFloat(firstVisible) * lineHeight)
+
+                    ForEach(firstVisible..<lastVisible, id: \.self) { idx in
+                        Text("\(idx + 1)")
+                            .font(.system(size: 13, design: .monospaced))
+                            .foregroundColor(theme.lineNumberText)
+                            .frame(height: lineHeight, alignment: .trailing)
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                    }
                 }
+                .padding(.horizontal, 8)
+                .offset(y: -scrollOffset)
             }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 10)
+            .clipped()
         }
         .background(theme.sidebarBackground)
-        .disabled(true)
     }
 }
 
