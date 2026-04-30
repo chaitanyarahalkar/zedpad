@@ -21,7 +21,11 @@ class TerminalSession: ObservableObject, Identifiable {
     }
 
     func writeOutput(_ text: String) {
-        let data = ArraySlice((text + "\r\n").utf8)
+        // Normalize bare \n → \r\n so every line returns to column 0 on VT100
+        let normalized = text
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\n", with: "\r\n")
+        let data = ArraySlice((normalized + "\r\n").utf8)
         terminalView?.feed(byteArray: data)
     }
 
@@ -57,8 +61,8 @@ class TerminalSession: ObservableObject, Identifiable {
 
     func handleInput(_ text: String) {
         guard let shell else { return }
-        // Echo submitted command + newline
-        terminalView?.feed(byteArray: ArraySlice((text + "\r\n").utf8))
+        // Characters were already echoed one-by-one in handleKeystroke — just move to next line
+        terminalView?.feed(byteArray: ArraySlice("\r\n".utf8))
         let result = shell.execute(text)
         if result == "__EXIT__" {
             writeOutput(ANSI.yellow("Session ended."))

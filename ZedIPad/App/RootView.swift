@@ -12,7 +12,6 @@ struct RootView: View {
                 PortraitLayout(columnVisibility: $columnVisibility)
             }
         }
-        .ignoresSafeArea()
         .tint(appState.theme.accentColor)
         .sheet(isPresented: $appState.showingCommandPalette) {
             CommandPaletteView()
@@ -32,12 +31,18 @@ struct LandscapeLayout: View {
     @EnvironmentObject private var appState: AppState
     @State private var sidebarWidth: CGFloat = 280
 
+    private var safeAreaTopInset: CGFloat {
+        (UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first?.windows.first?.safeAreaInsets.top) ?? 0
+    }
+
     var body: some View {
         // No NavigationStack/NavigationSplitView — bypasses iOS 26 rotation transform bug
         HStack(spacing: 0) {
             // Sidebar column
             VStack(spacing: 0) {
-                // Manual toolbar
+                // Manual toolbar — respects status bar via safeAreaInset
                 HStack {
                     ThemeToggleButton()
                     Spacer()
@@ -46,7 +51,8 @@ struct LandscapeLayout: View {
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .background(appState.theme.sidebarBackground)
+                .padding(.top, safeAreaTopInset)
+                .background(appState.theme.sidebarBackground.ignoresSafeArea(edges: .top))
                 .overlay(Rectangle().fill(appState.theme.borderColor).frame(height: 1), alignment: .bottom)
 
                 SidebarContainerView()
@@ -84,8 +90,7 @@ struct LandscapeLayout: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .background(appState.theme.editorBackground)
-        .ignoresSafeArea()
+        .background(appState.theme.editorBackground.ignoresSafeArea())
     }
 }
 

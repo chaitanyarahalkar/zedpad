@@ -112,6 +112,8 @@ struct FileTreeRowView: View {
     let parentNode: FileNode?
     @State private var showingRenameSheet = false
     @State private var showingDeleteAlert = false
+    @State private var showingNewFileSheet = false
+    @State private var showingNewFolderSheet = false
 
     private var isActive: Bool { appState.activeFile?.id == node.id }
 
@@ -158,6 +160,22 @@ struct FileTreeRowView: View {
         .background(isActive ? appState.theme.accentColor.opacity(0.15) : Color.clear)
         .contentShape(Rectangle())
         .contextMenu {
+            // New file / folder inside a directory
+            if node.type == .directory {
+                Button {
+                    node.isExpanded = true
+                    showingNewFileSheet = true
+                } label: {
+                    Label("New File", systemImage: "doc.badge.plus")
+                }
+                Button {
+                    node.isExpanded = true
+                    showingNewFolderSheet = true
+                } label: {
+                    Label("New Folder", systemImage: "folder.badge.plus")
+                }
+                Divider()
+            }
             Button {
                 showingRenameSheet = true
             } label: {
@@ -190,6 +208,12 @@ struct FileTreeRowView: View {
         .sheet(isPresented: $showingRenameSheet) {
             RenameSheet(node: node)
         }
+        .sheet(isPresented: $showingNewFileSheet) {
+            NewItemSheet(initialIsFolder: false, parentNode: node)
+        }
+        .sheet(isPresented: $showingNewFolderSheet) {
+            NewItemSheet(initialIsFolder: true, parentNode: node)
+        }
         .onAppear {
             if let url = node.fileURL {
                 node.metadata = try? FileSystemService.shared.attributes(at: url)
@@ -214,12 +238,14 @@ struct FileTreeRowView: View {
 // MARK: - New Item Sheet
 
 struct NewItemSheet: View {
+    var initialIsFolder: Bool = false
     @EnvironmentObject private var appState: AppState
     @Environment(\.dismiss) private var dismiss
     let parentNode: FileNode?
     @State private var name: String = ""
     @State private var selectedExtension: String = ".swift"
     @State private var isFolder: Bool = false
+    // initialIsFolder handled in onAppear
 
     private let extensions = [".swift", ".py", ".js", ".ts", ".md", ".txt", ".json", ".yaml", ".sh", ".rs"]
 
@@ -234,6 +260,7 @@ struct NewItemSheet: View {
                     .pickerStyle(.segmented)
                 }
                 Section("Name") {
+
                     TextField(isFolder ? "Folder name" : "File name", text: $name)
                         .autocorrectionDisabled()
                     if !isFolder {
@@ -265,6 +292,7 @@ struct NewItemSheet: View {
                     .disabled(name.isEmpty)
                 }
             }
+            .onAppear { isFolder = initialIsFolder }
         }
     }
 }

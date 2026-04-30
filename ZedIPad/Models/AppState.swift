@@ -47,9 +47,7 @@ class AppState: ObservableObject {
                     at: FileSystemService.shared.documentsURL
                 )
                 filesystemRoot = docsRoot
-                if docsRoot.children?.isEmpty == false {
-                    rootDirectory = docsRoot
-                }
+                rootDirectory = docsRoot  // always use real FS, even if empty
             } catch {
                 lastError = error.localizedDescription
             }
@@ -69,12 +67,12 @@ class AppState: ObservableObject {
     }
 
     func createFile(named name: String, in parent: FileNode) {
-        guard let parentURL = parent.fileURL else { return }
+        let parentURL = parent.fileURL ?? FileSystemService.shared.documentsURL
         do {
             let url = try FileSystemService.shared.createFile(named: name, in: parentURL)
+            reloadChildren(of: parent)
+            // Open the new file
             let node = FileNode(name: name, type: .file, path: url.path, url: url)
-            parent.children?.append(node)
-            sortChildren(of: parent)
             openFile(node)
         } catch {
             lastError = error.localizedDescription
@@ -82,14 +80,27 @@ class AppState: ObservableObject {
     }
 
     func createDirectory(named name: String, in parent: FileNode) {
-        guard let parentURL = parent.fileURL else { return }
+        let parentURL = parent.fileURL ?? FileSystemService.shared.documentsURL
         do {
-            let url = try FileSystemService.shared.createDirectory(named: name, in: parentURL)
-            let node = FileNode(name: name, type: .directory, path: url.path, url: url, children: [])
-            parent.children?.append(node)
-            sortChildren(of: parent)
+            _ = try FileSystemService.shared.createDirectory(named: name, in: parentURL)
+            reloadChildren(of: parent)
+            parent.isExpanded = true
         } catch {
             lastError = error.localizedDescription
+        }
+    }
+
+    /// Reloads a directory node's children from disk and expands it.
+    func reloadChildren(of node: FileNode) {
+        let url = node.fileURL ?? FileSystemService.shared.documentsURL
+        Task {
+            guard let fresh = try? FileSystemService.shared.loadDirectory(at: url) else { return }
+            node.children = fresh.children
+            node.isExpanded = true
+            // If this is the root, keep rootDirectory in sync
+            if node === rootDirectory || rootDirectory?.fileURL == url {
+                rootDirectory = node
+            }
         }
     }
 
