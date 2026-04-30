@@ -77,6 +77,7 @@
 		81AB21F25F7EC6504580641F /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9B0FAC05DC1D35AA9DCA54 /* AppState.swift */; };
 		8253663503A53BE96A1C7233 /* SyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A020E50F16B36CC347369F /* SyntaxHighlighter.swift */; };
 		86D7DDEEFDA9AF1C0CC6070D /* FindReplaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A352C8D2EB39553EF1035FCD /* FindReplaceTests.swift */; };
+		86F4F63D12DFD3DD6D15E845 /* FileSystemExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F3B142C7B9AE451D8EA55F4 /* FileSystemExtendedTests.swift */; };
 		891DE4D68C5ACBC3DCFF7C29 /* SyntaxHighlightBatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D95FE101C0DE121EC83E12 /* SyntaxHighlightBatchTests.swift */; };
 		8CD09AE6636C97D983272681 /* SyntaxHighlightFinalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5507FC1A898E2220B59B67E2 /* SyntaxHighlightFinalTests.swift */; };
 		8E34E7220826EECF5C7E35A0 /* DocumentPickerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADC3E1F3F7F2D971502F60A /* DocumentPickerTests.swift */; };
@@ -124,6 +125,7 @@
 		F85ACE61F9FDF27E55578104 /* FileSearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D744373156559C5BE3661D4 /* FileSearchTests.swift */; };
 		FAD38603C78D952772F65160 /* ThemeColorAccessibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BAD5985DEBAC7A8FE20307 /* ThemeColorAccessibilityTests.swift */; };
 		FC9059566C5D51191D7CE3FB /* StatusBarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61EA73F47B511D5A25ACB96A /* StatusBarTests.swift */; };
+		FE09ADBA0FE5DF271580C9FC /* iCloudService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD3B237F16CB563EB05B40F /* iCloudService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -155,6 +157,7 @@
 		19A21D2ED2D4CC8260672D16 /* TokenColorMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenColorMappingTests.swift; sourceTree = "<group>"; };
 		1CCDB156C4C21D395BD08F88 /* FileNodeUtilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNodeUtilityTests.swift; sourceTree = "<group>"; };
 		1D744373156559C5BE3661D4 /* FileSearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchTests.swift; sourceTree = "<group>"; };
+		1F3B142C7B9AE451D8EA55F4 /* FileSystemExtendedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemExtendedTests.swift; sourceTree = "<group>"; };
 		25E79CF13A25E91893931A4C /* HighlightCorrectnessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightCorrectnessTests.swift; sourceTree = "<group>"; };
 		3018ACBE3311D76587532D93 /* FinalSummaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalSummaryTests.swift; sourceTree = "<group>"; };
 		31317BE6864153C6C9217FAD /* FileTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTreeView.swift; sourceTree = "<group>"; };
@@ -251,6 +254,7 @@
 		DB4B87E65DAB987F41560510 /* FilePathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePathTests.swift; sourceTree = "<group>"; };
 		DB5AF4F94B292CC1EEB5D056 /* FindStateAdvancedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindStateAdvancedTests.swift; sourceTree = "<group>"; };
 		DC72A0A56442BFCA154272AB /* AdvancedSearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSearchTests.swift; sourceTree = "<group>"; };
+		DCD3B237F16CB563EB05B40F /* iCloudService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudService.swift; sourceTree = "<group>"; };
 		DE200CBA68C3AD9C23578911 /* RobustnessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RobustnessTests.swift; sourceTree = "<group>"; };
 		DE76762D650856FE7B729F35 /* GoKotlinTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoKotlinTests.swift; sourceTree = "<group>"; };
 		DF000595E45B7926ED07C247 /* StringProcessingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringProcessingTests.swift; sourceTree = "<group>"; };
@@ -300,6 +304,7 @@
 				0D272789375E0BE571235204 /* FileMetadata.swift */,
 				70706320B396AA6CB339B3AA /* FileSystemService.swift */,
 				F8D589AB03D968D3A92118F3 /* FileWatcher.swift */,
+				DCD3B237F16CB563EB05B40F /* iCloudService.swift */,
 			);
 			path = FileSystem;
 			sourceTree = "<group>";
@@ -417,6 +422,7 @@
 				DB4B87E65DAB987F41560510 /* FilePathTests.swift */,
 				0E6191A4395E9F73FE1121F0 /* FileSaveTests.swift */,
 				1D744373156559C5BE3661D4 /* FileSearchTests.swift */,
+				1F3B142C7B9AE451D8EA55F4 /* FileSystemExtendedTests.swift */,
 				6945059795DDAEC0E929D034 /* FileSystemTests.swift */,
 				9A6061B3D8B3DFD265B07D26 /* FileTreeExpansionTests.swift */,
 				E6984B2F60995C2F9F63E325 /* FileTreeNavigationTests.swift */,
@@ -625,6 +631,7 @@
 				30965DF7F29D55B1AC3140F4 /* FilePathTests.swift in Sources */,
 				2CB28A8489489E1FC88D0D18 /* FileSaveTests.swift in Sources */,
 				F85ACE61F9FDF27E55578104 /* FileSearchTests.swift in Sources */,
+				86F4F63D12DFD3DD6D15E845 /* FileSystemExtendedTests.swift in Sources */,
 				BA0262E7646C65EC596D84DB /* FileSystemTests.swift in Sources */,
 				3E1EDEC2B760E3B069D81AAC /* FileTreeExpansionTests.swift in Sources */,
 				A8134700C79EFCC1FA7954A8 /* FileTreeNavigationTests.swift in Sources */,
@@ -728,6 +735,7 @@
 				7B674F021E269F627A6D7B9B /* WelcomeView.swift in Sources */,
 				4A754D924AA04930C65C7104 /* ZedIPadApp.swift in Sources */,
 				A866823054B6B14DB981EE35 /* ZedTheme.swift in Sources */,
+				FE09ADBA0FE5DF271580C9FC /* iCloudService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
