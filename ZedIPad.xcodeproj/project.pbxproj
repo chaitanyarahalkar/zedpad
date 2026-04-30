@@ -47,6 +47,7 @@
 		C6B0A2BA6343BB85C8139450 /* FindBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F6757DE64A4DC288AA4E73 /* FindBar.swift */; };
 		CA8C4804A4C368173ED3CBE6 /* BreadcrumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726DED8829C8C98CE55EC5C3 /* BreadcrumbView.swift */; };
 		D010B57E16CA4878E94073D7 /* ZedIPadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ABE1097F78F5F2D88C6ED6 /* ZedIPadTests.swift */; };
+		EB1A5C889685D7CD836AA2B1 /* AllLanguagesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019E644947D1D05F5AE9B48C /* AllLanguagesTests.swift */; };
 		EB654C113F9AD4CB74926B68 /* KeyboardShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45D90C78DD5FA0CDCA67BB8 /* KeyboardShortcuts.swift */; };
 		EF6B78D792CD69008B876CFB /* ConcurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E129C993E55053B5B59FC46D /* ConcurrencyTests.swift */; };
 		F4DD54473982B581F6277A62 /* FileNodeUtilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCDB156C4C21D395BD08F88 /* FileNodeUtilityTests.swift */; };
@@ -72,6 +73,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		019E644947D1D05F5AE9B48C /* AllLanguagesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllLanguagesTests.swift; sourceTree = "<group>"; };
 		16A020E50F16B36CC347369F /* SyntaxHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxHighlighter.swift; sourceTree = "<group>"; };
 		1CCDB156C4C21D395BD08F88 /* FileNodeUtilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNodeUtilityTests.swift; sourceTree = "<group>"; };
 		1D744373156559C5BE3661D4 /* FileSearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchTests.swift; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 		EBE537289F554A8B75786E37 /* ZedIPadTests */ = {
 			isa = PBXGroup;
 			children = (
+				019E644947D1D05F5AE9B48C /* AllLanguagesTests.swift */,
 				8216CAE4066CDE5CE0E782BC /* AppStateExtendedTests.swift */,
 				861232D3A6E236B24FB58AF6 /* AppStateTests.swift */,
 				CCB718018C7C338627E0DC67 /* CCppTests.swift */,
@@ -374,6 +377,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EB1A5C889685D7CD836AA2B1 /* AllLanguagesTests.swift in Sources */,
 				3E4833058ADE233559478114 /* AppStateExtendedTests.swift in Sources */,
 				B6FED1FF882A52BBB2A539DE /* AppStateTests.swift in Sources */,
 				114A3CB2F291DD750906FD2A /* CCppTests.swift in Sources */,
