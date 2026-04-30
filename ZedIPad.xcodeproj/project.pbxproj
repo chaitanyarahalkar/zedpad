@@ -42,6 +42,7 @@
 		33DD1B3F38DAA8EAE7EFE07E /* FindStateAdvancedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5AF4F94B292CC1EEB5D056 /* FindStateAdvancedTests.swift */; };
 		349198853B4115EE9C2F8385 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A780289895491B0F15B073 /* RootView.swift */; };
 		3642006ADEE00E9DE689848F /* GitCommitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7AA197F4F456A92B752C36 /* GitCommitView.swift */; };
+		3669A6015B4421025135FC7F /* CodeTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2014109C9A32F9C5E0A6222D /* CodeTextView.swift */; };
 		36CEC448EF255CF2B3A02BB9 /* SidebarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDAC7CCAA65FCFDF40B9821C /* SidebarTests.swift */; };
 		3C418B0B9014B6970D5D19BA /* AppStateRecentFilesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4646935C5746A9BC23C330C6 /* AppStateRecentFilesTests.swift */; };
 		3CAB3E8A014F0ED1CB0F7046 /* LanguageCoverageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9882B4FED9350096456FE853 /* LanguageCoverageTests.swift */; };
@@ -199,6 +200,7 @@
 		1CCDB156C4C21D395BD08F88 /* FileNodeUtilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNodeUtilityTests.swift; sourceTree = "<group>"; };
 		1D744373156559C5BE3661D4 /* FileSearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchTests.swift; sourceTree = "<group>"; };
 		1F3B142C7B9AE451D8EA55F4 /* FileSystemExtendedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemExtendedTests.swift; sourceTree = "<group>"; };
+		2014109C9A32F9C5E0A6222D /* CodeTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeTextView.swift; sourceTree = "<group>"; };
 		25E79CF13A25E91893931A4C /* HighlightCorrectnessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightCorrectnessTests.swift; sourceTree = "<group>"; };
 		2D9E0569BE77BCD00719AB95 /* TerminalPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalPanel.swift; sourceTree = "<group>"; };
 		2F8CA56D4CF8BB5D535CF366 /* GenericCompletionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericCompletionProvider.swift; sourceTree = "<group>"; };
@@ -533,6 +535,7 @@
 			isa = PBXGroup;
 			children = (
 				726DED8829C8C98CE55EC5C3 /* BreadcrumbView.swift */,
+				2014109C9A32F9C5E0A6222D /* CodeTextView.swift */,
 				8262E3CEF14213A3440DF912 /* EditorView.swift */,
 				EE5284868E370B48D6FF77BB /* GoToLineView.swift */,
 				546C4301602323AA070F07FC /* MinimapView.swift */,
@@ -905,6 +908,7 @@
 			files = (
 				81AB21F25F7EC6504580641F /* AppState.swift in Sources */,
 				CA8C4804A4C368173ED3CBE6 /* BreadcrumbView.swift in Sources */,
+				3669A6015B4421025135FC7F /* CodeTextView.swift in Sources */,
 				0D82851B81E88C0E8E54F23D /* CommandPaletteView.swift in Sources */,
 				E14349DA52684437AD15EAA4 /* CompletionItem.swift in Sources */,
 				9D30AEB6871BBB6E61E9D679 /* CompletionManager.swift in Sources */,

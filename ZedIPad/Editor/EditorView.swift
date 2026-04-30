@@ -44,7 +44,7 @@ struct EditorView: View {
 
             BreadcrumbView(file: file)
 
-            EditableCodeEditor(file: file)
+            EditableCodeEditor(file: file, onSave: saveFile)
 
             StatusBar(file: file)
         }
@@ -198,6 +198,7 @@ struct EditorTab: View {
 struct EditableCodeEditor: View {
     @EnvironmentObject private var appState: AppState
     @ObservedObject var file: FileNode
+    var onSave: (() -> Void)? = nil
     @State private var scrollFraction: CGFloat = 0
     @State private var showMinimap: Bool = true
     @State private var gutterScrollOffset: CGFloat = 0
@@ -230,7 +231,8 @@ struct EditableCodeEditor: View {
                         scrollToRange: appState.findScrollToRange,
                         onScrollOffsetChange: { offset in gutterScrollOffset = offset },
                         completionManager: completionManager,
-                        onCursorRectChange: { rect in cursorRect = rect }
+                        onCursorRectChange: { rect in cursorRect = rect },
+                        onSave: onSave
                     )
                     .frame(minWidth: max(geo.size.width - 52 - (showMinimap ? 80 : 0), 100),
                            minHeight: geo.size.height)

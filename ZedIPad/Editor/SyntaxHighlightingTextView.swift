@@ -13,14 +13,18 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
     var onScrollOffsetChange: ((CGFloat) -> Void)? = nil
     var completionManager: CompletionManager? = nil
     var onCursorRectChange: ((CGRect) -> Void)? = nil
+    var onSave: (() -> Void)? = nil   // autosave + ⌘S callback
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
 
     func makeUIView(context: Context) -> UITextView {
-        let tv = UITextView()
+        let tv = CodeTextView()
         tv.delegate = context.coordinator
+        tv.language = language
+        tv.tabSize = tabSize
+        tv.editorDelegate = context.coordinator
         tv.isEditable = true
         tv.isScrollEnabled = true
         tv.backgroundColor = .clear
@@ -40,6 +44,10 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
 
     func updateUIView(_ tv: UITextView, context: Context) {
         context.coordinator.parent = self
+        if let ctv = tv as? CodeTextView {
+            ctv.language = language
+            ctv.tabSize = tabSize
+        }
         // Only re-apply if text changed externally (not from this view's own edits)
         if tv.text != text {
             let selectedRange = tv.selectedRange
@@ -109,13 +117,20 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
 
     // MARK: - Coordinator
 
-    class Coordinator: NSObject, UITextViewDelegate {
+    @MainActor
+    class Coordinator: NSObject, UITextViewDelegate, CodeTextViewDelegate {
         var parent: SyntaxHighlightingTextView
         private var highlightWorkItem: DispatchWorkItem?
+        private var autosaveWorkItem: DispatchWorkItem?
         private weak var currentLineLayer: CALayer?
 
         init(_ parent: SyntaxHighlightingTextView) {
             self.parent = parent
+        }
+
+        // MARK: - CodeTextViewDelegate (⌘S)
+        @MainActor func codeTextViewRequestedSave(_ textView: CodeTextView) {
+            parent.onSave?()
         }
 
         func updateCurrentLineHighlight(in textView: UITextView) {
@@ -154,6 +169,14 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
 
         func textViewDidChange(_ textView: UITextView) {
             parent.text = textView.text
+
+            // Autosave — debounced 1.5s after last keystroke
+            autosaveWorkItem?.cancel()
+            let saveItem = DispatchWorkItem { [weak self] in
+                self?.parent.onSave?()
+            }
+            autosaveWorkItem = saveItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: saveItem)
 
             // Trigger completions (debounced)
             if let manager = parent.completionManager {
