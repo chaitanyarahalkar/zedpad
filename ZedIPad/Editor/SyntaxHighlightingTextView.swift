@@ -141,7 +141,7 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: item)
         }
 
-        // Auto-indent + Tab → spaces
+        // Auto-indent + Tab → spaces + bracket auto-close
         func textView(_ textView: UITextView,
                       shouldChangeTextIn range: NSRange,
                       replacementText text: String) -> Bool {
@@ -150,6 +150,35 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
                 let spaces = String(repeating: " ", count: parent.tabSize)
                 textView.insertText(spaces)
                 return false
+            }
+
+            // Bracket/quote auto-closing
+            let pairs: [String: String] = ["{": "}", "(": ")", "[": "]", "\"": "\"", "'": "'"]
+            if let closing = pairs[text] {
+                textView.insertText(text + closing)
+                // Move cursor between the pair
+                if let pos = textView.selectedTextRange {
+                    let newPos = textView.position(from: pos.start, offset: -1)!
+                    textView.selectedTextRange = textView.textRange(from: newPos, to: newPos)
+                }
+                return false
+            }
+
+            // Skip over closing bracket if already typed
+            let closers: Set<String> = ["}", ")", "]", "\"", "'"]
+            if closers.contains(text) {
+                let nsText = textView.text as NSString
+                if range.location < nsText.length {
+                    let nextChar = nsText.substring(with: NSRange(location: range.location, length: 1))
+                    if nextChar == text {
+                        // Move cursor forward instead of inserting
+                        if let pos = textView.selectedTextRange {
+                            let newPos = textView.position(from: pos.start, offset: 1)!
+                            textView.selectedTextRange = textView.textRange(from: newPos, to: newPos)
+                        }
+                        return false
+                    }
+                }
             }
 
             // Enter → auto-indent
