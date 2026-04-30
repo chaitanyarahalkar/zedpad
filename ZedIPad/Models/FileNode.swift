@@ -31,11 +31,15 @@ class FileNode: Identifiable, ObservableObject {
         }
     }
 
-    init(id: UUID = UUID(), name: String, type: FileNodeType, path: String, children: [FileNode]? = nil, content: String = "") {
+    var url: URL? { fileURL }
+    @Published var metadata: FileMetadata?
+
+    init(id: UUID = UUID(), name: String, type: FileNodeType, path: String, url: URL? = nil, children: [FileNode]? = nil, content: String = "") {
         self.id = id
         self.name = name
         self.type = type
         self.path = path
+        self.fileURL = url
         self.children = children
         self.content = content
     }

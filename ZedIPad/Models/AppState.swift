@@ -16,9 +16,175 @@ class AppState: ObservableObject {
     @Published var findScrollToRange: NSRange? = nil
 
     static let maxRecentFiles = 10
+    @Published var lastError: String?
+    @Published var filesystemRoot: FileNode?
+    @Published var sortOrder: FileSortOrder = .nameAscending
+
+    enum FileSortOrder: String, CaseIterable {
+        case nameAscending = "Name ↑"
+        case nameDescending = "Name ↓"
+        case dateModified = "Date Modified"
+        case size = "Size"
+        case type = "Type"
+    }
 
     init() {
         rootDirectory = FileNode.sampleRoot()
+        loadDocumentsDirectory()
+        restoreRecentFiles()
+        restoreLastOpenFile()
+    }
+
+    func loadDocumentsDirectory() {
+        Task {
+            do {
+                let docsRoot = try FileSystemService.shared.loadDirectory(
+                    at: FileSystemService.shared.documentsURL
+                )
+                filesystemRoot = docsRoot
+                if docsRoot.children?.isEmpty == false {
+                    rootDirectory = docsRoot
+                }
+            } catch {
+                lastError = error.localizedDescription
+            }
+        }
+    }
+
+    func loadDirectory(at url: URL) {
+        Task {
+            do {
+                let node = try FileSystemService.shared.loadDirectory(at: url)
+                rootDirectory = node
+                filesystemRoot = node
+            } catch {
+                lastError = error.localizedDescription
+            }
+        }
+    }
+
+    func createFile(named name: String, in parent: FileNode) {
+        guard let parentURL = parent.fileURL else { return }
+        do {
+            let url = try FileSystemService.shared.createFile(named: name, in: parentURL)
+            let node = FileNode(name: name, type: .file, path: url.path, url: url)
+            parent.children?.append(node)
+            sortChildren(of: parent)
+            openFile(node)
+        } catch {
+            lastError = error.localizedDescription
+        }
+    }
+
+    func createDirectory(named name: String, in parent: FileNode) {
+        guard let parentURL = parent.fileURL else { return }
+        do {
+            let url = try FileSystemService.shared.createDirectory(named: name, in: parentURL)
+            let node = FileNode(name: name, type: .directory, path: url.path, url: url, children: [])
+            parent.children?.append(node)
+            sortChildren(of: parent)
+        } catch {
+            lastError = error.localizedDescription
+        }
+    }
+
+    func deleteNode(_ node: FileNode, from parent: FileNode) {
+        guard let url = node.fileURL else { return }
+        do {
+            try FileSystemService.shared.delete(at: url)
+            parent.children?.removeAll { $0.id == node.id }
+            closeFile(node)
+        } catch {
+            lastError = error.localizedDescription
+        }
+    }
+
+    func renameNode(_ node: FileNode, to newName: String) {
+        guard let url = node.fileURL else { return }
+        do {
+            let newURL = try FileSystemService.shared.rename(at: url, to: newName)
+            node.fileURL = newURL
+        } catch {
+            lastError = error.localizedDescription
+        }
+    }
+
+    func duplicateNode(_ node: FileNode, in parent: FileNode) {
+        guard let url = node.fileURL, let parentURL = parent.fileURL else { return }
+        let ext = url.pathExtension
+        let base = url.deletingPathExtension().lastPathComponent
+        let copyName = ext.isEmpty ? "\(base)_copy" : "\(base)_copy.\(ext)"
+        let destURL = parentURL.appendingPathComponent(copyName)
+        do {
+            try FileSystemService.shared.copy(from: url, to: destURL)
+            let copy = FileNode(name: copyName, type: node.type, path: destURL.path, url: destURL)
+            parent.children?.append(copy)
+            sortChildren(of: parent)
+        } catch {
+            lastError = error.localizedDescription
+        }
+    }
+
+    func sortChildren(of node: FileNode) {
+        guard var children = node.children else { return }
+        switch sortOrder {
+        case .nameAscending:
+            children.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        case .nameDescending:
+            children.sort { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedDescending }
+        case .dateModified:
+            children.sort { ($0.metadata?.modifiedDate ?? .distantPast) > ($1.metadata?.modifiedDate ?? .distantPast) }
+        case .size:
+            children.sort { ($0.metadata?.size ?? 0) > ($1.metadata?.size ?? 0) }
+        case .type:
+            children.sort { $0.fileExtension.localizedCaseInsensitiveCompare($1.fileExtension) == .orderedAscending }
+        }
+        node.children = children
+    }
+
+    // MARK: - Persistence
+
+    private let recentFilesKey = "recentFileBookmarks"
+    private let lastOpenFileKey = "lastOpenFileBookmark"
+
+    func persistRecentFiles() {
+        let bookmarks = recentFiles.compactMap { file -> Data? in
+            guard let url = file.fileURL else { return nil }
+            return try? url.bookmarkData(options: .minimalBookmark)
+        }
+        UserDefaults.standard.set(bookmarks, forKey: recentFilesKey)
+    }
+
+    func restoreRecentFiles() {
+        guard let bookmarks = UserDefaults.standard.array(forKey: recentFilesKey) as? [Data] else { return }
+        for bookmark in bookmarks {
+            var isStale = false
+            guard let url = try? URL(resolvingBookmarkData: bookmark, bookmarkDataIsStale: &isStale),
+                  !isStale else { continue }
+            let node = FileNode(name: url.lastPathComponent, type: .file, path: url.path, url: url)
+            if let content = try? FileSystemService.shared.readFile(at: url) {
+                node.content = content
+            }
+            recentFiles.append(node)
+        }
+    }
+
+    func persistLastOpenFile() {
+        guard let url = activeFile?.fileURL,
+              let bookmark = try? url.bookmarkData(options: .minimalBookmark) else { return }
+        UserDefaults.standard.set(bookmark, forKey: lastOpenFileKey)
+    }
+
+    func restoreLastOpenFile() {
+        guard let bookmark = UserDefaults.standard.data(forKey: lastOpenFileKey) else { return }
+        var isStale = false
+        guard let url = try? URL(resolvingBookmarkData: bookmark, bookmarkDataIsStale: &isStale),
+              !isStale else { return }
+        let node = FileNode(name: url.lastPathComponent, type: .file, path: url.path, url: url)
+        if let content = try? FileSystemService.shared.readFile(at: url) {
+            node.content = content
+            openFile(node)
+        }
     }
 
     func openFile(_ file: FileNode) {
