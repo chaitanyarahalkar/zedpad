@@ -98,6 +98,7 @@ struct PaletteCommandRow: View {
     }
 }
 
+@MainActor
 struct PaletteCommand: Identifiable {
     let id = UUID()
     let title: String

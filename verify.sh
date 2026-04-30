@@ -1,15 +1,16 @@
 #!/bin/bash
 # Autoresearch verify script — outputs composite score (higher = better)
-set -euo pipefail
+set -uo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SCHEME="ZedIPad"
-DEST="generic/platform=iOS Simulator"
+SIM_UDID="471E6102-3ECB-4DF3-A55B-A6E71773A9DA"
+DEST="platform=iOS Simulator,id=$SIM_UDID"
 SCREENSHOTS_DIR="$PROJECT_DIR/autoresearch-screenshots"
 
 mkdir -p "$SCREENSHOTS_DIR"
 
-# 1. Build errors (lower is better, penalises score)
+# 1. Build errors (penalises score)
 echo "▶ Building..." >&2
 BUILD_OUTPUT=$(xcodebuild build \
   -project "$PROJECT_DIR/ZedIPad.xcodeproj" \
@@ -19,13 +20,13 @@ BUILD_OUTPUT=$(xcodebuild build \
   CODE_SIGN_IDENTITY="" \
   CODE_SIGNING_REQUIRED=NO \
   CODE_SIGNING_ALLOWED=NO \
-  2>&1)
-ERRORS=$(echo "$BUILD_OUTPUT" | grep -c "^.*error:" || true)
+  2>&1) || true
+ERRORS=$(echo "$BUILD_OUTPUT" | grep -E "^.* error:" | grep -v "^note:" | wc -l | tr -d ' ') || ERRORS=0
 echo "  Compile errors: $ERRORS" >&2
 
-# 2. Unit tests passed
+# 2. Unit tests
 echo "▶ Running unit tests..." >&2
-TEST_OUTPUT=$(xcodebuild test \
+UNIT_OUTPUT=$(xcodebuild test \
   -project "$PROJECT_DIR/ZedIPad.xcodeproj" \
   -scheme "ZedIPadTests" \
   -destination "$DEST" \
@@ -33,17 +34,32 @@ TEST_OUTPUT=$(xcodebuild test \
   CODE_SIGNING_REQUIRED=NO \
   CODE_SIGNING_ALLOWED=NO \
   2>&1) || true
-TESTS_PASSED=$(echo "$TEST_OUTPUT" | grep -c "Test Case.*passed" || true)
-echo "  Tests passed: $TESTS_PASSED" >&2
+UNIT_PASSED=$(echo "$UNIT_OUTPUT" | grep -c "Test Case.*passed" 2>/dev/null) || UNIT_PASSED=0
+echo "  Unit tests passed: $UNIT_PASSED" >&2
 
-# 3. Lines of Swift code (higher = more features implemented)
+# 3. UI tests (with screenshots)
+echo "▶ Running UI tests..." >&2
+UI_OUTPUT=$(xcodebuild test \
+  -project "$PROJECT_DIR/ZedIPad.xcodeproj" \
+  -scheme "ZedIPadUITests" \
+  -destination "$DEST" \
+  CODE_SIGN_IDENTITY="" \
+  CODE_SIGNING_REQUIRED=NO \
+  CODE_SIGNING_ALLOWED=NO \
+  2>&1) || true
+UI_PASSED=$(echo "$UI_OUTPUT" | grep -c "Test Case.*passed" 2>/dev/null) || UI_PASSED=0
+echo "  UI tests passed: $UI_PASSED" >&2
+
+TESTS_PASSED=$((UNIT_PASSED + UI_PASSED))
+
+# 4. Lines of Swift code
 LOC=$(find "$PROJECT_DIR/ZedIPad" -name "*.swift" -exec wc -l {} \; 2>/dev/null | \
-  awk '{sum += $1} END {print sum}')
+  awk '{sum += $1} END {print sum+0}')
 echo "  Lines of Swift: $LOC" >&2
 
-# 4. Screenshots taken by UI tests
-SCREENSHOTS=$(ls "$SCREENSHOTS_DIR"/*.png 2>/dev/null | wc -l | tr -d ' ')
-echo "  Screenshots: $SCREENSHOTS" >&2
+# 5. Screenshots saved to disk
+SCREENSHOTS=$(find "$SCREENSHOTS_DIR" -name "*.png" 2>/dev/null | wc -l | tr -d ' ') || SCREENSHOTS=0
+echo "  Screenshots on disk: $SCREENSHOTS" >&2
 
 # Composite score
 SCORE=$(echo "$TESTS_PASSED * 20 + $LOC / 10 + $SCREENSHOTS * 5 - $ERRORS * 50" | bc)

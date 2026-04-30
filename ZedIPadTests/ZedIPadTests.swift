@@ -1,6 +1,7 @@
 import XCTest
 @testable import ZedIPad
 
+@MainActor
 final class SyntaxHighlighterTests: XCTestCase {
     let darkTheme = ZedTheme.dark
     let lightTheme = ZedTheme.light
@@ -58,7 +59,7 @@ final class SyntaxHighlighterTests: XCTestCase {
         XCTAssertEqual(noExt.fileExtension, "")
     }
 
-    func testPaletteCommandsNotEmpty() {
+    @MainActor func testPaletteCommandsNotEmpty() {
         XCTAssertFalse(PaletteCommand.allCommands.isEmpty)
     }
 

@@ -16,6 +16,37 @@ settings:
     CODE_SIGNING_REQUIRED: "NO"
     CODE_SIGNING_ALLOWED: "NO"
 
+schemes:
+  ZedIPad:
+    build:
+      targets:
+        ZedIPad: all
+        ZedIPadTests: [test]
+        ZedIPadUITests: [test]
+    test:
+      targets:
+        - ZedIPadTests
+        - ZedIPadUITests
+      gatherCoverageData: false
+
+  ZedIPadTests:
+    build:
+      targets:
+        ZedIPad: all
+        ZedIPadTests: [test]
+    test:
+      targets:
+        - ZedIPadTests
+
+  ZedIPadUITests:
+    build:
+      targets:
+        ZedIPad: all
+        ZedIPadUITests: [test]
+    test:
+      targets:
+        - ZedIPadUITests
+
 targets:
   ZedIPad:
     type: application
