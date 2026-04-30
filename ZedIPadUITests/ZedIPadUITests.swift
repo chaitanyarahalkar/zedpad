@@ -128,4 +128,78 @@ final class ZedIPadUITests: XCTestCase {
         }
         XCTAssertTrue(app.exists)
     }
+
+    func testReplaceBar() throws {
+        // Open a file
+        let sources = app.staticTexts["Sources"]
+        if sources.waitForExistence(timeout: 3) {
+            sources.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        if app.staticTexts["main.swift"].waitForExistence(timeout: 2) {
+            app.staticTexts["main.swift"].tap()
+            Thread.sleep(forTimeInterval: 0.5)
+        }
+        let findButton = app.buttons["Find in File"]
+        if findButton.waitForExistence(timeout: 3) {
+            findButton.tap()
+            Thread.sleep(forTimeInterval: 0.3)
+            // Tap the toggle replace chevron
+            let toggleReplace = app.buttons["Toggle replace"]
+            if toggleReplace.waitForExistence(timeout: 2) {
+                toggleReplace.tap()
+                Thread.sleep(forTimeInterval: 0.3)
+                saveScreenshot(named: "10_replace_bar")
+            } else {
+                saveScreenshot(named: "10_replace_bar_notfound")
+            }
+        }
+        XCTAssertTrue(app.exists)
+    }
+
+    func testStatusBar() throws {
+        // Open a file to see status bar
+        let sources = app.staticTexts["Sources"]
+        if sources.waitForExistence(timeout: 3) {
+            sources.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        if app.staticTexts["main.swift"].waitForExistence(timeout: 2) {
+            app.staticTexts["main.swift"].tap()
+            Thread.sleep(forTimeInterval: 0.8)
+            saveScreenshot(named: "11_status_bar")
+        }
+        XCTAssertTrue(app.exists)
+    }
+
+    func testBreadcrumb() throws {
+        let sources = app.staticTexts["Sources"]
+        if sources.waitForExistence(timeout: 3) {
+            sources.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        if app.staticTexts["main.swift"].waitForExistence(timeout: 2) {
+            app.staticTexts["main.swift"].tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            saveScreenshot(named: "12_breadcrumb")
+        }
+        XCTAssertTrue(app.exists)
+    }
+
+    func testOpenPythonFile() throws {
+        let scripts = app.staticTexts["scripts"]
+        if scripts.waitForExistence(timeout: 3) {
+            scripts.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        let buildPy = app.staticTexts["build.py"]
+        if buildPy.waitForExistence(timeout: 2) {
+            buildPy.tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            saveScreenshot(named: "13_python_file")
+        } else {
+            saveScreenshot(named: "13_python_not_found")
+        }
+        XCTAssertTrue(app.exists)
+    }
 }
