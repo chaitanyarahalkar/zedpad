@@ -30,5 +30,11 @@ struct RootView: View {
         .sheet(isPresented: $appState.showingCommandPalette) {
             CommandPaletteView()
         }
+        .overlay(alignment: .topLeading) {
+            VStack {
+                CommandPaletteShortcutButton()
+                ThemeShortcutButton()
+            }
+        }
     }
 }

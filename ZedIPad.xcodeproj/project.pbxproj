@@ -24,6 +24,7 @@
 		BB7408102C38A671495FA79B /* StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D3D01EDFE66F20C52A79E8 /* StatusBar.swift */; };
 		C6B0A2BA6343BB85C8139450 /* FindBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F6757DE64A4DC288AA4E73 /* FindBar.swift */; };
 		D010B57E16CA4878E94073D7 /* ZedIPadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ABE1097F78F5F2D88C6ED6 /* ZedIPadTests.swift */; };
+		EB654C113F9AD4CB74926B68 /* KeyboardShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45D90C78DD5FA0CDCA67BB8 /* KeyboardShortcuts.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		ACC057E28CEB65864F8BA49E /* ZedIPad.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ZedIPad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B67E46B495E25E6217FF25A3 /* ZedTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedTheme.swift; sourceTree = "<group>"; };
 		C0827ADAAC9563AB5683E50D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		C45D90C78DD5FA0CDCA67BB8 /* KeyboardShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcuts.swift; sourceTree = "<group>"; };
 		D11D1922AC9292E5A1E6A868 /* CommandPaletteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandPaletteView.swift; sourceTree = "<group>"; };
 		E200225B65C9C833B48D47A2 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		F2A780289895491B0F15B073 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 			children = (
 				D11D1922AC9292E5A1E6A868 /* CommandPaletteView.swift */,
 				C0827ADAAC9563AB5683E50D /* Info.plist */,
+				C45D90C78DD5FA0CDCA67BB8 /* KeyboardShortcuts.swift */,
 				F2A780289895491B0F15B073 /* RootView.swift */,
 				E200225B65C9C833B48D47A2 /* WelcomeView.swift */,
 				75493B44C98BA18098F448D8 /* ZedIPadApp.swift */,
@@ -314,6 +317,7 @@
 				443EF3BFC4DD389A4C80E132 /* FileNode.swift in Sources */,
 				18F3AA8F0CBE1662F4BBC29D /* FileTreeView.swift in Sources */,
 				C6B0A2BA6343BB85C8139450 /* FindBar.swift in Sources */,
+				EB654C113F9AD4CB74926B68 /* KeyboardShortcuts.swift in Sources */,
 				349198853B4115EE9C2F8385 /* RootView.swift in Sources */,
 				BB7408102C38A671495FA79B /* StatusBar.swift in Sources */,
 				8253663503A53BE96A1C7233 /* SyntaxHighlighter.swift in Sources */,

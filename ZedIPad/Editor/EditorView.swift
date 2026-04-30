@@ -24,6 +24,9 @@ struct EditorView: View {
             StatusBar(file: file, text: file.content)
         }
         .background(appState.theme.editorBackground)
+        .overlay(alignment: .topLeading) {
+            FindShortcutButton(showFind: $showingFind)
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
@@ -35,6 +38,7 @@ struct EditorView: View {
                         .foregroundColor(showingFind ? appState.theme.accentColor : appState.theme.primaryText)
                 }
                 .accessibilityLabel("Find in File")
+                .keyboardShortcut("f", modifiers: .command)
             }
         }
         .navigationTitle(file.name)
