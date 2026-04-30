@@ -109,9 +109,33 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
     class Coordinator: NSObject, UITextViewDelegate {
         var parent: SyntaxHighlightingTextView
         private var highlightWorkItem: DispatchWorkItem?
+        private weak var currentLineLayer: CALayer?
 
         init(_ parent: SyntaxHighlightingTextView) {
             self.parent = parent
+        }
+
+        func updateCurrentLineHighlight(in textView: UITextView) {
+            currentLineLayer?.removeFromSuperlayer()
+            guard let selectedRange = textView.selectedTextRange else { return }
+            let cursorRect = textView.caretRect(for: selectedRange.start)
+            guard cursorRect.origin.y.isFinite else { return }
+
+            let layer = CALayer()
+            layer.backgroundColor = UIColor(parent.theme.selectionColor).withAlphaComponent(0.18).cgColor
+            layer.frame = CGRect(
+                x: 0,
+                y: cursorRect.origin.y - textView.textContainerInset.top + textView.textContainerInset.top,
+                width: textView.bounds.width,
+                height: cursorRect.height + 2
+            )
+            layer.zPosition = -1
+            textView.layer.insertSublayer(layer, at: 0)
+            currentLineLayer = layer
+        }
+
+        func textViewDidChangeSelection(_ textView: UITextView) {
+            updateCurrentLineHighlight(in: textView)
         }
 
         func baseAttributes() -> [NSAttributedString.Key: Any] {
