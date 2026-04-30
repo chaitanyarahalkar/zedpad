@@ -201,46 +201,72 @@ struct EditableCodeEditor: View {
     @State private var scrollFraction: CGFloat = 0
     @State private var showMinimap: Bool = true
     @State private var gutterScrollOffset: CGFloat = 0
+    @StateObject private var completionManager = CompletionManager()
+    @State private var cursorRect: CGRect = .zero
 
     var body: some View {
         GeometryReader { geo in
-            HStack(alignment: .top, spacing: 0) {
-                // Line numbers gutter (synced with editor scroll)
-                LineNumberGutter(text: file.content, theme: appState.theme, scrollOffset: gutterScrollOffset)
-                    .frame(width: 52)
+            ZStack(alignment: .topLeading) {
+                HStack(alignment: .top, spacing: 0) {
+                    // Line numbers gutter (synced with editor scroll)
+                    LineNumberGutter(text: file.content, theme: appState.theme, scrollOffset: gutterScrollOffset)
+                        .frame(width: 52)
 
-                Divider()
-                    .background(appState.theme.borderColor)
+                    Divider()
+                        .background(appState.theme.borderColor)
 
-                // Editable text area with live syntax highlighting
-                SyntaxHighlightingTextView(
-                    text: Binding(
-                        get: { file.content },
-                        set: { file.content = $0 }
-                    ),
-                    language: Language.detect(from: file.fileExtension),
-                    theme: appState.theme,
-                    fontSize: appState.fontSize,
-                    tabSize: appState.tabSize,
-                    wordWrap: appState.wordWrap,
-                    highlightRanges: appState.findHighlightRanges,
-                    scrollToRange: appState.findScrollToRange,
-                    onScrollOffsetChange: { offset in gutterScrollOffset = offset }
-                )
-                .frame(minWidth: max(geo.size.width - 52 - (showMinimap ? 80 : 0), 100),
-                       minHeight: geo.size.height)
-
-                // Minimap
-                if showMinimap {
-                    MinimapView(
-                        text: file.content,
+                    // Editable text area with live syntax highlighting
+                    SyntaxHighlightingTextView(
+                        text: Binding(
+                            get: { file.content },
+                            set: { file.content = $0 }
+                        ),
                         language: Language.detect(from: file.fileExtension),
-                        scrollFraction: $scrollFraction
+                        theme: appState.theme,
+                        fontSize: appState.fontSize,
+                        tabSize: appState.tabSize,
+                        wordWrap: appState.wordWrap,
+                        highlightRanges: appState.findHighlightRanges,
+                        scrollToRange: appState.findScrollToRange,
+                        onScrollOffsetChange: { offset in gutterScrollOffset = offset },
+                        completionManager: completionManager,
+                        onCursorRectChange: { rect in cursorRect = rect }
                     )
+                    .frame(minWidth: max(geo.size.width - 52 - (showMinimap ? 80 : 0), 100),
+                           minHeight: geo.size.height)
+
+                    // Minimap
+                    if showMinimap {
+                        MinimapView(
+                            text: file.content,
+                            language: Language.detect(from: file.fileExtension),
+                            scrollFraction: $scrollFraction
+                        )
+                    }
+                }
+
+                // Completion popup — positioned below cursor
+                if completionManager.isVisible {
+                    CompletionPopupView(
+                        manager: completionManager,
+                        onSelect: { item in
+                            // Accept will be handled via the textView reference in manager
+                            completionManager.dismiss()
+                        }
+                    )
+                    .environmentObject(appState)
+                    .offset(
+                        x: min(cursorRect.minX + 52, geo.size.width - 360),
+                        y: min(cursorRect.maxY, geo.size.height - 200)
+                    )
+                    .zIndex(100)
                 }
             }
         }
         .background(appState.theme.editorBackground)
+        .onTapGesture {
+            completionManager.dismiss()
+        }
     }
 }
 

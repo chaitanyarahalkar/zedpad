@@ -11,6 +11,8 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
     var highlightRanges: [NSRange] = []
     var scrollToRange: NSRange? = nil
     var onScrollOffsetChange: ((CGFloat) -> Void)? = nil
+    var completionManager: CompletionManager? = nil
+    var onCursorRectChange: ((CGRect) -> Void)? = nil
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -153,6 +155,22 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
         func textViewDidChange(_ textView: UITextView) {
             parent.text = textView.text
 
+            // Trigger completions (debounced)
+            if let manager = parent.completionManager {
+                let text = textView.text ?? ""
+                let offset = textView.selectedRange.location
+                let lang = parent.language
+                Task { @MainActor in
+                    manager.requestDebounced(source: text, cursorOffset: offset, language: lang)
+                }
+                // Update cursor rect for popup positioning
+                if let selRange = textView.selectedTextRange {
+                    let rect = textView.caretRect(for: selRange.start)
+                    let converted = textView.convert(rect, to: textView.superview)
+                    parent.onCursorRectChange?(converted)
+                }
+            }
+
             // Debounced highlight re-apply (300ms)
             highlightWorkItem?.cancel()
             let item = DispatchWorkItem { [weak self, weak textView] in
@@ -174,10 +192,14 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
         func textView(_ textView: UITextView,
                       shouldChangeTextIn range: NSRange,
                       replacementText text: String) -> Bool {
-            // Tab key → insert spaces
+            // Tab key → accept completion if visible, else insert spaces
             if text == "\t" {
-                let spaces = String(repeating: " ", count: parent.tabSize)
-                textView.insertText(spaces)
+                if let manager = parent.completionManager, manager.isVisible {
+                    manager.accept(item: manager.selected ?? manager.items[0], in: textView)
+                } else {
+                    let spaces = String(repeating: " ", count: parent.tabSize)
+                    textView.insertText(spaces)
+                }
                 return false
             }
 
