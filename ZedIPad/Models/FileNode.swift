@@ -272,6 +272,93 @@ class FileNode: Identifiable, ObservableObject {
                     }
                     """),
             ]),
+            FileNode(name: "web", type: .directory, path: "/my-project/web", children: [
+                FileNode(name: "index.html", type: .file, path: "/my-project/web/index.html",
+                    content: """
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>My Project</title>
+                        <link rel="stylesheet" href="styles.css">
+                    </head>
+                    <body>
+                        <!-- Main container -->
+                        <div id="app" class="container">
+                            <header class="header">
+                                <h1 class="title">Welcome</h1>
+                                <nav class="nav">
+                                    <a href="/" class="nav-link active">Home</a>
+                                    <a href="/about" class="nav-link">About</a>
+                                </nav>
+                            </header>
+                            <main class="main-content">
+                                <p id="description">Hello from <strong>my-project</strong>!</p>
+                            </main>
+                        </div>
+                        <script src="app.js"></script>
+                    </body>
+                    </html>
+                    """),
+                FileNode(name: "styles.css", type: .file, path: "/my-project/web/styles.css",
+                    content: """
+                    /* Global styles */
+                    *, *::before, *::after {
+                        box-sizing: border-box;
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    :root {
+                        --color-bg: #1e2124;
+                        --color-text: #cdd6f4;
+                        --color-accent: #89b4fa;
+                        --font-mono: 'JetBrains Mono', monospace;
+                    }
+
+                    body {
+                        background-color: var(--color-bg);
+                        color: var(--color-text);
+                        font-family: var(--font-mono);
+                        font-size: 14px;
+                        line-height: 1.6;
+                    }
+
+                    .container {
+                        max-width: 1200px;
+                        margin: 0 auto;
+                        padding: 20px;
+                    }
+
+                    .header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 16px 0;
+                        border-bottom: 1px solid #313244;
+                    }
+
+                    .title {
+                        font-size: 24px;
+                        font-weight: 600;
+                        color: var(--color-accent);
+                    }
+
+                    .nav-link {
+                        color: var(--color-text);
+                        text-decoration: none;
+                        margin-left: 16px;
+                        opacity: 0.7;
+                        transition: opacity 0.2s;
+                    }
+
+                    .nav-link:hover, .nav-link.active {
+                        opacity: 1;
+                        color: var(--color-accent);
+                    }
+                    """),
+            ]),
             FileNode(name: "config", type: .directory, path: "/my-project/config", children: [
                 FileNode(name: "settings.json", type: .file, path: "/my-project/config/settings.json",
                     content: """
