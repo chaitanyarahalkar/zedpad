@@ -1,0 +1,61 @@
+name: ZedIPad
+options:
+  bundleIdPrefix: com.zedipad
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "18.0"
+    TARGETED_DEVICE_FAMILY: "2"
+    SUPPORTS_MACCATALYST: "NO"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_IDENTITY: ""
+    CODE_SIGNING_REQUIRED: "NO"
+    CODE_SIGNING_ALLOWED: "NO"
+
+targets:
+  ZedIPad:
+    type: application
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: ZedIPad
+        excludes:
+          - "**/.DS_Store"
+    resources:
+      - path: ZedIPad/Assets.xcassets
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.zedipad.app
+        INFOPLIST_FILE: ZedIPad/App/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        SWIFT_STRICT_CONCURRENCY: minimal
+
+  ZedIPadTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: ZedIPadTests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.zedipad.tests
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/ZedIPad.app/ZedIPad
+    dependencies:
+      - target: ZedIPad
+
+  ZedIPadUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "18.0"
+    sources:
+      - path: ZedIPadUITests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.zedipad.uitests
+        TEST_TARGET_NAME: ZedIPad
+    dependencies:
+      - target: ZedIPad
