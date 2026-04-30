@@ -15,6 +15,7 @@
 		4A754D924AA04930C65C7104 /* ZedIPadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75493B44C98BA18098F448D8 /* ZedIPadApp.swift */; };
 		4C86AB1A000A6BC67BC66D24 /* ZedIPadUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5169392D04E943F9B2A54C /* ZedIPadUITests.swift */; };
 		638D023EFE19440A2EA2050A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 81C07753EFC99AC808CBBA62 /* Assets.xcassets */; };
+		638D65F1A4F4D4B6C8E18A26 /* EditorComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0267F220B1112F84B48F882 /* EditorComponentTests.swift */; };
 		7A3AA2A7873CCD8AF62337CD /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388D1D409E28B30889632BAA /* DocumentPicker.swift */; };
 		7B674F021E269F627A6D7B9B /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E200225B65C9C833B48D47A2 /* WelcomeView.swift */; };
 		81AB21F25F7EC6504580641F /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9B0FAC05DC1D35AA9DCA54 /* AppState.swift */; };
@@ -63,6 +64,7 @@
 		9C2730516C350802B76ECE40 /* FileNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNode.swift; sourceTree = "<group>"; };
 		A8F6757DE64A4DC288AA4E73 /* FindBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindBar.swift; sourceTree = "<group>"; };
 		ACC057E28CEB65864F8BA49E /* ZedIPad.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ZedIPad.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0267F220B1112F84B48F882 /* EditorComponentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorComponentTests.swift; sourceTree = "<group>"; };
 		B67E46B495E25E6217FF25A3 /* ZedTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedTheme.swift; sourceTree = "<group>"; };
 		C0827ADAAC9563AB5683E50D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C45D90C78DD5FA0CDCA67BB8 /* KeyboardShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcuts.swift; sourceTree = "<group>"; };
@@ -176,6 +178,7 @@
 			isa = PBXGroup;
 			children = (
 				861232D3A6E236B24FB58AF6 /* AppStateTests.swift */,
+				B0267F220B1112F84B48F882 /* EditorComponentTests.swift */,
 				45ABE1097F78F5F2D88C6ED6 /* ZedIPadTests.swift */,
 			);
 			path = ZedIPadTests;
@@ -297,6 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6FED1FF882A52BBB2A539DE /* AppStateTests.swift in Sources */,
+				638D65F1A4F4D4B6C8E18A26 /* EditorComponentTests.swift in Sources */,
 				D010B57E16CA4878E94073D7 /* ZedIPadTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
