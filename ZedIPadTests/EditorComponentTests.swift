@@ -23,7 +23,8 @@ final class EditorComponentTests: XCTestCase {
             ("rb", .ruby),
             ("", .unknown),
             ("cpp", .unknown),
-            ("go", .unknown),
+            ("go", .go),
+            ("kt", .kotlin),
         ]
         for (ext, expected) in cases {
             XCTAssertEqual(Language.detect(from: ext), expected, "Mismatch for extension: \(ext)")

@@ -25,6 +25,8 @@ class SyntaxHighlighter {
         case .ruby: return highlightRuby(text)
         case .html: return highlightHTML(text)
         case .css: return highlightCSS(text)
+        case .go: return highlightGo(text)
+        case .kotlin: return highlightKotlin(text)
         case .unknown: return []
         }
     }
@@ -273,6 +275,46 @@ class SyntaxHighlighter {
         return tokens
     }
 
+    private func highlightGo(_ text: String) -> [SyntaxToken] {
+        var tokens: [SyntaxToken] = []
+        let keywords = ["package", "import", "func", "var", "const", "type", "struct",
+                        "interface", "map", "chan", "go", "defer", "select", "case",
+                        "default", "if", "else", "for", "range", "return", "break",
+                        "continue", "fallthrough", "goto", "switch", "nil", "true", "false",
+                        "make", "new", "append", "len", "cap", "delete", "copy", "close",
+                        "panic", "recover", "error"]
+        let types = ["int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16",
+                     "uint32", "uint64", "float32", "float64", "complex64", "complex128",
+                     "bool", "byte", "rune", "string", "uintptr", "any"]
+        tokens += tokenizeKeywords(text, keywords: keywords, color: theme.syntaxKeyword)
+        tokens += tokenizeKeywords(text, keywords: types, color: theme.syntaxType)
+        tokens += tokenizeStrings(text)
+        tokens += tokenizeComments(text)
+        tokens += tokenizeNumbers(text)
+        return tokens
+    }
+
+    private func highlightKotlin(_ text: String) -> [SyntaxToken] {
+        var tokens: [SyntaxToken] = []
+        let keywords = ["fun", "val", "var", "class", "object", "interface", "enum",
+                        "data", "sealed", "abstract", "open", "override", "final",
+                        "private", "protected", "public", "internal", "companion",
+                        "if", "else", "when", "for", "while", "do", "return", "break",
+                        "continue", "throw", "try", "catch", "finally", "import", "package",
+                        "as", "in", "is", "null", "true", "false", "this", "super",
+                        "by", "init", "constructor", "get", "set", "lateinit", "lazy",
+                        "suspend", "coroutine", "flow", "launch", "async", "await"]
+        let types = ["String", "Int", "Long", "Double", "Float", "Boolean", "Char",
+                     "Byte", "Short", "Unit", "Any", "Nothing", "List", "Map", "Set",
+                     "Array", "Pair", "Triple", "Result"]
+        tokens += tokenizeKeywords(text, keywords: keywords, color: theme.syntaxKeyword)
+        tokens += tokenizeKeywords(text, keywords: types, color: theme.syntaxType)
+        tokens += tokenizeStrings(text)
+        tokens += tokenizeComments(text)
+        tokens += tokenizeNumbers(text)
+        return tokens
+    }
+
     // MARK: - Tokenizers
 
     private func tokenizeKeywords(_ text: String, keywords: [String], color: Color) -> [SyntaxToken] {
@@ -358,7 +400,7 @@ class SyntaxHighlighter {
 }
 
 enum Language: String {
-    case swift, javascript, typescript, python, rust, markdown, json, yaml, bash, ruby, html, css, unknown
+    case swift, javascript, typescript, python, rust, markdown, json, yaml, bash, ruby, html, css, go, kotlin, unknown
 
     static func detect(from extension: String) -> Language {
         switch `extension`.lowercased() {
@@ -374,6 +416,8 @@ enum Language: String {
         case "rb": return .ruby
         case "html", "htm": return .html
         case "css": return .css
+        case "go": return .go
+        case "kt", "kts": return .kotlin
         default: return .unknown
         }
     }
