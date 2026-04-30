@@ -124,6 +124,7 @@
 		D213D7BE2C37ED50CF2317A2 /* TerminalPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9E0569BE77BCD00719AB95 /* TerminalPanel.swift */; };
 		D36F43F2A0A665672B3B8E9A /* Iter100FinalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57A1B86738EE597BBDB5AFA /* Iter100FinalTests.swift */; };
 		D8A18DA01B717DB3B4F273BF /* CommandPaletteExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA36CBFACD609B9DC2E8BBE4 /* CommandPaletteExtendedTests.swift */; };
+		DC4B5E7D4B5A69CA3D30D851 /* SFTPTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A13EC6AE1B61AAE56B5AE23 /* SFTPTests.swift */; };
 		DD65E1060E0E57459B5C4350 /* SyntaxConsistencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEC84A54406B6FDFD48A55E /* SyntaxConsistencyTests.swift */; };
 		DF42ECA4126BFF748601046B /* HighlightTokenColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78A40E79895B9A3B1CB3696F /* HighlightTokenColorTests.swift */; };
 		DFE723690D92F359EDB8610B /* SSHTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6159C51BDA28BAFBEB7C6E /* SSHTests.swift */; };
@@ -218,6 +219,7 @@
 		65FE09E7EC0DC6E1AD00B581 /* GoldenPathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoldenPathTests.swift; sourceTree = "<group>"; };
 		6812812B2E6DD1F62E47A82F /* AppWorkflowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWorkflowTests.swift; sourceTree = "<group>"; };
 		6945059795DDAEC0E929D034 /* FileSystemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemTests.swift; sourceTree = "<group>"; };
+		6A13EC6AE1B61AAE56B5AE23 /* SFTPTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFTPTests.swift; sourceTree = "<group>"; };
 		6A6B990F0C327F24843582A6 /* ZedIPadUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ZedIPadUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2DDA72C3BD0A342DD279D5 /* ExternalChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalChangeView.swift; sourceTree = "<group>"; };
 		6DC2728F898E227391F701FC /* MiscModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiscModelTests.swift; sourceTree = "<group>"; };
@@ -350,6 +352,7 @@
 			isa = PBXGroup;
 			children = (
 				49CF7B07548B57F822B8C0EE /* GitServiceTests.swift */,
+				6A13EC6AE1B61AAE56B5AE23 /* SFTPTests.swift */,
 				B8AD885420CB5315780323A8 /* ShellInterpreterTests.swift */,
 				3E6159C51BDA28BAFBEB7C6E /* SSHTests.swift */,
 			);
@@ -769,6 +772,7 @@
 				BEBF7DB948C85C3DA42C953D /* PHPRTests.swift in Sources */,
 				688A1A7ED532015F5EA06D90 /* Phase2IntegrationTests.swift in Sources */,
 				E9194A83D50D128AF9F50629 /* RobustnessTests.swift in Sources */,
+				DC4B5E7D4B5A69CA3D30D851 /* SFTPTests.swift in Sources */,
 				4710290455E261DE0E6D83A0 /* SQLTests.swift in Sources */,
 				DFE723690D92F359EDB8610B /* SSHTests.swift in Sources */,
 				113C1224BD078F8E08D910CA /* SampleFileContentTests.swift in Sources */,
