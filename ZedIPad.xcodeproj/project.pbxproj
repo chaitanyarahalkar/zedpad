@@ -93,6 +93,7 @@
 		9963031ACAAB8F753AC910E5 /* AppStateScenarioTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B148FF076C7405B0CB38292 /* AppStateScenarioTests.swift */; };
 		9A7426C686688CABF5D5229D /* AppWorkflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6812812B2E6DD1F62E47A82F /* AppWorkflowTests.swift */; };
 		9F3848CB7956E040ABE7EB6A /* UnicodeHandlingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E22863EF62024D3433DEA1F /* UnicodeHandlingTests.swift */; };
+		A6005A2AC358977A11A0D803 /* ShellInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF2C7036C6C2D22205620CFA /* ShellInterpreter.swift */; };
 		A60B397B71C74CD6D9707071 /* AppStateScenario2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7BED4464A969A4AB046F84B /* AppStateScenario2Tests.swift */; };
 		A8134700C79EFCC1FA7954A8 /* FileTreeNavigationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6984B2F60995C2F9F63E325 /* FileTreeNavigationTests.swift */; };
 		A866823054B6B14DB981EE35 /* ZedTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67E46B495E25E6217FF25A3 /* ZedTheme.swift */; };
@@ -254,6 +255,7 @@
 		CCD8AF502C8F941CEB87FCA2 /* FileSystemFinalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemFinalTests.swift; sourceTree = "<group>"; };
 		CF229EBD5768201FFEDBF84B /* ComprehensiveModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComprehensiveModelTests.swift; sourceTree = "<group>"; };
 		CF27724BF6DA22447492E3EA /* MultiLanguageSyntaxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLanguageSyntaxTests.swift; sourceTree = "<group>"; };
+		CF2C7036C6C2D22205620CFA /* ShellInterpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellInterpreter.swift; sourceTree = "<group>"; };
 		D087B486A08FEC9744E39948 /* TerminalEmulatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalEmulatorView.swift; sourceTree = "<group>"; };
 		D11D1922AC9292E5A1E6A868 /* CommandPaletteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandPaletteView.swift; sourceTree = "<group>"; };
 		D755FDC7B0C92E414FA40AF2 /* ThemeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeTests.swift; sourceTree = "<group>"; };
@@ -381,6 +383,7 @@
 		CD86AFED7616A8E52BE768AE /* Terminal */ = {
 			isa = PBXGroup;
 			children = (
+				CF2C7036C6C2D22205620CFA /* ShellInterpreter.swift */,
 				D087B486A08FEC9744E39948 /* TerminalEmulatorView.swift */,
 			);
 			path = Terminal;
@@ -768,6 +771,7 @@
 				EB654C113F9AD4CB74926B68 /* KeyboardShortcuts.swift in Sources */,
 				06F679DF59FDD5A713B88B21 /* MinimapView.swift in Sources */,
 				349198853B4115EE9C2F8385 /* RootView.swift in Sources */,
+				A6005A2AC358977A11A0D803 /* ShellInterpreter.swift in Sources */,
 				79A3F653B18384C6A540C578 /* SplitEditorView.swift in Sources */,
 				BB7408102C38A671495FA79B /* StatusBar.swift in Sources */,
 				8253663503A53BE96A1C7233 /* SyntaxHighlighter.swift in Sources */,
