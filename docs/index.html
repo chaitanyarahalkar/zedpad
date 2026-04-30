@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZedIPad — Code Editor for iPad</title>
+  <meta name="description" content="A Zed-inspired code editor built natively for iPadOS. Syntax highlighting, terminal, SSH, Git — all on your iPad." />
+  <meta property="og:title" content="ZedIPad — Code Editor for iPad" />
+  <meta property="og:description" content="A Zed-inspired code editor built natively for iPadOS." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ─── Nav ────────────────────────────────────────────────────────────────── -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">&lt;/&gt;</div>
+    ZedIPad
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#screenshots">Screenshots</a></li>
+    <li><a href="#tech">Tech</a></li>
+    <li><a href="https://github.com/chaitanyarahalkar/zedpad" target="_blank" rel="noopener">GitHub</a></li>
+  </ul>
+  <a href="https://github.com/chaitanyarahalkar/zedpad/releases" class="nav-cta" target="_blank" rel="noopener">
+    Download ↗
+  </a>
+</nav>
+
+<!-- ─── Hero ────────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-glow hero-glow-1"></div>
+  <div class="hero-glow hero-glow-2"></div>
+
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-badge fade-up">Now available for iPadOS 18</div>
+      <h1 class="fade-up delay-1">Code beautifully.<br>On iPad.</h1>
+      <p class="hero-sub fade-up delay-2">
+        A Zed-inspired code editor built natively for iPadOS. Syntax highlighting,
+        terminal, SSH, Git — all running locally on your device.
+      </p>
+      <div class="hero-buttons fade-up delay-3">
+        <a href="https://github.com/chaitanyarahalkar/zedpad" class="btn btn-primary" target="_blank" rel="noopener">
+          ★ View on GitHub
+        </a>
+        <a href="https://github.com/chaitanyarahalkar/zedpad/releases" class="btn btn-secondary" target="_blank" rel="noopener">
+          Download →
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-visual fade-up delay-2">
+      <div class="code-window">
+        <div class="code-window-bar">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+          <div class="code-tab">Editor.swift</div>
+        </div>
+        <div class="code-body">
+          <div class="line-nums" id="line-nums">1</div>
+          <div class="code-content">
+            <div id="typewriter"></div>
+            <span class="cursor"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Stats ────────────────────────────────────────────────────────────────── -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat-item fade-up">
+      <span class="stat-num" data-target="21" data-suffix="">21</span>
+      <span class="stat-label">Languages</span>
+    </div>
+    <div class="stat-item fade-up delay-1">
+      <span class="stat-num" data-target="1100" data-suffix="+">1,100+</span>
+      <span class="stat-label">Unit Tests</span>
+    </div>
+    <div class="stat-item fade-up delay-2">
+      <span class="stat-num" data-target="350" data-suffix="+">350+</span>
+      <span class="stat-label">Iterations</span>
+    </div>
+    <div class="stat-item fade-up delay-3">
+      <span class="stat-num" data-target="4" data-suffix="">4</span>
+      <span class="stat-label">Themes</span>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Features ────────────────────────────────────────────────────────────── -->
+<section id="features">
+  <div class="section-inner">
+    <div class="section-label fade-up">Features</div>
+    <h2 class="section-title fade-up delay-1">Everything you need.<br>Nothing you don't.</h2>
+    <p class="section-sub fade-up delay-2">
+      Built from the ground up for iPad's large canvas — not a port, not a web app.
+      A native SwiftUI editor that respects your workflow.
+    </p>
+
+    <div class="features-grid">
+      <div class="feature-card fade-up">
+        <span class="feature-icon">🎨</span>
+        <div class="feature-title">Syntax Highlighting</div>
+        <p class="feature-desc">21 languages with beautiful color themes. Zed Dark, One Dark, Solarized, and Light — all using real AST-based token coloring.</p>
+      </div>
+      <div class="feature-card fade-up delay-1">
+        <span class="feature-icon">⚡</span>
+        <div class="feature-title">Local Completions</div>
+        <p class="feature-desc">Powered by swift-syntax and JavaScriptCore. Real Swift AST completions, React hooks, Node.js builtins — zero network required.</p>
+      </div>
+      <div class="feature-card fade-up delay-2">
+        <span class="feature-icon">📁</span>
+        <div class="feature-title">Real Filesystem</div>
+        <p class="feature-desc">Browse, create, rename and delete files directly from your iPad's filesystem and iCloud Drive. Full FileManager integration.</p>
+      </div>
+      <div class="feature-card fade-up delay-3">
+        <span class="feature-icon">🖥️</span>
+        <div class="feature-title">Built-in Terminal</div>
+        <p class="feature-desc">Full VT100 terminal with 24 shell commands. SSH into remote servers, browse files, run git — all without leaving the editor.</p>
+      </div>
+      <div class="feature-card fade-up delay-4">
+        <span class="feature-icon">🌿</span>
+        <div class="feature-title">Git Integration</div>
+        <p class="feature-desc">git status, commit, diff, log, branch — all from the terminal or dedicated commit panel. Gutter indicators show changed lines.</p>
+      </div>
+      <div class="feature-card fade-up delay-5">
+        <span class="feature-icon">🔍</span>
+        <div class="feature-title">Find &amp; Replace</div>
+        <p class="feature-desc">Regex-powered search across files. Replace with live match highlighting, keyboard shortcut support, and case sensitivity toggle.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Screenshots ──────────────────────────────────────────────────────────── -->
+<section id="screenshots" class="screenshots">
+  <div class="section-inner">
+    <div class="section-label fade-up">Screenshots</div>
+    <h2 class="section-title fade-up delay-1">See it in action.</h2>
+    <p class="section-sub fade-up delay-2">
+      Running on a real iPad Pro. Every pixel native SwiftUI.
+    </p>
+
+    <div class="screenshots-grid">
+      <div class="fade-up">
+        <div class="ipad-frame">
+          <img src="screenshots/editor_dark.png" alt="Syntax highlighted Swift code in ZedIPad dark theme" loading="lazy" />
+        </div>
+        <p class="screenshot-label">Syntax Highlighting</p>
+      </div>
+      <div class="fade-up delay-2">
+        <div class="ipad-frame">
+          <img src="screenshots/palette.png" alt="Command palette in ZedIPad" loading="lazy" />
+        </div>
+        <p class="screenshot-label">Command Palette</p>
+      </div>
+      <div class="fade-up delay-3">
+        <div class="ipad-frame">
+          <img src="screenshots/light_theme.png" alt="ZedIPad light theme welcome screen" loading="lazy" />
+        </div>
+        <p class="screenshot-label">Light Theme</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Tech stack ────────────────────────────────────────────────────────────── -->
+<section id="tech">
+  <div class="section-inner">
+    <div class="section-label fade-up">Stack</div>
+    <h2 class="section-title fade-up delay-1">Built on solid foundations.</h2>
+    <p class="section-sub fade-up delay-2">
+      Pure Swift, zero JavaScript frameworks, no Electron.
+      Just SwiftUI and Apple frameworks all the way down.
+    </p>
+
+    <div class="tech-grid fade-up delay-2">
+      <div class="tech-pill"><span class="dot-color" style="background:#f05138"></span>SwiftUI</div>
+      <div class="tech-pill"><span class="dot-color" style="background:#fa7343"></span>Swift 6</div>
+      <div class="tech-pill"><span class="dot-color" style="background:#89b4fa"></span>SwiftTerm</div>
+      <div class="tech-pill"><span class="dot-color" style="background:#cba6f7"></span>swift-syntax</div>
+      <div class="tech-pill"><span class="dot-color" style="background:#f9e2af"></span>JavaScriptCore</div>
+      <div class="tech-pill"><span class="dot-color" style="background:#a6e3a1"></span>SwiftGit2</div>
+      <div class="tech-pill"><span class="dot-color" style="background:#94e2d5"></span>FileManager</div>
+      <div class="tech-pill"><span class="dot-color" style="background:#fab387"></span>CryptoKit</div>
+      <div class="tech-pill"><span class="dot-color" style="background:#f38ba8"></span>XCTest</div>
+      <div class="tech-pill"><span class="dot-color" style="background:#6e738d"></span>SwiftNIO-SSH</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ──────────────────────────────────────────────────────────────────── -->
+<section class="cta-section">
+  <div class="cta-card fade-up">
+    <h2 class="cta-title">Ready to code on iPad?</h2>
+    <p class="cta-sub">Open source, free to build and run. Join the project on GitHub.</p>
+    <div class="cta-buttons">
+      <a href="https://github.com/chaitanyarahalkar/zedpad" class="btn btn-primary" target="_blank" rel="noopener">
+        ★ Star on GitHub
+      </a>
+      <a href="https://github.com/chaitanyarahalkar/zedpad/releases" class="btn btn-secondary" target="_blank" rel="noopener">
+        Download Release →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Footer ────────────────────────────────────────────────────────────────── -->
+<footer>
+  <a href="#" class="footer-logo">
+    <div class="nav-logo-icon" style="width:22px;height:22px;font-size:11px;">&lt;/&gt;</div>
+    ZedIPad
+  </a>
+  <ul class="footer-links">
+    <li><a href="https://github.com/chaitanyarahalkar/zedpad" target="_blank" rel="noopener">GitHub</a></li>
+    <li><a href="https://github.com/chaitanyarahalkar/zedpad/releases" target="_blank" rel="noopener">Releases</a></li>
+    <li><a href="https://github.com/chaitanyarahalkar/zedpad/issues" target="_blank" rel="noopener">Issues</a></li>
+  </ul>
+  <p class="footer-credit">
+    Built with <a href="https://claude.ai/code" target="_blank" rel="noopener">Claude Code</a> ·
+    Open source on <a href="https://github.com/chaitanyarahalkar/zedpad" target="_blank" rel="noopener">GitHub</a>
+  </p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
