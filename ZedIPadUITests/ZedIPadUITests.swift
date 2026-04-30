@@ -365,6 +365,36 @@ final class ZedIPadUITests: XCTestCase {
         XCTAssertTrue(app.exists)
     }
 
+    func testKotlinFile() throws {
+        let jvm = app.staticTexts["jvm"]
+        if jvm.waitForExistence(timeout: 3) {
+            jvm.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        let ktFile = app.staticTexts["Main.kt"]
+        if ktFile.waitForExistence(timeout: 2) {
+            ktFile.tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            saveScreenshot(named: "27_kotlin_file")
+        }
+        XCTAssertTrue(app.exists)
+    }
+
+    func testScalaFile() throws {
+        let jvm = app.staticTexts["jvm"]
+        if jvm.waitForExistence(timeout: 3) {
+            jvm.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        let scalaFile = app.staticTexts["Analysis.scala"]
+        if scalaFile.waitForExistence(timeout: 2) {
+            scalaFile.tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            saveScreenshot(named: "28_scala_file")
+        }
+        XCTAssertTrue(app.exists)
+    }
+
     func testSolarizedDarkTheme() throws {
         let paletteButton = app.buttons["Open command palette"]
         if paletteButton.waitForExistence(timeout: 3) {

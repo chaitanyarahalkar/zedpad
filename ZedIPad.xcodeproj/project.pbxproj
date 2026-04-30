@@ -52,6 +52,7 @@
 		CF5ACF8F07FC198AF4D3A2EB /* TokenRangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F005B006706D355CCAA1757 /* TokenRangeTests.swift */; };
 		D010B57E16CA4878E94073D7 /* ZedIPadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ABE1097F78F5F2D88C6ED6 /* ZedIPadTests.swift */; };
 		DD65E1060E0E57459B5C4350 /* SyntaxConsistencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEC84A54406B6FDFD48A55E /* SyntaxConsistencyTests.swift */; };
+		E4BED900F68681969466F422 /* LandscapeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFED5952CA220E850CABDD9A /* LandscapeUITests.swift */; };
 		EB1A5C889685D7CD836AA2B1 /* AllLanguagesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019E644947D1D05F5AE9B48C /* AllLanguagesTests.swift */; };
 		EB654C113F9AD4CB74926B68 /* KeyboardShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45D90C78DD5FA0CDCA67BB8 /* KeyboardShortcuts.swift */; };
 		EF6B78D792CD69008B876CFB /* ConcurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E129C993E55053B5B59FC46D /* ConcurrencyTests.swift */; };
@@ -119,6 +120,7 @@
 		B0A7DF5C1324DCF808590712 /* ScalaLuaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScalaLuaTests.swift; sourceTree = "<group>"; };
 		B67E46B495E25E6217FF25A3 /* ZedTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedTheme.swift; sourceTree = "<group>"; };
 		BA0130685F91B26A39682C02 /* FileSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchBar.swift; sourceTree = "<group>"; };
+		BFED5952CA220E850CABDD9A /* LandscapeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandscapeUITests.swift; sourceTree = "<group>"; };
 		C0827ADAAC9563AB5683E50D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C45D90C78DD5FA0CDCA67BB8 /* KeyboardShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcuts.swift; sourceTree = "<group>"; };
 		CADC3E1F3F7F2D971502F60A /* DocumentPickerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentPickerTests.swift; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 		93DD48D57D1980D5F1E56C15 /* ZedIPadUITests */ = {
 			isa = PBXGroup;
 			children = (
+				BFED5952CA220E850CABDD9A /* LandscapeUITests.swift */,
 				5E5169392D04E943F9B2A54C /* ZedIPadUITests.swift */,
 			);
 			path = ZedIPadUITests;
@@ -429,6 +432,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4BED900F68681969466F422 /* LandscapeUITests.swift in Sources */,
 				4C86AB1A000A6BC67BC66D24 /* ZedIPadUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -132,23 +132,19 @@ struct EditableCodeEditor: View {
                 Divider()
                     .background(appState.theme.borderColor)
 
-                // Editable text area
-                ZStack(alignment: .topLeading) {
-                    appState.theme.editorBackground
-
-                    TextEditor(text: Binding(
+                // Editable text area with live syntax highlighting
+                SyntaxHighlightingTextView(
+                    text: Binding(
                         get: { file.content },
                         set: { file.content = $0 }
-                    ))
-                    .font(.system(size: appState.fontSize, design: .monospaced))
-                    .foregroundColor(appState.theme.primaryText)
-                    .scrollContentBackground(.hidden)
-                    .background(Color.clear)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 10)
-                    .frame(minWidth: max(geo.size.width - 52 - (showMinimap ? 80 : 0), 100),
-                           minHeight: geo.size.height)
-                }
+                    ),
+                    language: Language.detect(from: file.fileExtension),
+                    theme: appState.theme,
+                    fontSize: appState.fontSize,
+                    tabSize: 4
+                )
+                .frame(minWidth: max(geo.size.width - 52 - (showMinimap ? 80 : 0), 100),
+                       minHeight: geo.size.height)
 
                 // Minimap
                 if showMinimap {
