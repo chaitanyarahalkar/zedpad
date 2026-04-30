@@ -54,6 +54,59 @@ class FileNode: Identifiable, ObservableObject {
 
     static func sampleRoot() -> FileNode {
         let root = FileNode(name: "my-project", type: .directory, path: "/my-project", children: [
+            FileNode(name: "jvm", type: .directory, path: "/my-project/jvm", children: [
+                FileNode(name: "Main.kt", type: .file, path: "/my-project/jvm/Main.kt",
+                    content: """
+                    package com.example
+
+                    import kotlinx.coroutines.*
+                    import kotlin.math.*
+
+                    data class Vector2(val x: Double, val y: Double) {
+                        operator fun plus(other: Vector2) = Vector2(x + other.x, y + other.y)
+                        operator fun times(scalar: Double) = Vector2(x * scalar, y * scalar)
+                        val magnitude get() = sqrt(x * x + y * y)
+                        fun normalized() = this * (1.0 / magnitude)
+                    }
+
+                    suspend fun computeAsync(value: Int): Int = withContext(Dispatchers.Default) {
+                        (1..value).sum()
+                    }
+
+                    fun main() = runBlocking {
+                        val v1 = Vector2(3.0, 4.0)
+                        println("Magnitude: ${v1.magnitude}")
+                        println("Sum: ${computeAsync(100)}")
+                    }
+                    """),
+                FileNode(name: "Analysis.scala", type: .file, path: "/my-project/jvm/Analysis.scala",
+                    content: """
+                    import scala.collection.parallel.CollectionConverters._
+                    import scala.math._
+
+                    object Analysis extends App {
+                      case class DataPoint(x: Double, y: Double, label: String)
+
+                      val data = List(
+                        DataPoint(1.0, 2.0, "a"),
+                        DataPoint(3.0, 4.0, "b"),
+                        DataPoint(5.0, 6.0, "c"),
+                      )
+
+                      def euclidean(a: DataPoint, b: DataPoint): Double =
+                        sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2))
+
+                      val centroid = DataPoint(
+                        data.map(_.x).sum / data.length,
+                        data.map(_.y).sum / data.length,
+                        "centroid"
+                      )
+
+                      val distances = data.par.map(p => p.label -> euclidean(p, centroid))
+                      distances.foreach { case (label, dist) => println(s"$label: $dist") }
+                    }
+                    """),
+            ]),
             FileNode(name: "Sources", type: .directory, path: "/my-project/Sources", children: [
                 FileNode(name: "main.swift", type: .file, path: "/my-project/Sources/main.swift",
                     content: """
