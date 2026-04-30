@@ -46,8 +46,7 @@ struct LandscapeLayout: View {
                 HStack {
                     ThemeToggleButton()
                     Spacer()
-                    TerminalToggleButton()
-                    CommandPaletteButton()
+                    DocumentPickerButton()
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
@@ -89,6 +88,9 @@ struct LandscapeLayout: View {
                 }
             }
             .frame(maxWidth: .infinity)
+            .overlay(alignment: .bottomTrailing) {
+                TerminalFAB()
+            }
         }
         .background(appState.theme.editorBackground.ignoresSafeArea())
     }
@@ -109,8 +111,7 @@ struct PortraitLayout: View {
                         ThemeToggleButton()
                     }
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
-                        TerminalToggleButton()
-                        CommandPaletteButton()
+                        DocumentPickerButton()
                     }
                 }
         } detail: {
@@ -125,11 +126,13 @@ struct PortraitLayout: View {
                         .transition(.move(edge: .bottom))
                 }
             }
+            .overlay(alignment: .bottomTrailing) {
+                TerminalFAB()
+            }
         }
         .navigationSplitViewStyle(.balanced)
         .overlay(alignment: .topLeading) {
             VStack {
-                CommandPaletteShortcutButton()
                 ThemeShortcutButton()
             }
         }

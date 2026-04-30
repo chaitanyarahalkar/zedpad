@@ -38,6 +38,19 @@ class AppState: ObservableObject {
         loadDocumentsDirectory()
         restoreRecentFiles()
         restoreLastOpenFile()
+        subscribeToMenuCommands()
+    }
+
+    private func subscribeToMenuCommands() {
+        NotificationCenter.default.addObserver(forName: .showCommandPalette, object: nil, queue: .main) { [weak self] _ in
+            self?.showingCommandPalette = true
+        }
+        NotificationCenter.default.addObserver(forName: .toggleTerminal, object: nil, queue: .main) { [weak self] _ in
+            withAnimation { self?.showTerminal.toggle() }
+        }
+        NotificationCenter.default.addObserver(forName: .toggleTheme, object: nil, queue: .main) { [weak self] _ in
+            withAnimation { self?.toggleTheme() }
+        }
     }
 
     func loadDocumentsDirectory() {

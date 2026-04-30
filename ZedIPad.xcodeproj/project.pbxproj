@@ -104,6 +104,7 @@
 		8E34E7220826EECF5C7E35A0 /* DocumentPickerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADC3E1F3F7F2D971502F60A /* DocumentPickerTests.swift */; };
 		8E94C0DDDA1E45799E221833 /* ViewComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B75DA85C396A2A72E2407E /* ViewComponentTests.swift */; };
 		8F8D5CE623B3136CC816AC79 /* SwiftSyntax in Frameworks */ = {isa = PBXBuildFile; productRef = B0F95EE558812A66FC147871 /* SwiftSyntax */; };
+		8FD147117700D44B172A5756 /* TerminalFAB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5882CA9F8898402450877052 /* TerminalFAB.swift */; };
 		90A91BC3DAC9B232BECFE388 /* GoKotlinTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE76762D650856FE7B729F35 /* GoKotlinTests.swift */; };
 		944A0F66657428D493B4066D /* SearchBarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45550456792FF7DBC3289778 /* SearchBarTests.swift */; };
 		950B01987FB7434D13A62BF8 /* StatusBarExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37012C988381A0F061BBCB9A /* StatusBarExtendedTests.swift */; };
@@ -229,6 +230,7 @@
 		546C4301602323AA070F07FC /* MinimapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimapView.swift; sourceTree = "<group>"; };
 		5507FC1A898E2220B59B67E2 /* SyntaxHighlightFinalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxHighlightFinalTests.swift; sourceTree = "<group>"; };
 		572D8E795FBDB8DD4ED0EA38 /* AppStateThemeTransitionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateThemeTransitionTests.swift; sourceTree = "<group>"; };
+		5882CA9F8898402450877052 /* TerminalFAB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalFAB.swift; sourceTree = "<group>"; };
 		5BEC84A54406B6FDFD48A55E /* SyntaxConsistencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxConsistencyTests.swift; sourceTree = "<group>"; };
 		5D099DB79357FB5B3ECC6345 /* FinalIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalIntegrationTests.swift; sourceTree = "<group>"; };
 		5DF78DB5A2524EF39D2835FF /* OnboardingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingState.swift; sourceTree = "<group>"; };
@@ -441,6 +443,7 @@
 				C0827ADAAC9563AB5683E50D /* Info.plist */,
 				C45D90C78DD5FA0CDCA67BB8 /* KeyboardShortcuts.swift */,
 				F2A780289895491B0F15B073 /* RootView.swift */,
+				5882CA9F8898402450877052 /* TerminalFAB.swift */,
 				E200225B65C9C833B48D47A2 /* WelcomeView.swift */,
 				75493B44C98BA18098F448D8 /* ZedIPadApp.swift */,
 			);
@@ -942,6 +945,7 @@
 				8253663503A53BE96A1C7233 /* SyntaxHighlighter.swift in Sources */,
 				B9BE48018BE20427A2348A14 /* SyntaxHighlightingTextView.swift in Sources */,
 				04A013F176B26344C6C96CF8 /* TerminalEmulatorView.swift in Sources */,
+				8FD147117700D44B172A5756 /* TerminalFAB.swift in Sources */,
 				D213D7BE2C37ED50CF2317A2 /* TerminalPanel.swift in Sources */,
 				7B674F021E269F627A6D7B9B /* WelcomeView.swift in Sources */,
 				4A754D924AA04930C65C7104 /* ZedIPadApp.swift in Sources */,
