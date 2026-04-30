@@ -20,7 +20,10 @@ class SyntaxHighlighter {
         case .rust: return highlightRust(text)
         case .markdown: return highlightMarkdown(text)
         case .json: return highlightJSON(text)
-        default: return []
+        case .yaml: return highlightYAML(text)
+        case .bash: return highlightBash(text)
+        case .ruby: return highlightRuby(text)
+        case .unknown: return []
         }
     }
 
@@ -125,6 +128,74 @@ class SyntaxHighlighter {
         tokens += tokenizeNumbers(text)
         let keywords = ["true", "false", "null"]
         tokens += tokenizeKeywords(text, keywords: keywords, color: theme.syntaxKeyword)
+        return tokens
+    }
+
+    private func highlightYAML(_ text: String) -> [SyntaxToken] {
+        var tokens: [SyntaxToken] = []
+        // YAML keys: word before colon
+        let keyPattern = "^[ \\t]*([a-zA-Z_][a-zA-Z0-9_\\-]*)[ \\t]*:"
+        if let regex = try? NSRegularExpression(pattern: keyPattern, options: .anchorsMatchLines) {
+            let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            for match in matches {
+                if let range = Range(match.range(at: 1), in: text) {
+                    tokens.append(SyntaxToken(range: range, color: theme.syntaxFunction))
+                }
+            }
+        }
+        tokens += tokenizeStrings(text)
+        tokens += tokenizeHashComments(text)
+        tokens += tokenizeNumbers(text)
+        let boolKeywords = ["true", "false", "null", "yes", "no", "on", "off"]
+        tokens += tokenizeKeywords(text, keywords: boolKeywords, color: theme.syntaxKeyword)
+        return tokens
+    }
+
+    private func highlightBash(_ text: String) -> [SyntaxToken] {
+        var tokens: [SyntaxToken] = []
+        let keywords = ["if", "then", "else", "elif", "fi", "for", "do", "done", "while",
+                        "case", "esac", "in", "function", "return", "exit", "local",
+                        "export", "source", "echo", "printf", "read", "set", "unset",
+                        "true", "false", "break", "continue", "shift", "trap"]
+        tokens += tokenizeKeywords(text, keywords: keywords, color: theme.syntaxKeyword)
+        tokens += tokenizeStrings(text)
+        tokens += tokenizeHashComments(text)
+        tokens += tokenizeNumbers(text)
+        // Variables: $VAR or ${VAR}
+        let varPattern = "\\$\\{?[a-zA-Z_][a-zA-Z0-9_]*\\}?"
+        if let regex = try? NSRegularExpression(pattern: varPattern) {
+            let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            for match in matches {
+                if let range = Range(match.range, in: text) {
+                    tokens.append(SyntaxToken(range: range, color: theme.syntaxType))
+                }
+            }
+        }
+        return tokens
+    }
+
+    private func highlightRuby(_ text: String) -> [SyntaxToken] {
+        var tokens: [SyntaxToken] = []
+        let keywords = ["def", "class", "module", "end", "do", "if", "elsif", "else",
+                        "unless", "while", "until", "for", "in", "return", "yield",
+                        "begin", "rescue", "ensure", "raise", "require", "require_relative",
+                        "include", "extend", "attr_accessor", "attr_reader", "attr_writer",
+                        "true", "false", "nil", "self", "super", "puts", "print", "p",
+                        "lambda", "proc", "and", "or", "not", "then", "when", "case"]
+        tokens += tokenizeKeywords(text, keywords: keywords, color: theme.syntaxKeyword)
+        tokens += tokenizeStrings(text)
+        tokens += tokenizeHashComments(text)
+        tokens += tokenizeNumbers(text)
+        // Symbols: :foo
+        let symbolPattern = ":[a-zA-Z_][a-zA-Z0-9_]*"
+        if let regex = try? NSRegularExpression(pattern: symbolPattern) {
+            let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            for match in matches {
+                if let range = Range(match.range, in: text) {
+                    tokens.append(SyntaxToken(range: range, color: theme.syntaxType))
+                }
+            }
+        }
         return tokens
     }
 
