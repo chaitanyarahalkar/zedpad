@@ -76,6 +76,7 @@
 		7384C6F2FB43A09B3B376881 /* GlobalSearchExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04FCED41E66906D2ECB770BC /* GlobalSearchExtendedTests.swift */; };
 		764711F8DF2B1EC34B762145 /* GoldenPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65FE09E7EC0DC6E1AD00B581 /* GoldenPathTests.swift */; };
 		787B966E709FE5A84F5482D7 /* ShellInterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8AD885420CB5315780323A8 /* ShellInterpreterTests.swift */; };
+		79303D592240439924A10E0C /* TerminalIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04026A81D700EB95835EC176 /* TerminalIntegrationTests.swift */; };
 		796ED597DC6206004CCC880E /* TokenCountTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53B6F89B895CFDA4ABA38478 /* TokenCountTests.swift */; };
 		79A3F653B18384C6A540C578 /* SplitEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5635805377C6A34E00D91B /* SplitEditorView.swift */; };
 		7A3AA2A7873CCD8AF62337CD /* DocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 388D1D409E28B30889632BAA /* DocumentPicker.swift */; };
@@ -167,6 +168,7 @@
 
 /* Begin PBXFileReference section */
 		019E644947D1D05F5AE9B48C /* AllLanguagesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllLanguagesTests.swift; sourceTree = "<group>"; };
+		04026A81D700EB95835EC176 /* TerminalIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalIntegrationTests.swift; sourceTree = "<group>"; };
 		04FCED41E66906D2ECB770BC /* GlobalSearchExtendedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalSearchExtendedTests.swift; sourceTree = "<group>"; };
 		05D95FE101C0DE121EC83E12 /* SyntaxHighlightBatchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxHighlightBatchTests.swift; sourceTree = "<group>"; };
 		0D272789375E0BE571235204 /* FileMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileMetadata.swift; sourceTree = "<group>"; };
@@ -357,6 +359,7 @@
 				6A13EC6AE1B61AAE56B5AE23 /* SFTPTests.swift */,
 				B8AD885420CB5315780323A8 /* ShellInterpreterTests.swift */,
 				3E6159C51BDA28BAFBEB7C6E /* SSHTests.swift */,
+				04026A81D700EB95835EC176 /* TerminalIntegrationTests.swift */,
 			);
 			path = TerminalTests;
 			sourceTree = "<group>";
@@ -796,6 +799,7 @@
 				E7DBA32D977D629924B092B6 /* SyntaxHighlightRealWorldTests.swift in Sources */,
 				BCA33A2B70F6B18C3D186D76 /* SyntaxHighlighterExtendedTests.swift in Sources */,
 				123CC9FB11D35B04B3BED1A3 /* SyntaxHighlighterStressTests.swift in Sources */,
+				79303D592240439924A10E0C /* TerminalIntegrationTests.swift in Sources */,
 				FAD38603C78D952772F65160 /* ThemeColorAccessibilityTests.swift in Sources */,
 				7DACB7B0A44FB83CD22CD9B9 /* ThemeTests.swift in Sources */,
 				0BD71F3A5034D4590FF88099 /* TokenColorMappingTests.swift in Sources */,
