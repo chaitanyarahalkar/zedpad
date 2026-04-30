@@ -2,17 +2,36 @@ import SwiftUI
 
 struct FileTreeView: View {
     @EnvironmentObject private var appState: AppState
+    @State private var filterQuery: String = ""
+
+    private var displayedRoot: FileNode? {
+        guard !filterQuery.isEmpty else { return appState.rootDirectory }
+        return appState.rootDirectory?.filtered(by: filterQuery)
+    }
 
     var body: some View {
         ZStack {
             appState.theme.sidebarBackground.ignoresSafeArea()
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 0) {
-                    if let root = appState.rootDirectory {
-                        FileTreeNodeView(node: root, depth: 0)
+            VStack(spacing: 0) {
+                FileSearchBar(query: $filterQuery)
+                Divider().background(appState.theme.borderColor)
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 0) {
+                        if let root = displayedRoot {
+                            FileTreeNodeView(node: root, depth: 0)
+                        } else if !filterQuery.isEmpty {
+                            HStack {
+                                Spacer()
+                                Text("No files match \"\(filterQuery)\"")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(appState.theme.secondaryText)
+                                    .padding()
+                                Spacer()
+                            }
+                        }
                     }
+                    .padding(.top, 4)
                 }
-                .padding(.top, 8)
             }
         }
     }

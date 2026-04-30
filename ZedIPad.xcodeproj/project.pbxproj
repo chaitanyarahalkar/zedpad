@@ -16,6 +16,7 @@
 		298760A6D91E241CFE6A00B5 /* HTMLCSSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A2C2204AA7D50E09C43D18 /* HTMLCSSTests.swift */; };
 		349198853B4115EE9C2F8385 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A780289895491B0F15B073 /* RootView.swift */; };
 		3E4833058ADE233559478114 /* AppStateExtendedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8216CAE4066CDE5CE0E782BC /* AppStateExtendedTests.swift */; };
+		3E73B33F8BA24CF186C99A5B /* FileSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0130685F91B26A39682C02 /* FileSearchBar.swift */; };
 		443EF3BFC4DD389A4C80E132 /* FileNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C2730516C350802B76ECE40 /* FileNode.swift */; };
 		4710290455E261DE0E6D83A0 /* SQLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9326D2D85F56F824FB542792 /* SQLTests.swift */; };
 		4A754D924AA04930C65C7104 /* ZedIPadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75493B44C98BA18098F448D8 /* ZedIPadApp.swift */; };
@@ -93,6 +94,7 @@
 		ACC057E28CEB65864F8BA49E /* ZedIPad.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ZedIPad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0267F220B1112F84B48F882 /* EditorComponentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorComponentTests.swift; sourceTree = "<group>"; };
 		B67E46B495E25E6217FF25A3 /* ZedTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedTheme.swift; sourceTree = "<group>"; };
+		BA0130685F91B26A39682C02 /* FileSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchBar.swift; sourceTree = "<group>"; };
 		C0827ADAAC9563AB5683E50D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C45D90C78DD5FA0CDCA67BB8 /* KeyboardShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcuts.swift; sourceTree = "<group>"; };
 		CCB718018C7C338627E0DC67 /* CCppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CCppTests.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				388D1D409E28B30889632BAA /* DocumentPicker.swift */,
+				BA0130685F91B26A39682C02 /* FileSearchBar.swift */,
 				31317BE6864153C6C9217FAD /* FileTreeView.swift */,
 			);
 			path = FileTree;
@@ -381,6 +384,7 @@
 				7A3AA2A7873CCD8AF62337CD /* DocumentPicker.swift in Sources */,
 				2482F8B4235A057E6E344027 /* EditorView.swift in Sources */,
 				443EF3BFC4DD389A4C80E132 /* FileNode.swift in Sources */,
+				3E73B33F8BA24CF186C99A5B /* FileSearchBar.swift in Sources */,
 				18F3AA8F0CBE1662F4BBC29D /* FileTreeView.swift in Sources */,
 				C6B0A2BA6343BB85C8139450 /* FindBar.swift in Sources */,
 				EB654C113F9AD4CB74926B68 /* KeyboardShortcuts.swift in Sources */,
