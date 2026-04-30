@@ -153,6 +153,8 @@ struct StatusBar: View {
         case .sql: return "SQL"
         case .scala: return "Scala"
         case .lua: return "Lua"
+        case .php: return "PHP"
+        case .r: return "R"
         case .unknown: return file.fileExtension.isEmpty ? "Plain Text" : file.fileExtension.uppercased()
         }
     }
