@@ -116,11 +116,11 @@ struct PaletteCommand: Identifiable {
             action: { state in state.toggleTheme() }
         ),
         PaletteCommand(
-            title: "Open File",
-            subtitle: "Browse and open a file",
+            title: "Open File…",
+            subtitle: "Browse Files app and open a file",
             icon: "doc.badge.plus",
             shortcut: "⌘O",
-            action: { _ in }
+            action: { state in state.showingDocumentPicker = true }
         ),
         PaletteCommand(
             title: "Close File",

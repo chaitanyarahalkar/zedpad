@@ -42,7 +42,6 @@ struct LandscapeLayout: View {
                     ThemeToggleButton()
                     Spacer()
                     TerminalToggleButton()
-                    DocumentPickerButton()
                     CommandPaletteButton()
                 }
                 .padding(.horizontal, 12)
@@ -106,7 +105,6 @@ struct PortraitLayout: View {
                     }
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
                         TerminalToggleButton()
-                        DocumentPickerButton()
                         CommandPaletteButton()
                     }
                 }
