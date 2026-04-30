@@ -29,6 +29,7 @@ class SyntaxHighlighter {
         case .kotlin: return highlightKotlin(text)
         case .c: return highlightC(text)
         case .cpp: return highlightCpp(text)
+        case .sql: return highlightSQL(text)
         case .unknown: return []
         }
     }
@@ -366,6 +367,42 @@ class SyntaxHighlighter {
         return tokens
     }
 
+    private func highlightSQL(_ text: String) -> [SyntaxToken] {
+        var tokens: [SyntaxToken] = []
+        let keywords = ["SELECT", "FROM", "WHERE", "JOIN", "LEFT", "RIGHT", "INNER", "OUTER",
+                        "ON", "AS", "INSERT", "INTO", "VALUES", "UPDATE", "SET", "DELETE",
+                        "CREATE", "TABLE", "DROP", "ALTER", "ADD", "COLUMN", "INDEX",
+                        "PRIMARY", "KEY", "FOREIGN", "REFERENCES", "UNIQUE", "NOT", "NULL",
+                        "DEFAULT", "AUTO_INCREMENT", "CONSTRAINT", "CHECK", "AND", "OR",
+                        "IN", "LIKE", "BETWEEN", "EXISTS", "CASE", "WHEN", "THEN", "ELSE",
+                        "END", "GROUP", "BY", "ORDER", "HAVING", "LIMIT", "OFFSET",
+                        "DISTINCT", "ALL", "UNION", "INTERSECT", "EXCEPT",
+                        "BEGIN", "COMMIT", "ROLLBACK", "TRANSACTION",
+                        "select", "from", "where", "join", "left", "right", "inner",
+                        "insert", "into", "values", "update", "set", "delete",
+                        "create", "table", "drop", "alter", "add"]
+        let types = ["INT", "INTEGER", "BIGINT", "SMALLINT", "TINYINT", "FLOAT", "DOUBLE",
+                     "DECIMAL", "NUMERIC", "VARCHAR", "CHAR", "TEXT", "BLOB", "DATE",
+                     "DATETIME", "TIMESTAMP", "BOOLEAN", "BOOL", "SERIAL",
+                     "int", "varchar", "text", "boolean", "date", "timestamp"]
+        tokens += tokenizeKeywords(text, keywords: keywords, color: theme.syntaxKeyword)
+        tokens += tokenizeKeywords(text, keywords: types, color: theme.syntaxType)
+        tokens += tokenizeStrings(text)
+        tokens += tokenizeNumbers(text)
+        // SQL comments: -- and /* */
+        let lineCommentPattern = "--[^\n]*"
+        if let regex = try? NSRegularExpression(pattern: lineCommentPattern) {
+            let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            for match in matches {
+                if let range = Range(match.range, in: text) {
+                    tokens.append(SyntaxToken(range: range, color: theme.syntaxComment))
+                }
+            }
+        }
+        tokens += tokenizeComments(text) // block comments
+        return tokens
+    }
+
     // MARK: - Tokenizers
 
     private func tokenizeKeywords(_ text: String, keywords: [String], color: Color) -> [SyntaxToken] {
@@ -451,7 +488,7 @@ class SyntaxHighlighter {
 }
 
 enum Language: String {
-    case swift, javascript, typescript, python, rust, markdown, json, yaml, bash, ruby, html, css, go, kotlin, c, cpp, unknown
+    case swift, javascript, typescript, python, rust, markdown, json, yaml, bash, ruby, html, css, go, kotlin, c, cpp, sql, unknown
 
     static func detect(from extension: String) -> Language {
         switch `extension`.lowercased() {
@@ -471,6 +508,7 @@ enum Language: String {
         case "kt", "kts": return .kotlin
         case "c", "h": return .c
         case "cpp", "cc", "cxx", "hpp", "hxx": return .cpp
+        case "sql": return .sql
         default: return .unknown
         }
     }

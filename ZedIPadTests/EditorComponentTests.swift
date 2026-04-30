@@ -22,7 +22,6 @@ final class EditorComponentTests: XCTestCase {
             ("bash", .bash),
             ("rb", .ruby),
             ("", .unknown),
-            ("cpp", .unknown),
             ("go", .go),
             ("kt", .kotlin),
             ("c", .c),

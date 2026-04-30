@@ -94,6 +94,7 @@ final class HTMLCSSTests: XCTestCase {
             ("sh", .bash),
             ("bash", .bash),
             ("rb", .ruby),
+            ("sql", .sql),
             ("txt", .unknown),
             ("", .unknown),
         ]
