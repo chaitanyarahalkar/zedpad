@@ -254,4 +254,55 @@ final class ZedIPadUITests: XCTestCase {
         }
         XCTAssertTrue(app.exists)
     }
+
+    func testHTMLFile() throws {
+        let web = app.staticTexts["web"]
+        if web.waitForExistence(timeout: 3) {
+            web.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        let htmlFile = app.staticTexts["index.html"]
+        if htmlFile.waitForExistence(timeout: 2) {
+            htmlFile.tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            saveScreenshot(named: "17_html_file")
+        } else {
+            saveScreenshot(named: "17_html_not_found")
+        }
+        XCTAssertTrue(app.exists)
+    }
+
+    func testCSSFile() throws {
+        let web = app.staticTexts["web"]
+        if web.waitForExistence(timeout: 3) {
+            web.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        let cssFile = app.staticTexts["styles.css"]
+        if cssFile.waitForExistence(timeout: 2) {
+            cssFile.tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            saveScreenshot(named: "18_css_file")
+        } else {
+            saveScreenshot(named: "18_css_not_found")
+        }
+        XCTAssertTrue(app.exists)
+    }
+
+    func testTypescriptFile() throws {
+        let scripts = app.staticTexts["scripts"]
+        if scripts.waitForExistence(timeout: 3) {
+            scripts.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        let tsFile = app.staticTexts["api.ts"]
+        if tsFile.waitForExistence(timeout: 2) {
+            tsFile.tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            saveScreenshot(named: "19_typescript_file")
+        } else {
+            saveScreenshot(named: "19_ts_not_found")
+        }
+        XCTAssertTrue(app.exists)
+    }
 }
