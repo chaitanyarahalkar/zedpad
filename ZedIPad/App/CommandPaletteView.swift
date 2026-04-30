@@ -180,6 +180,34 @@ struct PaletteCommand: Identifiable {
             shortcut: nil,
             action: { state in state.fontSize = 13 }
         ),
+        PaletteCommand(
+            title: "Toggle Word Wrap",
+            subtitle: "Enable or disable line wrapping",
+            icon: "text.alignleft",
+            shortcut: nil,
+            action: { state in state.wordWrap.toggle() }
+        ),
+        PaletteCommand(
+            title: "Tab Size: 2 Spaces",
+            subtitle: "Set indentation to 2 spaces",
+            icon: "increase.indent",
+            shortcut: nil,
+            action: { state in state.tabSize = 2 }
+        ),
+        PaletteCommand(
+            title: "Tab Size: 4 Spaces",
+            subtitle: "Set indentation to 4 spaces",
+            icon: "increase.indent",
+            shortcut: nil,
+            action: { state in state.tabSize = 4 }
+        ),
+        PaletteCommand(
+            title: "Tab Size: 8 Spaces",
+            subtitle: "Set indentation to 8 spaces",
+            icon: "increase.indent",
+            shortcut: nil,
+            action: { state in state.tabSize = 8 }
+        ),
     ]
 }
 
