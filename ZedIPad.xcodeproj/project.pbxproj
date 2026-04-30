@@ -19,6 +19,7 @@
 		81AB21F25F7EC6504580641F /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9B0FAC05DC1D35AA9DCA54 /* AppState.swift */; };
 		8253663503A53BE96A1C7233 /* SyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A020E50F16B36CC347369F /* SyntaxHighlighter.swift */; };
 		A866823054B6B14DB981EE35 /* ZedTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67E46B495E25E6217FF25A3 /* ZedTheme.swift */; };
+		BB7408102C38A671495FA79B /* StatusBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D3D01EDFE66F20C52A79E8 /* StatusBar.swift */; };
 		C6B0A2BA6343BB85C8139450 /* FindBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8F6757DE64A4DC288AA4E73 /* FindBar.swift */; };
 		D010B57E16CA4878E94073D7 /* ZedIPadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ABE1097F78F5F2D88C6ED6 /* ZedIPadTests.swift */; };
 /* End PBXBuildFile section */
@@ -46,6 +47,7 @@
 		35B3679791F38488595D3B45 /* ZedIPadTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ZedIPadTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		45ABE1097F78F5F2D88C6ED6 /* ZedIPadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedIPadTests.swift; sourceTree = "<group>"; };
 		5E5169392D04E943F9B2A54C /* ZedIPadUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedIPadUITests.swift; sourceTree = "<group>"; };
+		64D3D01EDFE66F20C52A79E8 /* StatusBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBar.swift; sourceTree = "<group>"; };
 		6A6B990F0C327F24843582A6 /* ZedIPadUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ZedIPadUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F9B0FAC05DC1D35AA9DCA54 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		75493B44C98BA18098F448D8 /* ZedIPadApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedIPadApp.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				8262E3CEF14213A3440DF912 /* EditorView.swift */,
+				64D3D01EDFE66F20C52A79E8 /* StatusBar.swift */,
 				16A020E50F16B36CC347369F /* SyntaxHighlighter.swift */,
 			);
 			path = Editor;
@@ -304,6 +307,7 @@
 				18F3AA8F0CBE1662F4BBC29D /* FileTreeView.swift in Sources */,
 				C6B0A2BA6343BB85C8139450 /* FindBar.swift in Sources */,
 				349198853B4115EE9C2F8385 /* RootView.swift in Sources */,
+				BB7408102C38A671495FA79B /* StatusBar.swift in Sources */,
 				8253663503A53BE96A1C7233 /* SyntaxHighlighter.swift in Sources */,
 				7B674F021E269F627A6D7B9B /* WelcomeView.swift in Sources */,
 				4A754D924AA04930C65C7104 /* ZedIPadApp.swift in Sources */,

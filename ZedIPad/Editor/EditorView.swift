@@ -20,6 +20,8 @@ struct EditorView: View {
             }
 
             EditableCodeEditor(file: file)
+
+            StatusBar(file: file, text: file.content)
         }
         .background(appState.theme.editorBackground)
         .toolbar {
