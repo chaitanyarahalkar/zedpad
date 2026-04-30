@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		06F679DF59FDD5A713B88B21 /* MinimapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546C4301602323AA070F07FC /* MinimapView.swift */; };
+		099614817DA0C2FDF2A12E0B /* ScrollAndGutterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54336AA13D5265DA24C3C104 /* ScrollAndGutterTests.swift */; };
 		09E0E3E31120C6B35CF70F06 /* MultiLanguageSyntaxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF27724BF6DA22447492E3EA /* MultiLanguageSyntaxTests.swift */; };
 		0BD71F3A5034D4590FF88099 /* TokenColorMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A21D2ED2D4CC8260672D16 /* TokenColorMappingTests.swift */; };
 		0D09E905858035AFEE3E3311 /* FinalIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D099DB79357FB5B3ECC6345 /* FinalIntegrationTests.swift */; };
@@ -164,6 +165,7 @@
 		4646935C5746A9BC23C330C6 /* AppStateRecentFilesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateRecentFilesTests.swift; sourceTree = "<group>"; };
 		4ADFDFB508B15BD32540F938 /* GoToLineAdvancedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToLineAdvancedTests.swift; sourceTree = "<group>"; };
 		53B6F89B895CFDA4ABA38478 /* TokenCountTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenCountTests.swift; sourceTree = "<group>"; };
+		54336AA13D5265DA24C3C104 /* ScrollAndGutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollAndGutterTests.swift; sourceTree = "<group>"; };
 		546C4301602323AA070F07FC /* MinimapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimapView.swift; sourceTree = "<group>"; };
 		5507FC1A898E2220B59B67E2 /* SyntaxHighlightFinalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxHighlightFinalTests.swift; sourceTree = "<group>"; };
 		572D8E795FBDB8DD4ED0EA38 /* AppStateThemeTransitionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateThemeTransitionTests.swift; sourceTree = "<group>"; };
@@ -422,6 +424,7 @@
 				60E5BD66882A90A08536D6D1 /* SampleFileContentTests.swift */,
 				E9115A3B5AA8F52AA9555F13 /* SampleFileHighlightTests.swift */,
 				B0A7DF5C1324DCF808590712 /* ScalaLuaTests.swift */,
+				54336AA13D5265DA24C3C104 /* ScrollAndGutterTests.swift */,
 				45550456792FF7DBC3289778 /* SearchBarTests.swift */,
 				BDAC7CCAA65FCFDF40B9821C /* SidebarTests.swift */,
 				722D5517578463252D0AE7B9 /* SplitEditorAdvancedTests.swift */,
@@ -627,6 +630,7 @@
 				113C1224BD078F8E08D910CA /* SampleFileContentTests.swift in Sources */,
 				7FCCACC08E8D6218C5EDAB60 /* SampleFileHighlightTests.swift in Sources */,
 				5976C6BFDFFC3574390E4519 /* ScalaLuaTests.swift in Sources */,
+				099614817DA0C2FDF2A12E0B /* ScrollAndGutterTests.swift in Sources */,
 				944A0F66657428D493B4066D /* SearchBarTests.swift in Sources */,
 				36CEC448EF255CF2B3A02BB9 /* SidebarTests.swift in Sources */,
 				6CD0F10B3AABF1757423B053 /* SplitEditorAdvancedTests.swift in Sources */,
