@@ -10,6 +10,7 @@ class AppState: ObservableObject {
     @Published var showingCommandPalette: Bool = false
     @Published var showingSSHConnect: Bool = false
     @Published var showingDocumentPicker: Bool = false
+    @Published var showingOnboarding: Bool = false
     @Published var showTerminal: Bool = false
     @Published var showingGitCommit: Bool = false
     @Published var rootDirectory: FileNode?
