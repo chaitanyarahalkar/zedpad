@@ -18,6 +18,7 @@
 		443EF3BFC4DD389A4C80E132 /* FileNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C2730516C350802B76ECE40 /* FileNode.swift */; };
 		4A754D924AA04930C65C7104 /* ZedIPadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75493B44C98BA18098F448D8 /* ZedIPadApp.swift */; };
 		4C86AB1A000A6BC67BC66D24 /* ZedIPadUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5169392D04E943F9B2A54C /* ZedIPadUITests.swift */; };
+		56C2571637B99E66AD9E84AB /* ColorExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A576771F239D7566794E9678 /* ColorExtensionTests.swift */; };
 		638D023EFE19440A2EA2050A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 81C07753EFC99AC808CBBA62 /* Assets.xcassets */; };
 		638D65F1A4F4D4B6C8E18A26 /* EditorComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0267F220B1112F84B48F882 /* EditorComponentTests.swift */; };
 		79A3F653B18384C6A540C578 /* SplitEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5635805377C6A34E00D91B /* SplitEditorView.swift */; };
@@ -82,6 +83,7 @@
 		9C2730516C350802B76ECE40 /* FileNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNode.swift; sourceTree = "<group>"; };
 		9F6AF398A92CF8B02A786DF5 /* FileTreeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTreeTests.swift; sourceTree = "<group>"; };
 		A352C8D2EB39553EF1035FCD /* FindReplaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindReplaceTests.swift; sourceTree = "<group>"; };
+		A576771F239D7566794E9678 /* ColorExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensionTests.swift; sourceTree = "<group>"; };
 		A8F6757DE64A4DC288AA4E73 /* FindBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindBar.swift; sourceTree = "<group>"; };
 		ABD9868182765CDCFBBF7ED4 /* SplitEditorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitEditorTests.swift; sourceTree = "<group>"; };
 		ACC057E28CEB65864F8BA49E /* ZedIPad.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ZedIPad.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -203,6 +205,7 @@
 			children = (
 				8216CAE4066CDE5CE0E782BC /* AppStateExtendedTests.swift */,
 				861232D3A6E236B24FB58AF6 /* AppStateTests.swift */,
+				A576771F239D7566794E9678 /* ColorExtensionTests.swift */,
 				B0267F220B1112F84B48F882 /* EditorComponentTests.swift */,
 				9F6AF398A92CF8B02A786DF5 /* FileTreeTests.swift */,
 				A352C8D2EB39553EF1035FCD /* FindReplaceTests.swift */,
@@ -334,6 +337,7 @@
 			files = (
 				3E4833058ADE233559478114 /* AppStateExtendedTests.swift in Sources */,
 				B6FED1FF882A52BBB2A539DE /* AppStateTests.swift in Sources */,
+				56C2571637B99E66AD9E84AB /* ColorExtensionTests.swift in Sources */,
 				638D65F1A4F4D4B6C8E18A26 /* EditorComponentTests.swift in Sources */,
 				AB7208E455509A7933941ECE /* FileTreeTests.swift in Sources */,
 				86D7DDEEFDA9AF1C0CC6070D /* FindReplaceTests.swift in Sources */,
