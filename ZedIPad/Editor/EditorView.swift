@@ -7,13 +7,11 @@ struct EditorView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Tab bar
             EditorTabBar(file: file)
 
             Divider()
                 .background(appState.theme.borderColor)
 
-            // Find bar
             if showingFind {
                 FindBar(isVisible: $showingFind)
                     .transition(.move(edge: .top).combined(with: .opacity))
@@ -21,8 +19,7 @@ struct EditorView: View {
                     .background(appState.theme.borderColor)
             }
 
-            // Editor body
-            CodeEditorBody(file: file)
+            EditableCodeEditor(file: file)
         }
         .background(appState.theme.editorBackground)
         .toolbar {
@@ -43,6 +40,8 @@ struct EditorView: View {
     }
 }
 
+// MARK: - Tab Bar
+
 struct EditorTabBar: View {
     @EnvironmentObject private var appState: AppState
     let file: FileNode
@@ -52,9 +51,7 @@ struct EditorTabBar: View {
             HStack(spacing: 0) {
                 ForEach(appState.openFiles) { openFile in
                     EditorTab(file: openFile, isActive: openFile.id == file.id)
-                        .onTapGesture {
-                            appState.openFile(openFile)
-                        }
+                        .onTapGesture { appState.openFile(openFile) }
                 }
             }
         }
@@ -99,26 +96,77 @@ struct EditorTab: View {
     }
 }
 
-struct CodeEditorBody: View {
+// MARK: - Editable Editor
+
+struct EditableCodeEditor: View {
     @EnvironmentObject private var appState: AppState
     @ObservedObject var file: FileNode
-    @State private var scrollPosition: CGPoint = .zero
+    @State private var lineCount: Int = 1
 
     var body: some View {
         GeometryReader { geo in
-            ScrollView([.horizontal, .vertical]) {
-                HighlightedCodeView(
-                    text: file.content,
-                    language: Language.detect(from: file.fileExtension),
-                    theme: appState.theme
-                )
-                .padding(.vertical, 12)
-                .frame(minWidth: geo.size.width, minHeight: geo.size.height, alignment: .topLeading)
+            HStack(alignment: .top, spacing: 0) {
+                // Line numbers gutter
+                LineNumberGutter(text: file.content, theme: appState.theme)
+                    .frame(width: 52)
+
+                Divider()
+                    .background(appState.theme.borderColor)
+
+                // Editable text area with syntax overlay
+                ZStack(alignment: .topLeading) {
+                    // Background
+                    appState.theme.editorBackground
+
+                    // Editable TextEditor (provides actual editing)
+                    TextEditor(text: Binding(
+                        get: { file.content },
+                        set: { file.content = $0 }
+                    ))
+                    .font(.system(size: 13, design: .monospaced))
+                    .foregroundColor(appState.theme.primaryText)
+                    .scrollContentBackground(.hidden)
+                    .background(Color.clear)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 10)
+                    .frame(minWidth: geo.size.width - 52, minHeight: geo.size.height)
+                }
             }
         }
         .background(appState.theme.editorBackground)
     }
 }
+
+// MARK: - Line Number Gutter
+
+struct LineNumberGutter: View {
+    let text: String
+    let theme: ZedTheme
+
+    private var lineCount: Int {
+        text.components(separatedBy: "\n").count
+    }
+
+    var body: some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack(alignment: .trailing, spacing: 0) {
+                ForEach(1...max(lineCount, 1), id: \.self) { line in
+                    Text("\(line)")
+                        .font(.system(size: 13, design: .monospaced))
+                        .foregroundColor(theme.lineNumberText)
+                        .padding(.vertical, 1)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 10)
+        }
+        .background(theme.sidebarBackground)
+        .disabled(true)
+    }
+}
+
+// MARK: - Highlighted Code View (read-only, used in search preview)
 
 struct HighlightedCodeView: View {
     let text: String
@@ -131,7 +179,6 @@ struct HighlightedCodeView: View {
         let tokens = highlighter.highlight(text, language: language)
 
         HStack(alignment: .top, spacing: 0) {
-            // Line numbers
             VStack(alignment: .trailing, spacing: 0) {
                 ForEach(Array(lines.enumerated()), id: \.offset) { index, _ in
                     Text("\(index + 1)")
@@ -144,7 +191,6 @@ struct HighlightedCodeView: View {
             .padding(.trailing, 16)
             .padding(.leading, 8)
 
-            // Code content
             VStack(alignment: .leading, spacing: 0) {
                 ForEach(Array(lines.enumerated()), id: \.offset) { index, line in
                     CodeLineView(line: line, lineIndex: index, text: text, tokens: tokens, theme: theme)
@@ -165,56 +211,40 @@ struct CodeLineView: View {
 
     var body: some View {
         if line.isEmpty {
-            Text(" ")
-                .font(.system(size: 13, design: .monospaced))
+            Text(" ").font(.system(size: 13, design: .monospaced))
         } else {
-            attributedLine
+            Text(buildAttributedString())
+                .font(.system(size: 13, design: .monospaced))
+                .textSelection(.enabled)
         }
-    }
-
-    private var attributedLine: some View {
-        Text(buildAttributedString())
-            .font(.system(size: 13, design: .monospaced))
-            .textSelection(.enabled)
     }
 
     private func buildAttributedString() -> AttributedString {
-        // Find start index of this line in the full text
         let lineComponents = text.components(separatedBy: "\n")
         var charOffset = 0
         for i in 0..<lineIndex {
-            charOffset += lineComponents[i].count + 1 // +1 for newline
+            charOffset += lineComponents[i].count + 1
         }
-
-        guard charOffset <= text.count else {
-            return AttributedString(line)
-        }
-
+        guard charOffset <= text.count else { return AttributedString(line) }
         let lineStart = text.index(text.startIndex, offsetBy: min(charOffset, text.count))
         let lineEnd = text.index(lineStart, offsetBy: min(line.count, text.count - charOffset))
         let lineRange = lineStart..<lineEnd
 
         var result = AttributedString(line)
-
-        // Apply default color
         result.foregroundColor = theme.primaryText
 
-        // Apply syntax token colors for tokens that overlap this line
         for token in tokens {
             guard token.range.overlaps(lineRange) else { continue }
             let clampedStart = max(token.range.lowerBound, lineRange.lowerBound)
             let clampedEnd = min(token.range.upperBound, lineRange.upperBound)
             guard clampedStart < clampedEnd else { continue }
-
             let offsetStart = text.distance(from: lineStart, to: clampedStart)
             let offsetEnd = text.distance(from: lineStart, to: clampedEnd)
             guard offsetStart >= 0 && offsetEnd <= line.count && offsetStart < offsetEnd else { continue }
-
             let attrStart = result.index(result.startIndex, offsetByCharacters: offsetStart)
             let attrEnd = result.index(result.startIndex, offsetByCharacters: offsetEnd)
             result[attrStart..<attrEnd].foregroundColor = token.color
         }
-
         return result
     }
 }

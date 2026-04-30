@@ -1,0 +1,2 @@
+iteration	score	delta	decision	description
+0	668	baseline	keep	Baseline: file tree, syntax highlighting, find, themes, 17 unit tests, 7 UI tests, 9 screenshots
