@@ -142,7 +142,9 @@ struct EditableCodeEditor: View {
                     theme: appState.theme,
                     fontSize: appState.fontSize,
                     tabSize: appState.tabSize,
-                    wordWrap: appState.wordWrap
+                    wordWrap: appState.wordWrap,
+                    highlightRanges: appState.findHighlightRanges,
+                    scrollToRange: appState.findScrollToRange
                 )
                 .frame(minWidth: max(geo.size.width - 52 - (showMinimap ? 80 : 0), 100),
                        minHeight: geo.size.height)

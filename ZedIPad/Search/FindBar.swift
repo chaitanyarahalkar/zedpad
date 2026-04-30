@@ -150,14 +150,20 @@ struct FindBar: View {
 
                 Divider().frame(height: 18)
 
-                Button { findState.previousMatch() } label: {
+                Button {
+                    findState.previousMatch()
+                    updateHighlights()
+                } label: {
                     Image(systemName: "chevron.up").font(.system(size: 12, weight: .medium))
                         .foregroundColor(appState.theme.primaryText)
                 }
                 .buttonStyle(.plain).disabled(findState.matchCount == 0)
                 .accessibilityLabel("Previous match")
 
-                Button { findState.nextMatch() } label: {
+                Button {
+                    findState.nextMatch()
+                    updateHighlights()
+                } label: {
                     Image(systemName: "chevron.down").font(.system(size: 12, weight: .medium))
                         .foregroundColor(appState.theme.primaryText)
                 }
@@ -235,6 +241,23 @@ struct FindBar: View {
         }
         .background(appState.theme.tabBarBackground)
         .onAppear { isSearchFocused = true }
+        .onChange(of: findState.query) { _ in updateHighlights() }
+        .onChange(of: findState.isCaseSensitive) { _ in updateHighlights() }
+        .onChange(of: findState.isRegex) { _ in updateHighlights() }
+        .onDisappear {
+            appState.findHighlightRanges = []
+            appState.findScrollToRange = nil
+        }
+    }
+
+    private func updateHighlights() {
+        let ranges = findState.search(in: file.content)
+        appState.findHighlightRanges = ranges.compactMap { NSRange($0, in: file.content) }
+        if !ranges.isEmpty, findState.currentMatch < ranges.count {
+            appState.findScrollToRange = NSRange(ranges[findState.currentMatch], in: file.content)
+        } else {
+            appState.findScrollToRange = nil
+        }
     }
 }
 

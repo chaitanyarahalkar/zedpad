@@ -8,6 +8,8 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
     let fontSize: CGFloat
     let tabSize: Int
     let wordWrap: Bool
+    var highlightRanges: [NSRange] = []
+    var scrollToRange: NSRange? = nil
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -49,6 +51,12 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
         // Always keep typing attributes in sync with theme/font changes
         tv.typingAttributes = context.coordinator.baseAttributes()
         applyWordWrap(to: tv)
+
+        // Scroll to match range if requested
+        if let range = scrollToRange, range.location != NSNotFound,
+           range.location + range.length <= tv.text.count {
+            tv.scrollRangeToVisible(range)
+        }
     }
 
     private func applyWordWrap(to tv: UITextView) {
@@ -82,6 +90,15 @@ struct SyntaxHighlightingTextView: UIViewRepresentable {
             attrs.addAttribute(.foregroundColor,
                 value: UIColor(token.color),
                 range: nsRange)
+        }
+
+        // Highlight find matches
+        for range in highlightRanges {
+            guard range.location != NSNotFound,
+                  range.location + range.length <= text.count else { continue }
+            attrs.addAttribute(.backgroundColor,
+                value: UIColor.yellow.withAlphaComponent(0.4),
+                range: range)
         }
 
         tv.attributedText = attrs
