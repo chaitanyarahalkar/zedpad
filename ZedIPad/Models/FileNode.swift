@@ -145,6 +145,62 @@ class FileNode: Identifiable, ObservableObject {
                             success = build()
                             sys.exit(0 if success else 1)
                     """),
+                FileNode(name: "api.ts", type: .file, path: "/my-project/scripts/api.ts",
+                    content: """
+                    // TypeScript API client
+
+                    interface User {
+                      id: number;
+                      name: string;
+                      email: string;
+                      createdAt: Date;
+                    }
+
+                    interface ApiResponse<T> {
+                      data: T;
+                      status: number;
+                      message: string;
+                    }
+
+                    type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+
+                    class ApiClient {
+                      private baseUrl: string;
+                      private headers: Record<string, string>;
+
+                      constructor(baseUrl: string, apiKey?: string) {
+                        this.baseUrl = baseUrl;
+                        this.headers = {
+                          'Content-Type': 'application/json',
+                          ...(apiKey ? { 'Authorization': `Bearer ${apiKey}` } : {}),
+                        };
+                      }
+
+                      async request<T>(method: HttpMethod, path: string, body?: unknown): Promise<ApiResponse<T>> {
+                        const url = `${this.baseUrl}${path}`;
+                        const response = await fetch(url, {
+                          method,
+                          headers: this.headers,
+                          body: body ? JSON.stringify(body) : undefined,
+                        });
+                        const data = await response.json() as T;
+                        return { data, status: response.status, message: response.statusText };
+                      }
+
+                      async getUser(id: number): Promise<User> {
+                        const res = await this.request<User>('GET', `/users/${id}`);
+                        return res.data;
+                      }
+
+                      async createUser(user: Omit<User, 'id' | 'createdAt'>): Promise<User> {
+                        const res = await this.request<User>('POST', '/users', user);
+                        return res.data;
+                      }
+                    }
+
+                    export { ApiClient };
+                    export type { User, ApiResponse };
+                    """),
                 FileNode(name: "server.js", type: .file, path: "/my-project/scripts/server.js",
                     content: """
                     #!/usr/bin/env node
