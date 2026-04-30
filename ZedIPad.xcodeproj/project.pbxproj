@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		06F679DF59FDD5A713B88B21 /* MinimapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546C4301602323AA070F07FC /* MinimapView.swift */; };
 		0D82851B81E88C0E8E54F23D /* CommandPaletteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11D1922AC9292E5A1E6A868 /* CommandPaletteView.swift */; };
+		114A3CB2F291DD750906FD2A /* CCppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB718018C7C338627E0DC67 /* CCppTests.swift */; };
 		18F3AA8F0CBE1662F4BBC29D /* FileTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31317BE6864153C6C9217FAD /* FileTreeView.swift */; };
 		2482F8B4235A057E6E344027 /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8262E3CEF14213A3440DF912 /* EditorView.swift */; };
 		261A7ADBD4FBBB49A6053FD0 /* SplitEditorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABD9868182765CDCFBBF7ED4 /* SplitEditorTests.swift */; };
@@ -91,6 +92,7 @@
 		B67E46B495E25E6217FF25A3 /* ZedTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedTheme.swift; sourceTree = "<group>"; };
 		C0827ADAAC9563AB5683E50D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C45D90C78DD5FA0CDCA67BB8 /* KeyboardShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcuts.swift; sourceTree = "<group>"; };
+		CCB718018C7C338627E0DC67 /* CCppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CCppTests.swift; sourceTree = "<group>"; };
 		D11D1922AC9292E5A1E6A868 /* CommandPaletteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandPaletteView.swift; sourceTree = "<group>"; };
 		DE76762D650856FE7B729F35 /* GoKotlinTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoKotlinTests.swift; sourceTree = "<group>"; };
 		E200225B65C9C833B48D47A2 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 			children = (
 				8216CAE4066CDE5CE0E782BC /* AppStateExtendedTests.swift */,
 				861232D3A6E236B24FB58AF6 /* AppStateTests.swift */,
+				CCB718018C7C338627E0DC67 /* CCppTests.swift */,
 				A576771F239D7566794E9678 /* ColorExtensionTests.swift */,
 				B0267F220B1112F84B48F882 /* EditorComponentTests.swift */,
 				9F6AF398A92CF8B02A786DF5 /* FileTreeTests.swift */,
@@ -337,6 +340,7 @@
 			files = (
 				3E4833058ADE233559478114 /* AppStateExtendedTests.swift in Sources */,
 				B6FED1FF882A52BBB2A539DE /* AppStateTests.swift in Sources */,
+				114A3CB2F291DD750906FD2A /* CCppTests.swift in Sources */,
 				56C2571637B99E66AD9E84AB /* ColorExtensionTests.swift in Sources */,
 				638D65F1A4F4D4B6C8E18A26 /* EditorComponentTests.swift in Sources */,
 				AB7208E455509A7933941ECE /* FileTreeTests.swift in Sources */,
