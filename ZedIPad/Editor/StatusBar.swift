@@ -11,6 +11,9 @@ struct StatusBar: View {
     private var language: Language { Language.detect(from: file.fileExtension) }
     private var lineCount: Int { text.components(separatedBy: "\n").count }
     private var charCount: Int { text.count }
+    private var wordCount: Int {
+        text.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }.count
+    }
 
     var body: some View {
         HStack(spacing: 0) {
@@ -45,6 +48,18 @@ struct StatusBar: View {
                     .font(.system(size: 10))
                     .foregroundColor(appState.theme.secondaryText)
                 Text("\(charCount) chars")
+                    .font(.system(size: 11, design: .monospaced))
+                    .foregroundColor(appState.theme.secondaryText)
+            }
+            .padding(.horizontal, 10)
+
+            Divider().frame(height: 14).background(appState.theme.borderColor)
+
+            HStack(spacing: 4) {
+                Image(systemName: "text.word.spacing")
+                    .font(.system(size: 10))
+                    .foregroundColor(appState.theme.secondaryText)
+                Text("\(wordCount) words")
                     .font(.system(size: 11, design: .monospaced))
                     .foregroundColor(appState.theme.secondaryText)
             }
