@@ -15,6 +15,7 @@ struct FileTreeView: View {
     var body: some View {
         ZStack {
             appState.theme.sidebarBackground.ignoresSafeArea()
+            let _ = UIScrollView.appearance().delaysContentTouches = false
             VStack(spacing: 0) {
                 // Toolbar row
                 HStack(spacing: 0) {
@@ -118,19 +119,17 @@ struct FileTreeRowView: View {
     private var isActive: Bool { appState.activeFile?.id == node.id }
 
     var body: some View {
-        // Button coexists correctly with .contextMenu on iPadOS — .onTapGesture does not
-        Button(action: { onTap?() }) {
-            HStack(spacing: 4) {
-                Rectangle().fill(Color.clear).frame(width: CGFloat(depth) * 16)
+        HStack(spacing: 4) {
+            Rectangle().fill(Color.clear).frame(width: CGFloat(depth) * 16)
 
-                if node.type == .directory {
-                    Image(systemName: node.isExpanded ? "chevron.down" : "chevron.right")
-                        .font(.system(size: 10, weight: .medium))
-                        .foregroundColor(appState.theme.secondaryText)
-                        .frame(width: 12)
-                } else {
-                    Spacer().frame(width: 12)
-                }
+            if node.type == .directory {
+                Image(systemName: node.isExpanded ? "chevron.down" : "chevron.right")
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundColor(appState.theme.secondaryText)
+                    .frame(width: 12)
+            } else {
+                Spacer().frame(width: 12)
+            }
 
                 Image(systemName: node.icon)
                     .font(.system(size: 13))
@@ -161,8 +160,6 @@ struct FileTreeRowView: View {
             .padding(.horizontal, 8)
             .background(isActive ? appState.theme.accentColor.opacity(0.15) : Color.clear)
             .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
         .highPriorityGesture(TapGesture().onEnded { onTap?() })
         .contextMenu {
             // New file / folder inside a directory
