@@ -13,7 +13,7 @@ struct EditorView: View {
                 .background(appState.theme.borderColor)
 
             if showingFind {
-                FindBar(isVisible: $showingFind)
+                FindBar(isVisible: $showingFind, file: file)
                     .transition(.move(edge: .top).combined(with: .opacity))
                 Divider()
                     .background(appState.theme.borderColor)

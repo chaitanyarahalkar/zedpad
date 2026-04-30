@@ -38,17 +38,77 @@ class FindState: ObservableObject {
         guard matchCount > 0 else { return }
         currentMatch = currentMatch == 0 ? matchCount - 1 : currentMatch - 1
     }
+
+    func replace(in text: inout String, at rangeIndex: Int) {
+        let ranges = searchRanges(in: text)
+        guard rangeIndex < ranges.count else { return }
+        let range = ranges[rangeIndex]
+        let replacement = isRegex
+            ? applyRegexReplacement(in: text, range: range)
+            : replaceQuery
+        text.replaceSubrange(range, with: replacement)
+    }
+
+    func replaceAll(in text: inout String) -> Int {
+        let ranges = searchRanges(in: text)
+        guard !ranges.isEmpty else { return 0 }
+        var count = 0
+        var options: NSRegularExpression.Options = []
+        if !isCaseSensitive { options.insert(.caseInsensitive) }
+        let pattern = isRegex ? query : NSRegularExpression.escapedPattern(for: query)
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: options) else { return 0 }
+        let replaced = regex.stringByReplacingMatches(
+            in: text,
+            range: NSRange(text.startIndex..., in: text),
+            withTemplate: replaceQuery
+        )
+        count = ranges.count
+        text = replaced
+        matchCount = 0
+        currentMatch = 0
+        return count
+    }
+
+    private func searchRanges(in text: String) -> [Range<String.Index>] {
+        guard !query.isEmpty else { return [] }
+        var options: NSRegularExpression.Options = []
+        if !isCaseSensitive { options.insert(.caseInsensitive) }
+        let pattern = isRegex ? query : NSRegularExpression.escapedPattern(for: query)
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: options) else { return [] }
+        return regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            .compactMap { Range($0.range, in: text) }
+    }
+
+    private func applyRegexReplacement(in text: String, range: Range<String.Index>) -> String {
+        replaceQuery
+    }
 }
 
 struct FindBar: View {
     @EnvironmentObject private var appState: AppState
     @Binding var isVisible: Bool
+    @ObservedObject var file: FileNode
     @StateObject private var findState = FindState()
     @FocusState private var isSearchFocused: Bool
 
     var body: some View {
         VStack(spacing: 0) {
+            // Find row
             HStack(spacing: 8) {
+                // Toggle replace
+                Button {
+                    withAnimation(.easeInOut(duration: 0.15)) {
+                        findState.showReplace.toggle()
+                    }
+                } label: {
+                    Image(systemName: findState.showReplace ? "chevron.down" : "chevron.right")
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundColor(appState.theme.secondaryText)
+                        .frame(width: 14)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Toggle replace")
+
                 // Search field
                 HStack(spacing: 6) {
                     Image(systemName: "magnifyingglass")
@@ -76,68 +136,102 @@ struct FindBar: View {
                     }
                 }
                 .padding(.horizontal, 8)
-                .padding(.vertical, 6)
+                .padding(.vertical, 5)
                 .background(appState.theme.background)
                 .cornerRadius(6)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 6)
-                        .stroke(appState.theme.borderColor, lineWidth: 1)
-                )
+                .overlay(RoundedRectangle(cornerRadius: 6).stroke(appState.theme.borderColor, lineWidth: 1))
 
-                // Case sensitive toggle
-                FindOptionButton(
-                    icon: "textformat",
-                    tooltip: "Match Case",
-                    isActive: findState.isCaseSensitive
-                ) {
+                FindOptionButton(icon: "textformat", tooltip: "Match Case", isActive: findState.isCaseSensitive) {
                     findState.isCaseSensitive.toggle()
                 }
-
-                // Regex toggle
-                FindOptionButton(
-                    icon: "chevron.left.forwardslash.chevron.right",
-                    tooltip: "Use Regex",
-                    isActive: findState.isRegex
-                ) {
+                FindOptionButton(icon: "chevron.left.forwardslash.chevron.right", tooltip: "Use Regex", isActive: findState.isRegex) {
                     findState.isRegex.toggle()
                 }
 
-                Divider()
-                    .frame(height: 20)
+                Divider().frame(height: 18)
 
-                // Navigation
                 Button { findState.previousMatch() } label: {
-                    Image(systemName: "chevron.up")
-                        .font(.system(size: 12, weight: .medium))
+                    Image(systemName: "chevron.up").font(.system(size: 12, weight: .medium))
                         .foregroundColor(appState.theme.primaryText)
                 }
-                .buttonStyle(.plain)
-                .disabled(findState.matchCount == 0)
+                .buttonStyle(.plain).disabled(findState.matchCount == 0)
                 .accessibilityLabel("Previous match")
 
                 Button { findState.nextMatch() } label: {
-                    Image(systemName: "chevron.down")
-                        .font(.system(size: 12, weight: .medium))
+                    Image(systemName: "chevron.down").font(.system(size: 12, weight: .medium))
                         .foregroundColor(appState.theme.primaryText)
                 }
-                .buttonStyle(.plain)
-                .disabled(findState.matchCount == 0)
+                .buttonStyle(.plain).disabled(findState.matchCount == 0)
                 .accessibilityLabel("Next match")
 
                 Spacer()
 
-                Button {
-                    withAnimation { isVisible = false }
-                } label: {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 12, weight: .medium))
+                Button { withAnimation { isVisible = false } } label: {
+                    Image(systemName: "xmark").font(.system(size: 12, weight: .medium))
                         .foregroundColor(appState.theme.secondaryText)
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Close find bar")
+                .buttonStyle(.plain).accessibilityLabel("Close find bar")
             }
             .padding(.horizontal, 12)
-            .padding(.vertical, 6)
+            .padding(.vertical, 5)
+
+            // Replace row (collapsible)
+            if findState.showReplace {
+                Divider().background(appState.theme.borderColor)
+                HStack(spacing: 8) {
+                    Spacer().frame(width: 14)
+                    HStack(spacing: 6) {
+                        Image(systemName: "arrow.left.arrow.right")
+                            .font(.system(size: 12))
+                            .foregroundColor(appState.theme.secondaryText)
+                        TextField("Replace", text: $findState.replaceQuery)
+                            .font(.system(size: 13, design: .monospaced))
+                            .foregroundColor(appState.theme.primaryText)
+                            .accessibilityLabel("Replace field")
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 5)
+                    .background(appState.theme.background)
+                    .cornerRadius(6)
+                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(appState.theme.borderColor, lineWidth: 1))
+
+                    Button {
+                        findState.replace(in: &file.content, at: findState.currentMatch)
+                        findState.nextMatch()
+                    } label: {
+                        Text("Replace")
+                            .font(.system(size: 11, design: .monospaced))
+                            .foregroundColor(appState.theme.primaryText)
+                            .padding(.horizontal, 8).padding(.vertical, 4)
+                            .background(appState.theme.sidebarBackground)
+                            .cornerRadius(4)
+                            .overlay(RoundedRectangle(cornerRadius: 4).stroke(appState.theme.borderColor, lineWidth: 1))
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(findState.matchCount == 0 || findState.query.isEmpty)
+                    .accessibilityLabel("Replace current match")
+
+                    Button {
+                        let n = findState.replaceAll(in: &file.content)
+                        _ = n
+                    } label: {
+                        Text("All")
+                            .font(.system(size: 11, design: .monospaced))
+                            .foregroundColor(appState.theme.primaryText)
+                            .padding(.horizontal, 8).padding(.vertical, 4)
+                            .background(appState.theme.sidebarBackground)
+                            .cornerRadius(4)
+                            .overlay(RoundedRectangle(cornerRadius: 4).stroke(appState.theme.borderColor, lineWidth: 1))
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(findState.matchCount == 0 || findState.query.isEmpty)
+                    .accessibilityLabel("Replace all matches")
+
+                    Spacer()
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 5)
+            }
         }
         .background(appState.theme.tabBarBackground)
         .onAppear { isSearchFocused = true }
