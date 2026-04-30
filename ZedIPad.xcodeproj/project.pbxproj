@@ -27,6 +27,7 @@
 		2598CCBC105F2254E8001772 /* FindReplaceEdgeCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32C64BBCA97299A84C2D71CE /* FindReplaceEdgeCaseTests.swift */; };
 		25EA40712762B15A7CFEFBE5 /* LanguageExtensionMapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD8BF9E80B460B740467B1D /* LanguageExtensionMapTests.swift */; };
 		261A7ADBD4FBBB49A6053FD0 /* SplitEditorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABD9868182765CDCFBBF7ED4 /* SplitEditorTests.swift */; };
+		26BE8D92A37B3700D56B7680 /* FileSystemIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333383A16EF5608B39600C90 /* FileSystemIntegrationTests.swift */; };
 		298760A6D91E241CFE6A00B5 /* HTMLCSSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61A2C2204AA7D50E09C43D18 /* HTMLCSSTests.swift */; };
 		2AE91793279BF84230DB1265 /* ZedIPadFinalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAA8038BE1BED914A763671 /* ZedIPadFinalTests.swift */; };
 		2CB28A8489489E1FC88D0D18 /* FileSaveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6191A4395E9F73FE1121F0 /* FileSaveTests.swift */; };
@@ -163,6 +164,7 @@
 		31317BE6864153C6C9217FAD /* FileTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTreeView.swift; sourceTree = "<group>"; };
 		317DFA54ADE64026760C6760 /* NewFeaturesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFeaturesTests.swift; sourceTree = "<group>"; };
 		32C64BBCA97299A84C2D71CE /* FindReplaceEdgeCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindReplaceEdgeCaseTests.swift; sourceTree = "<group>"; };
+		333383A16EF5608B39600C90 /* FileSystemIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemIntegrationTests.swift; sourceTree = "<group>"; };
 		3565655F3EFCE788A8F7E4F0 /* HighlightEdgeCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightEdgeCaseTests.swift; sourceTree = "<group>"; };
 		35B3679791F38488595D3B45 /* ZedIPadTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ZedIPadTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		37012C988381A0F061BBCB9A /* StatusBarExtendedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarExtendedTests.swift; sourceTree = "<group>"; };
@@ -423,6 +425,7 @@
 				0E6191A4395E9F73FE1121F0 /* FileSaveTests.swift */,
 				1D744373156559C5BE3661D4 /* FileSearchTests.swift */,
 				1F3B142C7B9AE451D8EA55F4 /* FileSystemExtendedTests.swift */,
+				333383A16EF5608B39600C90 /* FileSystemIntegrationTests.swift */,
 				6945059795DDAEC0E929D034 /* FileSystemTests.swift */,
 				9A6061B3D8B3DFD265B07D26 /* FileTreeExpansionTests.swift */,
 				E6984B2F60995C2F9F63E325 /* FileTreeNavigationTests.swift */,
@@ -632,6 +635,7 @@
 				2CB28A8489489E1FC88D0D18 /* FileSaveTests.swift in Sources */,
 				F85ACE61F9FDF27E55578104 /* FileSearchTests.swift in Sources */,
 				86F4F63D12DFD3DD6D15E845 /* FileSystemExtendedTests.swift in Sources */,
+				26BE8D92A37B3700D56B7680 /* FileSystemIntegrationTests.swift in Sources */,
 				BA0262E7646C65EC596D84DB /* FileSystemTests.swift in Sources */,
 				3E1EDEC2B760E3B069D81AAC /* FileTreeExpansionTests.swift in Sources */,
 				A8134700C79EFCC1FA7954A8 /* FileTreeNavigationTests.swift in Sources */,
