@@ -47,6 +47,7 @@
 		443EF3BFC4DD389A4C80E132 /* FileNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C2730516C350802B76ECE40 /* FileNode.swift */; };
 		46B41F9E242EA7C142C33F67 /* GlobalSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D433155C6F6907120296BC /* GlobalSearchView.swift */; };
 		4710290455E261DE0E6D83A0 /* SQLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9326D2D85F56F824FB542792 /* SQLTests.swift */; };
+		48D225FA6A66DA8E5F6E6BA2 /* SSHConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85AF0448D25B423164784963 /* SSHConnection.swift */; };
 		4A2D91B413640631D0FCFA3F /* ViewModelConsistencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE304B7F98ED8C718AFB513C /* ViewModelConsistencyTests.swift */; };
 		4A754D924AA04930C65C7104 /* ZedIPadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75493B44C98BA18098F448D8 /* ZedIPadApp.swift */; };
 		4BAB49032C84264914E1B04A /* ComprehensiveModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF229EBD5768201FFEDBF84B /* ComprehensiveModelTests.swift */; };
@@ -119,8 +120,10 @@
 		DD65E1060E0E57459B5C4350 /* SyntaxConsistencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BEC84A54406B6FDFD48A55E /* SyntaxConsistencyTests.swift */; };
 		DF42ECA4126BFF748601046B /* HighlightTokenColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78A40E79895B9A3B1CB3696F /* HighlightTokenColorTests.swift */; };
 		E4BED900F68681969466F422 /* LandscapeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFED5952CA220E850CABDD9A /* LandscapeUITests.swift */; };
+		E5A74D8CCC26AB6826E3041B /* SSHViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483C717E72EAEF6973A31D42 /* SSHViews.swift */; };
 		E7DBA32D977D629924B092B6 /* SyntaxHighlightRealWorldTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63D8AE544F9271FD2E86226 /* SyntaxHighlightRealWorldTests.swift */; };
 		E9194A83D50D128AF9F50629 /* RobustnessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE200CBA68C3AD9C23578911 /* RobustnessTests.swift */; };
+		E9D8A2FEC613556F391704DB /* SSHKeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29CD5BBB4F06D81800DC6AF /* SSHKeyManager.swift */; };
 		EB1A5C889685D7CD836AA2B1 /* AllLanguagesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019E644947D1D05F5AE9B48C /* AllLanguagesTests.swift */; };
 		EB654C113F9AD4CB74926B68 /* KeyboardShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45D90C78DD5FA0CDCA67BB8 /* KeyboardShortcuts.swift */; };
 		ECBB3411BFD93CB5EA0A2F8E /* FileWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D589AB03D968D3A92118F3 /* FileWatcher.swift */; };
@@ -184,6 +187,7 @@
 		45550456792FF7DBC3289778 /* SearchBarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarTests.swift; sourceTree = "<group>"; };
 		45ABE1097F78F5F2D88C6ED6 /* ZedIPadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedIPadTests.swift; sourceTree = "<group>"; };
 		4646935C5746A9BC23C330C6 /* AppStateRecentFilesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateRecentFilesTests.swift; sourceTree = "<group>"; };
+		483C717E72EAEF6973A31D42 /* SSHViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHViews.swift; sourceTree = "<group>"; };
 		4ADFDFB508B15BD32540F938 /* GoToLineAdvancedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToLineAdvancedTests.swift; sourceTree = "<group>"; };
 		53B6F89B895CFDA4ABA38478 /* TokenCountTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenCountTests.swift; sourceTree = "<group>"; };
 		54336AA13D5265DA24C3C104 /* ScrollAndGutterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollAndGutterTests.swift; sourceTree = "<group>"; };
@@ -220,6 +224,7 @@
 		8216CAE4066CDE5CE0E782BC /* AppStateExtendedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateExtendedTests.swift; sourceTree = "<group>"; };
 		8262E3CEF14213A3440DF912 /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
 		8554E631F8E98342BB819643 /* FinalValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalValidationTests.swift; sourceTree = "<group>"; };
+		85AF0448D25B423164784963 /* SSHConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHConnection.swift; sourceTree = "<group>"; };
 		861232D3A6E236B24FB58AF6 /* AppStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStateTests.swift; sourceTree = "<group>"; };
 		89220F9BC186D04F72C08168 /* SyntaxHighlightingTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxHighlightingTextView.swift; sourceTree = "<group>"; };
 		8ED6EB46D2B56C9D427FD9DD /* Phase2IntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase2IntegrationTests.swift; sourceTree = "<group>"; };
@@ -240,6 +245,7 @@
 		ACC057E28CEB65864F8BA49E /* ZedIPad.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ZedIPad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0267F220B1112F84B48F882 /* EditorComponentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorComponentTests.swift; sourceTree = "<group>"; };
 		B0A7DF5C1324DCF808590712 /* ScalaLuaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScalaLuaTests.swift; sourceTree = "<group>"; };
+		B29CD5BBB4F06D81800DC6AF /* SSHKeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHKeyManager.swift; sourceTree = "<group>"; };
 		B2AC5FD3E9785AC61B452D7B /* FindReplaceIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindReplaceIntegrationTests.swift; sourceTree = "<group>"; };
 		B67E46B495E25E6217FF25A3 /* ZedTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZedTheme.swift; sourceTree = "<group>"; };
 		BA0130685F91B26A39682C02 /* FileSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearchBar.swift; sourceTree = "<group>"; };
@@ -316,6 +322,7 @@
 				36F7FE7CDAF15D6758589BB0 /* FileTree */,
 				98AB5C7371A2E08236BC9CAE /* Models */,
 				A2E705E36DBC06B56C4E4A3E /* Search */,
+				D111564D1919E5DA99A60337 /* SSH */,
 				CD86AFED7616A8E52BE768AE /* Terminal */,
 				6D2CE72FDF189CE34AEE9CB6 /* Theme */,
 			);
@@ -390,6 +397,16 @@
 				2D9E0569BE77BCD00719AB95 /* TerminalPanel.swift */,
 			);
 			path = Terminal;
+			sourceTree = "<group>";
+		};
+		D111564D1919E5DA99A60337 /* SSH */ = {
+			isa = PBXGroup;
+			children = (
+				85AF0448D25B423164784963 /* SSHConnection.swift */,
+				B29CD5BBB4F06D81800DC6AF /* SSHKeyManager.swift */,
+				483C717E72EAEF6973A31D42 /* SSHViews.swift */,
+			);
+			path = SSH;
 			sourceTree = "<group>";
 		};
 		D272D8CB37885F8232C4E4A8 /* Products */ = {
@@ -774,6 +791,9 @@
 				EB654C113F9AD4CB74926B68 /* KeyboardShortcuts.swift in Sources */,
 				06F679DF59FDD5A713B88B21 /* MinimapView.swift in Sources */,
 				349198853B4115EE9C2F8385 /* RootView.swift in Sources */,
+				48D225FA6A66DA8E5F6E6BA2 /* SSHConnection.swift in Sources */,
+				E9D8A2FEC613556F391704DB /* SSHKeyManager.swift in Sources */,
+				E5A74D8CCC26AB6826E3041B /* SSHViews.swift in Sources */,
 				A6005A2AC358977A11A0D803 /* ShellInterpreter.swift in Sources */,
 				79A3F653B18384C6A540C578 /* SplitEditorView.swift in Sources */,
 				BB7408102C38A671495FA79B /* StatusBar.swift in Sources */,

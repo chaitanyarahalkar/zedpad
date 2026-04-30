@@ -17,6 +17,9 @@ struct RootView: View {
         .sheet(isPresented: $appState.showingCommandPalette) {
             CommandPaletteView()
         }
+        .sheet(isPresented: $appState.showingSSHConnect) {
+            ServerListView()
+        }
     }
 }
 
