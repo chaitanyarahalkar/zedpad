@@ -208,6 +208,27 @@ struct PaletteCommand: Identifiable {
             shortcut: nil,
             action: { state in state.tabSize = 8 }
         ),
+        PaletteCommand(
+            title: "Toggle Terminal",
+            subtitle: "Show or hide the terminal panel",
+            icon: "apple.terminal",
+            shortcut: "⌘`",
+            action: { state in state.showTerminal.toggle() }
+        ),
+        PaletteCommand(
+            title: "SSH: Connect to Server",
+            subtitle: "Open SSH server manager",
+            icon: "network",
+            shortcut: nil,
+            action: { state in state.showingSSHConnect = true }
+        ),
+        PaletteCommand(
+            title: "Git: Commit",
+            subtitle: "Stage files and create a commit",
+            icon: "arrow.triangle.branch",
+            shortcut: nil,
+            action: { state in state.showingGitCommit = true }
+        ),
     ]
 }
 

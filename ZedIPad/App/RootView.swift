@@ -20,6 +20,9 @@ struct RootView: View {
         .sheet(isPresented: $appState.showingSSHConnect) {
             ServerListView()
         }
+        .sheet(isPresented: $appState.showingGitCommit) {
+            GitCommitView(repoURL: appState.rootDirectory?.url)
+        }
     }
 }
 
