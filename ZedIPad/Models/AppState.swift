@@ -8,6 +8,8 @@ class AppState: ObservableObject {
     @Published var recentFiles: [FileNode] = []
     @Published var theme: ZedTheme = ZedTheme.dark
     @Published var showingCommandPalette: Bool = false
+    @Published var showingSSHConnect: Bool = false
+    @Published var showTerminal: Bool = false
     @Published var rootDirectory: FileNode?
     @Published var fontSize: CGFloat = 13
     @Published var wordWrap: Bool = true
