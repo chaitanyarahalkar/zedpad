@@ -144,6 +144,8 @@ struct StatusBar: View {
         case .yaml: return "YAML"
         case .bash: return "Shell"
         case .ruby: return "Ruby"
+        case .html: return "HTML"
+        case .css: return "CSS"
         case .unknown: return file.fileExtension.isEmpty ? "Plain Text" : file.fileExtension.uppercased()
         }
     }

@@ -23,6 +23,8 @@ class SyntaxHighlighter {
         case .yaml: return highlightYAML(text)
         case .bash: return highlightBash(text)
         case .ruby: return highlightRuby(text)
+        case .html: return highlightHTML(text)
+        case .css: return highlightCSS(text)
         case .unknown: return []
         }
     }
@@ -199,6 +201,78 @@ class SyntaxHighlighter {
         return tokens
     }
 
+    private func highlightHTML(_ text: String) -> [SyntaxToken] {
+        var tokens: [SyntaxToken] = []
+        // Tags: <tag> </tag>
+        let tagPattern = "</?[a-zA-Z][a-zA-Z0-9]*(?:[^>]*)?>?"
+        if let regex = try? NSRegularExpression(pattern: tagPattern) {
+            let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            for match in matches {
+                if let range = Range(match.range, in: text) {
+                    tokens.append(SyntaxToken(range: range, color: theme.syntaxKeyword))
+                }
+            }
+        }
+        // Attributes: name="value"
+        let attrPattern = "[a-zA-Z\\-]+=\"[^\"]*\""
+        if let regex = try? NSRegularExpression(pattern: attrPattern) {
+            let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            for match in matches {
+                if let range = Range(match.range, in: text) {
+                    tokens.append(SyntaxToken(range: range, color: theme.syntaxString))
+                }
+            }
+        }
+        // Comments
+        let commentPattern = "<!--[\\s\\S]*?-->"
+        if let regex = try? NSRegularExpression(pattern: commentPattern) {
+            let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            for match in matches {
+                if let range = Range(match.range, in: text) {
+                    tokens.append(SyntaxToken(range: range, color: theme.syntaxComment))
+                }
+            }
+        }
+        return tokens
+    }
+
+    private func highlightCSS(_ text: String) -> [SyntaxToken] {
+        var tokens: [SyntaxToken] = []
+        // Properties: property:
+        let propPattern = "[a-zA-Z\\-]+(?=\\s*:)"
+        if let regex = try? NSRegularExpression(pattern: propPattern) {
+            let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            for match in matches {
+                if let range = Range(match.range, in: text) {
+                    tokens.append(SyntaxToken(range: range, color: theme.syntaxFunction))
+                }
+            }
+        }
+        // Values after colon
+        let valuePattern = ":\\s*([^;{}\n]+);"
+        if let regex = try? NSRegularExpression(pattern: valuePattern) {
+            let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            for match in matches {
+                if let range = Range(match.range(at: 1), in: text) {
+                    tokens.append(SyntaxToken(range: range, color: theme.syntaxString))
+                }
+            }
+        }
+        // Selectors: .class, #id, tag
+        let selectorPattern = "^[ \\t]*([.#]?[a-zA-Z][a-zA-Z0-9_\\-]*)[ \\t]*\\{"
+        if let regex = try? NSRegularExpression(pattern: selectorPattern, options: .anchorsMatchLines) {
+            let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            for match in matches {
+                if let range = Range(match.range(at: 1), in: text) {
+                    tokens.append(SyntaxToken(range: range, color: theme.syntaxType))
+                }
+            }
+        }
+        tokens += tokenizeComments(text)
+        tokens += tokenizeNumbers(text)
+        return tokens
+    }
+
     // MARK: - Tokenizers
 
     private func tokenizeKeywords(_ text: String, keywords: [String], color: Color) -> [SyntaxToken] {
@@ -284,7 +358,7 @@ class SyntaxHighlighter {
 }
 
 enum Language: String {
-    case swift, javascript, typescript, python, rust, markdown, json, yaml, bash, ruby, unknown
+    case swift, javascript, typescript, python, rust, markdown, json, yaml, bash, ruby, html, css, unknown
 
     static func detect(from extension: String) -> Language {
         switch `extension`.lowercased() {
@@ -298,6 +372,8 @@ enum Language: String {
         case "yaml", "yml": return .yaml
         case "sh", "bash": return .bash
         case "rb": return .ruby
+        case "html", "htm": return .html
+        case "css": return .css
         default: return .unknown
         }
     }
