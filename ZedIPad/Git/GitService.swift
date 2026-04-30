@@ -288,6 +288,7 @@ class GitService: ObservableObject {
         try config.write(to: gitDir.appendingPathComponent("config"), atomically: true, encoding: .utf8)
         isRepo = true
         currentBranch = "main"
+        branches = [GitBranch(name: "main", isCurrent: true, isRemote: false)]
     }
 
     // MARK: - Shell dispatch
