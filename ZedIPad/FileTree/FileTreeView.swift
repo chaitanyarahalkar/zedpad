@@ -78,8 +78,7 @@ struct FileTreeNodeView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            FileTreeRowView(node: node, depth: depth, parentNode: parentNode)
-                .onTapGesture { handleTap() }
+            FileTreeRowView(node: node, depth: depth, parentNode: parentNode, onTap: handleTap)
 
             if node.type == .directory && node.isExpanded {
                 ForEach(node.children ?? []) { child in
@@ -110,6 +109,7 @@ struct FileTreeRowView: View {
     @ObservedObject var node: FileNode
     let depth: Int
     let parentNode: FileNode?
+    var onTap: (() -> Void)? = nil
     @State private var showingRenameSheet = false
     @State private var showingDeleteAlert = false
     @State private var showingNewFileSheet = false
@@ -159,6 +159,7 @@ struct FileTreeRowView: View {
         .padding(.horizontal, 8)
         .background(isActive ? appState.theme.accentColor.opacity(0.15) : Color.clear)
         .contentShape(Rectangle())
+        .onTapGesture { onTap?() }
         .contextMenu {
             // New file / folder inside a directory
             if node.type == .directory {

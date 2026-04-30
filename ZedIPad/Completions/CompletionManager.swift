@@ -78,23 +78,31 @@ class CompletionManager: ObservableObject {
     }
 
     func accept(item: CompletionItem, in textView: UITextView) {
-        // Track MRU
         mruBoosts[item.label, default: 0] += 1
 
         let currentText = textView.text ?? ""
         let cursorPos = textView.selectedRange.location
         let prefix = extractPrefix(source: currentText, at: cursorPos)
 
-        // Replace prefix with insertText
-        let nsText = currentText as NSString
-        let prefixRange = NSRange(location: cursorPos - prefix.count, length: prefix.count)
-        let newText = nsText.replacingCharacters(in: prefixRange, with: item.insertText)
-        textView.text = newText
+        // Build the UITextRange for the prefix so replace(_:withText:) fires textViewDidChange
+        let prefixStart = cursorPos - prefix.count
+        guard let start = textView.position(from: textView.beginningOfDocument, offset: prefixStart),
+              let end = textView.position(from: textView.beginningOfDocument, offset: cursorPos),
+              let uiRange = textView.textRange(from: start, to: end) else {
+            dismiss()
+            return
+        }
 
-        // Position cursor after inserted text (before first placeholder if any)
-        let insertedCount = item.insertText.count
-        let newCursorPos = prefixRange.location + insertedCount
-        textView.selectedRange = NSRange(location: min(newCursorPos, newText.count), length: 0)
+        // replace(_:withText:) goes through the normal text pipeline → triggers textViewDidChange
+        // → updates the @Binding → SwiftUI state stays in sync
+        textView.replace(uiRange, withText: item.insertText)
+
+        // Position cursor at end of inserted text
+        let newCursorPos = prefixStart + item.insertText.count
+        if let newPos = textView.position(from: textView.beginningOfDocument, offset: newCursorPos),
+           let newRange = textView.textRange(from: newPos, to: newPos) {
+            textView.selectedTextRange = newRange
+        }
 
         dismiss()
     }
