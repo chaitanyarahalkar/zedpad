@@ -35,6 +35,7 @@ struct LandscapeLayout: View {
                 HStack {
                     ThemeToggleButton()
                     Spacer()
+                    TerminalToggleButton()
                     DocumentPickerButton()
                     CommandPaletteButton()
                 }
@@ -71,6 +72,10 @@ struct LandscapeLayout: View {
                 } else {
                     WelcomeView()
                 }
+                if appState.showTerminal {
+                    TerminalPanel()
+                        .transition(.move(edge: .bottom))
+                }
             }
             .frame(maxWidth: .infinity)
         }
@@ -94,15 +99,22 @@ struct PortraitLayout: View {
                         ThemeToggleButton()
                     }
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
+                        TerminalToggleButton()
                         DocumentPickerButton()
                         CommandPaletteButton()
                     }
                 }
         } detail: {
-            if let file = appState.activeFile {
-                EditorView(file: file)
-            } else {
-                WelcomeView()
+            VStack(spacing: 0) {
+                if let file = appState.activeFile {
+                    EditorView(file: file)
+                } else {
+                    WelcomeView()
+                }
+                if appState.showTerminal {
+                    TerminalPanel()
+                        .transition(.move(edge: .bottom))
+                }
             }
         }
         .navigationSplitViewStyle(.balanced)

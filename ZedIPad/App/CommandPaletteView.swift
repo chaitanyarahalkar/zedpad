@@ -240,3 +240,20 @@ struct CommandPaletteButton: View {
         .accessibilityLabel("Open command palette")
     }
 }
+
+struct TerminalToggleButton: View {
+    @EnvironmentObject private var appState: AppState
+
+    var body: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                appState.showTerminal.toggle()
+            }
+        } label: {
+            Image(systemName: "apple.terminal")
+                .foregroundColor(appState.showTerminal ? appState.theme.accentColor : appState.theme.primaryText)
+        }
+        .accessibilityLabel("Toggle terminal")
+        .keyboardShortcut("`", modifiers: .command)
+    }
+}
