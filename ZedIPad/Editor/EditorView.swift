@@ -4,6 +4,7 @@ struct EditorView: View {
     @EnvironmentObject private var appState: AppState
     let file: FileNode
     @State private var showingFind: Bool = false
+    @State private var saveError: String? = nil
     @StateObject private var goToLine = GoToLineState()
 
     private var lineCount: Int { file.content.components(separatedBy: "\n").count }
@@ -70,10 +71,33 @@ struct EditorView: View {
                 }
                 .accessibilityLabel("Find in File")
                 .keyboardShortcut("f", modifiers: .command)
+
+                if file.fileURL != nil {
+                    Button {
+                        saveFile()
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: file.isDirty ? "square.and.arrow.down.fill" : "square.and.arrow.down")
+                                .foregroundColor(file.isDirty ? appState.theme.accentColor : appState.theme.secondaryText)
+                        }
+                    }
+                    .accessibilityLabel("Save File")
+                    .keyboardShortcut("s", modifiers: .command)
+                }
             }
         }
         .navigationTitle(file.name)
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func saveFile() {
+        guard let url = file.fileURL else { return }
+        do {
+            try file.content.write(to: url, atomically: true, encoding: .utf8)
+            file.isDirty = false
+        } catch {
+            saveError = error.localizedDescription
+        }
     }
 }
 

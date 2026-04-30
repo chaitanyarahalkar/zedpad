@@ -10,9 +10,13 @@ class FileNode: Identifiable, ObservableObject {
     let name: String
     let type: FileNodeType
     let path: String
+    var fileURL: URL?          // set when opened from DocumentPicker
+    @Published var isDirty: Bool = false
     @Published var children: [FileNode]?
     @Published var isExpanded: Bool = false
-    @Published var content: String
+    @Published var content: String {
+        didSet { if fileURL != nil { isDirty = true } }
+    }
 
     var fileExtension: String {
         (name as NSString).pathExtension.lowercased()
