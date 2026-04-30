@@ -26,7 +26,7 @@ struct RootView: View {
                 WelcomeView()
             }
         }
-        .navigationSplitViewStyle(.prominentDetail)
+        .navigationSplitViewStyle(.balanced)
         .tint(appState.theme.accentColor)
         .sheet(isPresented: $appState.showingCommandPalette) {
             CommandPaletteView()
