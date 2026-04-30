@@ -4,6 +4,9 @@ struct EditorView: View {
     @EnvironmentObject private var appState: AppState
     let file: FileNode
     @State private var showingFind: Bool = false
+    @StateObject private var goToLine = GoToLineState()
+
+    private var lineCount: Int { file.content.components(separatedBy: "\n").count }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -14,6 +17,13 @@ struct EditorView: View {
 
             if showingFind {
                 FindBar(isVisible: $showingFind, file: file)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                Divider()
+                    .background(appState.theme.borderColor)
+            }
+
+            if goToLine.isVisible {
+                GoToLineView(state: goToLine, totalLines: lineCount) { _ in }
                     .transition(.move(edge: .top).combined(with: .opacity))
                 Divider()
                     .background(appState.theme.borderColor)

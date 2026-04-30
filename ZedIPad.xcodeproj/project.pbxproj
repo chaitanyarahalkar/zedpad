@@ -21,6 +21,7 @@
 		4710290455E261DE0E6D83A0 /* SQLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9326D2D85F56F824FB542792 /* SQLTests.swift */; };
 		4A754D924AA04930C65C7104 /* ZedIPadApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75493B44C98BA18098F448D8 /* ZedIPadApp.swift */; };
 		4C86AB1A000A6BC67BC66D24 /* ZedIPadUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5169392D04E943F9B2A54C /* ZedIPadUITests.swift */; };
+		554E69EC647EA96C65E4310A /* GoToLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5284868E370B48D6FF77BB /* GoToLineView.swift */; };
 		56C2571637B99E66AD9E84AB /* ColorExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A576771F239D7566794E9678 /* ColorExtensionTests.swift */; };
 		5976C6BFDFFC3574390E4519 /* ScalaLuaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A7DF5C1324DCF808590712 /* ScalaLuaTests.swift */; };
 		638D023EFE19440A2EA2050A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 81C07753EFC99AC808CBBA62 /* Assets.xcassets */; };
@@ -108,6 +109,7 @@
 		DE76762D650856FE7B729F35 /* GoKotlinTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoKotlinTests.swift; sourceTree = "<group>"; };
 		E129C993E55053B5B59FC46D /* ConcurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrencyTests.swift; sourceTree = "<group>"; };
 		E200225B65C9C833B48D47A2 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		EE5284868E370B48D6FF77BB /* GoToLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToLineView.swift; sourceTree = "<group>"; };
 		F2A780289895491B0F15B073 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -197,6 +199,7 @@
 			children = (
 				726DED8829C8C98CE55EC5C3 /* BreadcrumbView.swift */,
 				8262E3CEF14213A3440DF912 /* EditorView.swift */,
+				EE5284868E370B48D6FF77BB /* GoToLineView.swift */,
 				546C4301602323AA070F07FC /* MinimapView.swift */,
 				7E5635805377C6A34E00D91B /* SplitEditorView.swift */,
 				64D3D01EDFE66F20C52A79E8 /* StatusBar.swift */,
@@ -399,6 +402,7 @@
 				3E73B33F8BA24CF186C99A5B /* FileSearchBar.swift in Sources */,
 				18F3AA8F0CBE1662F4BBC29D /* FileTreeView.swift in Sources */,
 				C6B0A2BA6343BB85C8139450 /* FindBar.swift in Sources */,
+				554E69EC647EA96C65E4310A /* GoToLineView.swift in Sources */,
 				EB654C113F9AD4CB74926B68 /* KeyboardShortcuts.swift in Sources */,
 				06F679DF59FDD5A713B88B21 /* MinimapView.swift in Sources */,
 				349198853B4115EE9C2F8385 /* RootView.swift in Sources */,
