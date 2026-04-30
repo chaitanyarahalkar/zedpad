@@ -305,4 +305,31 @@ final class ZedIPadUITests: XCTestCase {
         }
         XCTAssertTrue(app.exists)
     }
+
+    func testYAMLFile() throws {
+        let config = app.staticTexts["config"]
+        if config.waitForExistence(timeout: 3) {
+            config.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        let yamlFile = app.staticTexts["deploy.yaml"]
+        if yamlFile.waitForExistence(timeout: 2) {
+            yamlFile.tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            saveScreenshot(named: "20_yaml_file")
+        } else {
+            saveScreenshot(named: "20_yaml_not_found")
+        }
+        XCTAssertTrue(app.exists)
+    }
+
+    func testPackageSwiftFile() throws {
+        let packageFile = app.staticTexts["Package.swift"]
+        if packageFile.waitForExistence(timeout: 3) {
+            packageFile.tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            saveScreenshot(named: "21_package_swift")
+        }
+        XCTAssertTrue(app.exists)
+    }
 }
