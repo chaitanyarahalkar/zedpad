@@ -19,6 +19,8 @@ struct EditorView: View {
                     .background(appState.theme.borderColor)
             }
 
+            BreadcrumbView(file: file)
+
             EditableCodeEditor(file: file)
 
             StatusBar(file: file, text: file.content)
