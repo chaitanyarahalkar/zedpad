@@ -202,4 +202,56 @@ final class ZedIPadUITests: XCTestCase {
         }
         XCTAssertTrue(app.exists)
     }
+
+    func testMinimapVisible() throws {
+        let sources = app.staticTexts["Sources"]
+        if sources.waitForExistence(timeout: 3) {
+            sources.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        if app.staticTexts["Editor.swift"].waitForExistence(timeout: 2) {
+            app.staticTexts["Editor.swift"].tap()
+            Thread.sleep(forTimeInterval: 0.8)
+            saveScreenshot(named: "14_minimap_visible")
+        } else if app.staticTexts["main.swift"].waitForExistence(timeout: 2) {
+            app.staticTexts["main.swift"].tap()
+            Thread.sleep(forTimeInterval: 0.8)
+            saveScreenshot(named: "14_minimap_visible")
+        }
+        XCTAssertTrue(app.exists)
+    }
+
+    func testRustFile() throws {
+        let scripts = app.staticTexts["scripts"]
+        if scripts.waitForExistence(timeout: 3) {
+            scripts.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        let rustFile = app.staticTexts["parser.rs"]
+        if rustFile.waitForExistence(timeout: 2) {
+            rustFile.tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            saveScreenshot(named: "15_rust_file")
+        } else {
+            saveScreenshot(named: "15_rust_not_found")
+        }
+        XCTAssertTrue(app.exists)
+    }
+
+    func testJSONFile() throws {
+        let config = app.staticTexts["config"]
+        if config.waitForExistence(timeout: 3) {
+            config.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        let jsonFile = app.staticTexts["settings.json"]
+        if jsonFile.waitForExistence(timeout: 2) {
+            jsonFile.tap()
+            Thread.sleep(forTimeInterval: 0.5)
+            saveScreenshot(named: "16_json_file")
+        } else {
+            saveScreenshot(named: "16_json_not_found")
+        }
+        XCTAssertTrue(app.exists)
+    }
 }
