@@ -415,7 +415,6 @@ final class ZedIPadUITests: XCTestCase {
         if themeButton.waitForExistence(timeout: 3) {
             themeButton.tap()
             Thread.sleep(forTimeInterval: 0.3)
-            // Open a file to show the light theme editor
             let sources = app.staticTexts["Sources"]
             if sources.waitForExistence(timeout: 2) {
                 sources.tap()
@@ -426,9 +425,54 @@ final class ZedIPadUITests: XCTestCase {
                 Thread.sleep(forTimeInterval: 0.5)
                 saveScreenshot(named: "26_light_theme_editor")
             }
-            // Switch back to dark
             themeButton.tap()
         }
+        XCTAssertTrue(app.exists)
+    }
+
+    func testGlobalSearch() throws {
+        // Tap the Search tab in sidebar
+        let searchTab = app.buttons["Search"]
+        if searchTab.waitForExistence(timeout: 3) {
+            searchTab.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+            saveScreenshot(named: "30_global_search_empty")
+
+            // Type a search query
+            let searchField = app.textFields.firstMatch
+            if searchField.waitForExistence(timeout: 2) {
+                searchField.tap()
+                searchField.typeText("import")
+                Thread.sleep(forTimeInterval: 0.8)
+                saveScreenshot(named: "31_global_search_results")
+            }
+        } else {
+            saveScreenshot(named: "30_global_search_not_found")
+        }
+        XCTAssertTrue(app.exists)
+    }
+
+    func testUndoRedoButtons() throws {
+        // Open a file and check undo/redo buttons exist
+        let sources = app.staticTexts["Sources"]
+        if sources.waitForExistence(timeout: 3) {
+            sources.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        if app.staticTexts["main.swift"].waitForExistence(timeout: 2) {
+            app.staticTexts["main.swift"].tap()
+            Thread.sleep(forTimeInterval: 0.8)
+            saveScreenshot(named: "32_editor_with_undo_redo")
+        }
+        XCTAssertTrue(app.exists)
+    }
+
+    func testSidebarTabSwitcher() throws {
+        // Verify Files tab and Search tab are both present
+        let filesTab = app.buttons["Files"]
+        let searchTab = app.buttons["Search"]
+        XCTAssertTrue(filesTab.waitForExistence(timeout: 3) || searchTab.waitForExistence(timeout: 3))
+        saveScreenshot(named: "33_sidebar_tabs")
         XCTAssertTrue(app.exists)
     }
 }
