@@ -1,27 +1,46 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
+// Flat row model for the file tree List
+struct FlatFileNode: Identifiable {
+    let id: UUID
+    let node: FileNode
+    let depth: Int
+    let parent: FileNode?
+}
+
 struct FileTreeView: View {
     @EnvironmentObject private var appState: AppState
     @State private var filterQuery: String = ""
     @State private var showingNewItemSheet = false
     @State private var showingSortPicker = false
 
-    private var displayedRoot: FileNode? {
-        guard !filterQuery.isEmpty else { return appState.rootDirectory }
-        return appState.rootDirectory?.filtered(by: filterQuery)
+    // Flatten the visible tree into a linear array — each node is one List row
+    private var flatNodes: [FlatFileNode] {
+        let root = filterQuery.isEmpty
+            ? appState.rootDirectory
+            : appState.rootDirectory?.filtered(by: filterQuery)
+        guard let root else { return [] }
+        return flatten(root, depth: 0, parent: nil)
+    }
+
+    private func flatten(_ node: FileNode, depth: Int, parent: FileNode?) -> [FlatFileNode] {
+        var result = [FlatFileNode(id: node.id, node: node, depth: depth, parent: parent)]
+        if node.type == .directory && node.isExpanded {
+            for child in node.children ?? [] {
+                result += flatten(child, depth: depth + 1, parent: node)
+            }
+        }
+        return result
     }
 
     var body: some View {
         ZStack {
             appState.theme.sidebarBackground.ignoresSafeArea()
             VStack(spacing: 0) {
-                // Toolbar row
                 HStack(spacing: 0) {
                     FileSearchBar(query: $filterQuery)
-                    Button {
-                        showingNewItemSheet = true
-                    } label: {
+                    Button { showingNewItemSheet = true } label: {
                         Image(systemName: "plus")
                             .font(.system(size: 14))
                             .foregroundColor(appState.theme.primaryText)
@@ -29,81 +48,47 @@ struct FileTreeView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("New file or folder")
-
-                    Button {
-                        showingSortPicker = true
-                    } label: {
+                    Button { showingSortPicker = true } label: {
                         Image(systemName: "arrow.up.arrow.down")
                             .font(.system(size: 12))
                             .foregroundColor(appState.theme.secondaryText)
                             .padding(.horizontal, 6)
                     }
                     .buttonStyle(.plain)
-                    .popover(isPresented: $showingSortPicker) {
-                        SortPickerView()
-                    }
+                    .popover(isPresented: $showingSortPicker) { SortPickerView() }
                 }
                 Divider().background(appState.theme.borderColor)
 
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 0) {
-                        if let root = displayedRoot {
-                            FileTreeNodeView(node: root, depth: 0, parentNode: nil)
-                        } else if !filterQuery.isEmpty {
-                            HStack {
-                                Spacer()
-                                Text("No files match \"\(filterQuery)\"")
-                                    .font(.system(size: 12))
-                                    .foregroundColor(appState.theme.secondaryText)
-                                    .padding()
-                                Spacer()
-                            }
-                        }
+                if flatNodes.isEmpty && !filterQuery.isEmpty {
+                    Spacer()
+                    Text("No files match \"\(filterQuery)\"")
+                        .font(.system(size: 12))
+                        .foregroundColor(appState.theme.secondaryText)
+                    Spacer()
+                } else {
+                    // List backed by UITableView — tap + contextMenu coexist natively on device
+                    List(flatNodes) { flat in
+                        FileTreeRowView(
+                            node: flat.node,
+                            depth: flat.depth,
+                            parentNode: flat.parent
+                        )
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(
+                            appState.activeFile?.id == flat.node.id
+                                ? appState.theme.accentColor.opacity(0.15)
+                                : appState.theme.sidebarBackground
+                        )
+                        .listRowSeparator(.hidden)
                     }
-                    .padding(.top, 4)
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                    .background(appState.theme.sidebarBackground)
                 }
             }
         }
         .sheet(isPresented: $showingNewItemSheet) {
             NewItemSheet(parentNode: appState.rootDirectory)
-        }
-        .onAppear {
-            // Set once at appear time, not on every render
-            UIScrollView.appearance().delaysContentTouches = false
-        }
-    }
-}
-
-struct FileTreeNodeView: View {
-    @EnvironmentObject private var appState: AppState
-    @ObservedObject var node: FileNode
-    let depth: Int
-    let parentNode: FileNode?
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            FileTreeRowView(node: node, depth: depth, parentNode: parentNode, onTap: handleTap)
-
-            if node.type == .directory && node.isExpanded {
-                ForEach(node.children ?? []) { child in
-                    FileTreeNodeView(node: child, depth: depth + 1, parentNode: node)
-                }
-            }
-        }
-    }
-
-    private func handleTap() {
-        if node.type == .directory {
-            withAnimation(.easeInOut(duration: 0.15)) {
-                node.isExpanded.toggle()
-            }
-        } else {
-            if let url = node.fileURL,
-               let content = try? FileSystemService.shared.readFile(at: url) {
-                node.content = content
-                node.isDirty = false
-            }
-            appState.openFile(node)
         }
     }
 }
@@ -113,45 +98,36 @@ struct FileTreeRowView: View {
     @ObservedObject var node: FileNode
     let depth: Int
     let parentNode: FileNode?
-    var onTap: (() -> Void)? = nil
     @State private var showingRenameSheet = false
     @State private var showingDeleteAlert = false
     @State private var showingNewFileSheet = false
     @State private var showingNewFolderSheet = false
 
-    private var isActive: Bool { appState.activeFile?.id == node.id }
-
     var body: some View {
-        HStack(spacing: 4) {
-            Rectangle().fill(Color.clear).frame(width: CGFloat(depth) * 16)
-
-            if node.type == .directory {
-                Image(systemName: node.isExpanded ? "chevron.down" : "chevron.right")
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundColor(appState.theme.secondaryText)
-                    .frame(width: 12)
-            } else {
-                Spacer().frame(width: 12)
-            }
-
+        // Button inside a List row — natively coexists with .contextMenu on device
+        Button(action: handleTap) {
+            HStack(spacing: 4) {
+                Rectangle().fill(Color.clear).frame(width: CGFloat(depth) * 16)
+                if node.type == .directory {
+                    Image(systemName: node.isExpanded ? "chevron.down" : "chevron.right")
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundColor(appState.theme.secondaryText)
+                        .frame(width: 12)
+                } else {
+                    Spacer().frame(width: 12)
+                }
                 Image(systemName: node.icon)
                     .font(.system(size: 13))
                     .foregroundColor(iconColor)
                     .frame(width: 16)
-
                 Text(node.name)
                     .font(.system(size: 13, design: .monospaced))
-                    .foregroundColor(isActive ? appState.theme.accentColor : appState.theme.primaryText)
+                    .foregroundColor(appState.activeFile?.id == node.id ? appState.theme.accentColor : appState.theme.primaryText)
                     .lineLimit(1)
-
                 if node.isDirty {
-                    Circle()
-                        .fill(appState.theme.accentColor)
-                        .frame(width: 6, height: 6)
+                    Circle().fill(appState.theme.accentColor).frame(width: 6, height: 6)
                 }
-
                 Spacer()
-
                 if let meta = node.metadata, node.type == .file {
                     Text(meta.formattedSize)
                         .font(.system(size: 10))
@@ -159,11 +135,11 @@ struct FileTreeRowView: View {
                         .padding(.trailing, 4)
                 }
             }
-            .padding(.vertical, 3)
+            .padding(.vertical, 4)
             .padding(.horizontal, 8)
-            .background(isActive ? appState.theme.accentColor.opacity(0.15) : Color.clear)
             .contentShape(Rectangle())
-        .highPriorityGesture(TapGesture().onEnded { onTap?() })
+        }
+        .buttonStyle(.plain)
         .contextMenu {
             // New file / folder inside a directory
             if node.type == .directory {
@@ -223,6 +199,21 @@ struct FileTreeRowView: View {
             if let url = node.fileURL {
                 node.metadata = try? FileSystemService.shared.attributes(at: url)
             }
+        }
+    }
+
+    private func handleTap() {
+        if node.type == .directory {
+            withAnimation(.easeInOut(duration: 0.15)) {
+                node.isExpanded.toggle()
+            }
+        } else {
+            if let url = node.fileURL,
+               let content = try? FileSystemService.shared.readFile(at: url) {
+                node.content = content
+                node.isDirty = false
+            }
+            appState.openFile(node)
         }
     }
 
