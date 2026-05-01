@@ -181,6 +181,13 @@ struct PaletteCommand: Identifiable {
             action: { state in state.fontSize = 13 }
         ),
         PaletteCommand(
+            title: "Connect Codex Agent",
+            subtitle: "Add a Codex app-server connection",
+            icon: "sparkles",
+            shortcut: "⌘⇧A",
+            action: { state in state.showingAddCodexServer = true }
+        ),
+        PaletteCommand(
             title: "Toggle Word Wrap",
             subtitle: "Enable or disable line wrapping",
             icon: "text.alignleft",

@@ -84,13 +84,17 @@ struct TerminalPanel: View {
     @EnvironmentObject private var appState: AppState
     @StateObject private var manager = TerminalPanelManager()
     @State private var panelHeight: CGFloat = max(280, UIScreen.main.bounds.height * 0.35)
+    @State private var showingAddCodex = false
 
     var body: some View {
         VStack(spacing: 0) {
             dragHandle
             terminalTabBar
             Divider().background(appState.theme.borderColor)
-            if let session = manager.activeSession {
+            // Show either terminal session or codex agent tab
+            if let codexSession = manager.activeCodexSession {
+                CodexAgentTab(session: codexSession)
+            } else if let session = manager.activeSession {
                 TerminalSessionView(session: session)
                     .background(appState.theme.editorBackground)
             }
@@ -98,6 +102,11 @@ struct TerminalPanel: View {
         .frame(height: panelHeight)
         .background(appState.theme.editorBackground)
         .overlay(Rectangle().fill(appState.theme.borderColor).frame(height: 1), alignment: .top)
+        .sheet(isPresented: $showingAddCodex) {
+            AddCodexServerView(onAdd: { config, token in
+                manager.addCodexSession(config: config)
+            })
+        }
         .onAppear {
             if manager.sessions.isEmpty {
                 manager.addLocalSession(shell: ShellInterpreter())
@@ -163,6 +172,29 @@ struct TerminalPanel: View {
                     HStack(spacing: 4) {
                         Image(systemName: "network").font(.system(size: 11))
                         Text("SSH").font(.system(size: 11))
+                    }
+                    .foregroundColor(appState.theme.accentColor)
+                    .padding(.horizontal, 10)
+                    .frame(height: 30)
+                }
+                .buttonStyle(.plain)
+
+                // Codex agent tabs
+                ForEach(manager.codexSessions) { codex in
+                    CodexTabButton(
+                        session: codex,
+                        isActive: manager.activeCodexSession?.id == codex.id,
+                        onTap: { manager.activeCodexSession = codex; manager.activeSession = nil },
+                        onClose: { manager.removeCodexSession(codex) }
+                    )
+                }
+
+                Button {
+                    showingAddCodex = true
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "sparkles").font(.system(size: 11))
+                        Text("Agent").font(.system(size: 11))
                     }
                     .foregroundColor(appState.theme.accentColor)
                     .padding(.horizontal, 10)
@@ -239,12 +271,48 @@ struct TerminalSessionView: View {
     }
 }
 
+// MARK: - Codex tab button
+
+struct CodexTabButton: View {
+    @EnvironmentObject private var appState: AppState
+    let session: CodexSession
+    let isActive: Bool
+    let onTap: () -> Void
+    let onClose: () -> Void
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "sparkles")
+                .font(.system(size: 10))
+                .foregroundColor(isActive ? appState.theme.accentColor : appState.theme.secondaryText)
+            Text(session.config.name)
+                .font(.system(size: 11, design: .monospaced))
+                .foregroundColor(isActive ? appState.theme.primaryText : appState.theme.secondaryText)
+            Circle()
+                .fill(session.isConnected ? Color.green : Color.red)
+                .frame(width: 5, height: 5)
+            Button(action: onClose) {
+                Image(systemName: "xmark").font(.system(size: 9))
+                    .foregroundColor(appState.theme.secondaryText)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 10)
+        .frame(height: 30)
+        .background(isActive ? appState.theme.activeTabBackground : Color.clear)
+        .overlay(Rectangle().fill(isActive ? appState.theme.accentColor : Color.clear).frame(height: 1), alignment: .bottom)
+        .onTapGesture(perform: onTap)
+    }
+}
+
 // MARK: - Panel Manager
 
 @MainActor
 class TerminalPanelManager: ObservableObject {
     @Published var sessions: [TerminalSession] = []
     @Published var activeSession: TerminalSession?
+    @Published var codexSessions: [CodexSession] = []
+    @Published var activeCodexSession: CodexSession?
     private var localCount = 0
 
     func addLocalSession(shell: ShellInterpreter) {
@@ -252,16 +320,35 @@ class TerminalPanelManager: ObservableObject {
         let session = TerminalSession(name: "Terminal \(localCount)", isSSH: false, shell: shell)
         sessions.append(session)
         activeSession = session
+        activeCodexSession = nil
     }
 
     func addSSHSession(name: String) {
         let session = TerminalSession(name: "SSH: \(name)", isSSH: true)
         sessions.append(session)
         activeSession = session
+        activeCodexSession = nil
     }
 
     func removeSession(_ session: TerminalSession) {
         sessions.removeAll { $0.id == session.id }
         if activeSession?.id == session.id { activeSession = sessions.last }
+    }
+
+    func addCodexSession(config: CodexServerConfig, token: String = "") {
+        let session = CodexSession(config: config)
+        session.token = token
+        codexSessions.append(session)
+        activeCodexSession = session
+        activeSession = nil
+    }
+
+    func removeCodexSession(_ session: CodexSession) {
+        session.disconnect()
+        codexSessions.removeAll { $0.id == session.id }
+        if activeCodexSession?.id == session.id {
+            activeCodexSession = codexSessions.last
+            if activeCodexSession == nil { activeSession = sessions.last }
+        }
     }
 }

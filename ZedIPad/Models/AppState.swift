@@ -13,6 +13,8 @@ class AppState: ObservableObject {
     @Published var showingOnboarding: Bool = false
     @Published var showTerminal: Bool = false
     @Published var showingGitCommit: Bool = false
+    @Published var showingAddCodexServer: Bool = false
+    var codexServerStore = CodexServerStore()
     @Published var rootDirectory: FileNode?
     @Published var fontSize: CGFloat = 13
     @Published var wordWrap: Bool = true

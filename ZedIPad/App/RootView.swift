@@ -26,6 +26,9 @@ struct RootView: View {
         .sheet(isPresented: $appState.showingGitCommit) {
             GitCommitView(repoURL: appState.rootDirectory?.url)
         }
+        .sheet(isPresented: $appState.showingAddCodexServer) {
+            AddCodexServerView()
+        }
     }
 }
 
