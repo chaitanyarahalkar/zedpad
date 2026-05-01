@@ -18,8 +18,13 @@ actor CodexWSClient {
 
     func connect(url: URL, token: String) throws {
         var req = URLRequest(url: url)
-        req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        let session = URLSession(configuration: .default)
+        req.timeoutInterval = 10
+        // Only send auth header when a token is provided
+        if !token.isEmpty {
+            req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        let config = URLSessionConfiguration.default
+        let session = URLSession(configuration: config)
         task = session.webSocketTask(with: req)
         task?.resume()
         startReceiveLoop()

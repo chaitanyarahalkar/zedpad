@@ -37,6 +37,12 @@ class CodexSession: ObservableObject, Identifiable {
             isConnected = true
             startNotificationLoop()
             appendSystem("Connected to \(config.name) · model: \(config.model)")
+        } catch let urlError as URLError where urlError.code == .badServerResponse {
+            connectionError = "Server rejected the connection (HTTP 401 — wrong token, or server not running). Check the URL and token."
+            isConnected = false
+        } catch let urlError as URLError where urlError.code == .cannotConnectToHost || urlError.code == .networkConnectionLost {
+            connectionError = "Cannot reach server at \(config.wsURL). Make sure it is running and your iPad is on the same network."
+            isConnected = false
         } catch {
             connectionError = error.localizedDescription
             isConnected = false
