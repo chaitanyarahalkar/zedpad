@@ -17,6 +17,7 @@ struct FileTreeView: View {
 
     // Flatten the visible tree into a linear array — each node is one List row
     private var flatNodes: [FlatFileNode] {
+        _ = appState.treeRevision  // subscribe — recomputes whenever a folder is expanded/collapsed
         let root = filterQuery.isEmpty
             ? appState.rootDirectory
             : appState.rootDirectory?.filtered(by: filterQuery)
@@ -206,6 +207,7 @@ struct FileTreeRowView: View {
         if node.type == .directory {
             withAnimation(.easeInOut(duration: 0.15)) {
                 node.isExpanded.toggle()
+                appState.treeRevision += 1  // notify FileTreeView to recompute flatNodes
             }
         } else {
             if let url = node.fileURL,

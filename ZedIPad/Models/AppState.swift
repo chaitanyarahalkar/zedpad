@@ -3,6 +3,7 @@ import Combine
 
 @MainActor
 class AppState: ObservableObject {
+    @Published var treeRevision: Int = 0   // bumped on expand/collapse to force flatNodes recompute
     @Published var activeFile: FileNode?
     @Published var openFiles: [FileNode] = []
     @Published var recentFiles: [FileNode] = []
@@ -112,10 +113,10 @@ class AppState: ObservableObject {
             guard let fresh = try? FileSystemService.shared.loadDirectory(at: url) else { return }
             node.children = fresh.children
             node.isExpanded = true
-            // If this is the root, keep rootDirectory in sync
             if node === rootDirectory || rootDirectory?.fileURL == url {
                 rootDirectory = node
             }
+            treeRevision += 1
         }
     }
 
