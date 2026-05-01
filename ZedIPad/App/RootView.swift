@@ -130,9 +130,6 @@ struct PortraitLayout: View {
                         .transition(.move(edge: .bottom))
                 }
             }
-            .overlay(alignment: .bottomTrailing) {
-                TerminalFAB()
-            }
         }
         .navigationSplitViewStyle(.balanced)
         .overlay(alignment: .topLeading) {

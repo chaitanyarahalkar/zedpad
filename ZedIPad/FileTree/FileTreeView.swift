@@ -15,7 +15,6 @@ struct FileTreeView: View {
     var body: some View {
         ZStack {
             appState.theme.sidebarBackground.ignoresSafeArea()
-            let _ = UIScrollView.appearance().delaysContentTouches = false
             VStack(spacing: 0) {
                 // Toolbar row
                 HStack(spacing: 0) {
@@ -67,6 +66,10 @@ struct FileTreeView: View {
         }
         .sheet(isPresented: $showingNewItemSheet) {
             NewItemSheet(parentNode: appState.rootDirectory)
+        }
+        .onAppear {
+            // Set once at appear time, not on every render
+            UIScrollView.appearance().delaysContentTouches = false
         }
     }
 }
