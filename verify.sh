@@ -8,11 +8,19 @@ SIM_UDID="471E6102-3ECB-4DF3-A55B-A6E71773A9DA"
 DEST="platform=iOS Simulator,id=$SIM_UDID"
 SCREENSHOTS_DIR="$PROJECT_DIR/autoresearch-screenshots"
 
+if ! xcodebuild -version >/dev/null 2>&1 && [ -d /Applications/Xcode.app/Contents/Developer ]; then
+  export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
+elif xcode-select -p 2>/dev/null | grep -q "/CommandLineTools$" && [ -d /Applications/Xcode.app/Contents/Developer ]; then
+  export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
+fi
+
+XCODEBUILD=(xcodebuild -sdk iphonesimulator)
+
 mkdir -p "$SCREENSHOTS_DIR"
 
 # 1. Build errors (penalises score)
 echo "▶ Building..." >&2
-BUILD_OUTPUT=$(xcodebuild build \
+BUILD_OUTPUT=$("${XCODEBUILD[@]}" build \
   -project "$PROJECT_DIR/ZedIPad.xcodeproj" \
   -scheme "$SCHEME" \
   -destination "$DEST" \
@@ -26,7 +34,7 @@ echo "  Compile errors: $ERRORS" >&2
 
 # 2. Unit tests
 echo "▶ Running unit tests..." >&2
-UNIT_OUTPUT=$(xcodebuild test \
+UNIT_OUTPUT=$("${XCODEBUILD[@]}" test \
   -project "$PROJECT_DIR/ZedIPad.xcodeproj" \
   -scheme "ZedIPadTests" \
   -destination "$DEST" \
@@ -39,7 +47,7 @@ echo "  Unit tests passed: $UNIT_PASSED" >&2
 
 # 3. UI tests (with screenshots)
 echo "▶ Running UI tests..." >&2
-UI_OUTPUT=$(xcodebuild test \
+UI_OUTPUT=$("${XCODEBUILD[@]}" test \
   -project "$PROJECT_DIR/ZedIPad.xcodeproj" \
   -scheme "ZedIPadUITests" \
   -destination "$DEST" \

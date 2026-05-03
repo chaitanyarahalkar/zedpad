@@ -37,7 +37,7 @@ struct TerminalFAB: View {
         .buttonStyle(.plain)
         .padding(.trailing, 20)
         .padding(.bottom, 20)
-        .accessibilityLabel(appState.showTerminal ? "Hide Terminal" : "Show Terminal")
+        .accessibilityLabel("Toggle terminal")
         .keyboardShortcut("`", modifiers: .command)
     }
 }

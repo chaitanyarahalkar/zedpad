@@ -69,6 +69,8 @@ struct GlobalSearchView: View {
                         .font(.system(size: 13, design: .monospaced))
                         .foregroundColor(appState.theme.primaryText)
                         .focused($isFocused)
+                        .accessibilityLabel("Search in files")
+                        .accessibilityIdentifier("Search in files")
                         .onSubmit { searchState.search(in: appState.rootDirectory) }
                         .onChange(of: searchState.query) { _ in
                             if searchState.query.count >= 2 {

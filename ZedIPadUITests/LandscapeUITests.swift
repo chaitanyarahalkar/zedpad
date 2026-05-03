@@ -12,6 +12,7 @@ final class LandscapeUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = XCUIApplication()
+        app.launchArguments.append("UITestingSampleProject")
         app.launch()
         XCUIDevice.shared.orientation = .landscapeLeft
         Thread.sleep(forTimeInterval: 0.8)

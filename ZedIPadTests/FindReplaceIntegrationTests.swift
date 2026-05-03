@@ -41,9 +41,7 @@ final class FindReplaceIntegrationTests: XCTestCase {
         find.replaceQuery = "player"
         let _ = find.search(in: code)
         let count = find.replaceAll(in: &code)
-        XCTAssertEqual(count, 3) // username, userAge, username again... no, username and userAge have "user" once each, + userAge twice? Let me recount
-        // "username" has "user" at offset 0, "userAge" has "user" at offset 0, "username" again has "user"
-        // Actually: "username" (1) + "userAge" (1) + "username" (1) = 3
+        XCTAssertEqual(count, 4)
         XCTAssertFalse(code.contains("username"))
         XCTAssertTrue(code.contains("playername"))
     }

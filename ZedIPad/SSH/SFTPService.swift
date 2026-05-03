@@ -59,13 +59,13 @@ final class MockSFTPSession: SFTPSessionProtocol, @unchecked Sendable {
     private var directories: Set<String> = ["/", "/home", "/home/user", "/home/user/projects", "/var", "/etc"]
 
     func listDirectory(_ path: String) async throws -> [RemoteFileEntry] {
-        let normalizedPath = path.hasSuffix("/") ? String(path.dropLast()) : path
+        let normalizedPath = normalize(path)
         var entries: [RemoteFileEntry] = []
 
         // Sub-dirs
         for dir in directories where dir != normalizedPath {
-            let parent = String(dir.prefix(while: { _ in true }).components(separatedBy: "/").dropLast().joined(separator: "/"))
-            if (parent.isEmpty ? "/" : parent) == normalizedPath {
+            let parent = parentPath(for: dir)
+            if parent == normalizedPath {
                 entries.append(RemoteFileEntry(name: dir.components(separatedBy: "/").last ?? "",
                     path: dir, isDirectory: true, size: 0, modifiedDate: Date(), permissions: "drwxr-xr-x"))
             }
@@ -73,8 +73,8 @@ final class MockSFTPSession: SFTPSessionProtocol, @unchecked Sendable {
 
         // Files
         for (filePath, data) in filesystem {
-            let parent = String(filePath.components(separatedBy: "/").dropLast().joined(separator: "/"))
-            if (parent.isEmpty ? "/" : parent) == normalizedPath {
+            let parent = parentPath(for: filePath)
+            if parent == normalizedPath {
                 let name = filePath.components(separatedBy: "/").last ?? ""
                 entries.append(RemoteFileEntry(name: name, path: filePath, isDirectory: false,
                     size: Int64(data.count), modifiedDate: Date(), permissions: "-rw-r--r--"))
@@ -82,6 +82,19 @@ final class MockSFTPSession: SFTPSessionProtocol, @unchecked Sendable {
         }
 
         return entries.sorted { $0.name < $1.name }
+    }
+
+    private func normalize(_ path: String) -> String {
+        guard path != "/" else { return "/" }
+        return path.hasSuffix("/") ? String(path.dropLast()) : path
+    }
+
+    private func parentPath(for path: String) -> String {
+        let normalized = normalize(path)
+        guard normalized != "/" else { return "/" }
+        let parts = normalized.split(separator: "/")
+        guard parts.count > 1 else { return "/" }
+        return "/" + parts.dropLast().joined(separator: "/")
     }
 
     func readFile(_ path: String) async throws -> Data {

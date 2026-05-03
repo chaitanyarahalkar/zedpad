@@ -601,7 +601,7 @@ enum Language: String {
     case swift, javascript, typescript, python, rust, markdown, json, yaml, bash, ruby, html, css, go, kotlin, c, cpp, sql, scala, lua, php, r, unknown
 
     static func detect(from extension: String) -> Language {
-        switch `extension`.lowercased() {
+        switch `extension` {
         case "swift": return .swift
         case "js": return .javascript
         case "ts", "tsx", "jsx": return .typescript

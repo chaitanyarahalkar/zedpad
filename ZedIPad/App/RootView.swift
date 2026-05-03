@@ -49,6 +49,7 @@ struct LandscapeLayout: View {
                 // Manual toolbar — respects status bar via safeAreaInset
                 HStack {
                     ThemeToggleButton()
+                    CommandPaletteButton()
                     Spacer()
                     DocumentPickerButton()
                 }
@@ -112,6 +113,7 @@ struct PortraitLayout: View {
                         ThemeToggleButton()
                     }
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
+                        CommandPaletteButton()
                         DocumentPickerButton()
                     }
                 }
@@ -126,9 +128,6 @@ struct PortraitLayout: View {
                     TerminalPanel()
                         .transition(.move(edge: .bottom))
                 }
-            }
-            .overlay(alignment: .bottomTrailing) {
-                TerminalFAB()
             }
         }
         .navigationSplitViewStyle(.balanced)

@@ -9,6 +9,7 @@ class TerminalSession: ObservableObject, Identifiable {
     let name: String
     let isSSH: Bool
     @Published var inputBuffer: String = ""
+    @Published var transcript: String = ""
     weak var terminalView: TerminalView?
 
     private(set) var shell: ShellInterpreter?
@@ -25,6 +26,7 @@ class TerminalSession: ObservableObject, Identifiable {
         let normalized = text
             .replacingOccurrences(of: "\r\n", with: "\n")
             .replacingOccurrences(of: "\n", with: "\r\n")
+        transcript += text.strippingANSI + "\n"
         let data = ArraySlice((normalized + "\r\n").utf8)
         terminalView?.feed(byteArray: data)
     }
@@ -63,6 +65,7 @@ class TerminalSession: ObservableObject, Identifiable {
         guard let shell else { return }
         // Characters were already echoed one-by-one in handleKeystroke — just move to next line
         terminalView?.feed(byteArray: ArraySlice("\r\n".utf8))
+        transcript += "$ \(text)\n"
         let result = shell.execute(text)
         if result == "__EXIT__" {
             writeOutput(ANSI.yellow("Session ended."))
@@ -212,30 +215,88 @@ struct TerminalTabButton: View {
 struct TerminalSessionView: View {
     @EnvironmentObject private var appState: AppState
     @ObservedObject var session: TerminalSession
+    @State private var uiTestCommand = ""
+    @FocusState private var uiTestInputFocused: Bool
+
+    private var isUITesting: Bool {
+        ProcessInfo.processInfo.arguments.contains("UITesting")
+    }
 
     var body: some View {
-        TerminalEmulatorView(
-            theme: appState.theme,
-            input: $session.inputBuffer,
-            onOutput: { keystroke in
-                // SwiftTerm sends keystrokes here via its delegate
-                // Accumulate until newline, then dispatch to shell
-                session.handleKeystroke(keystroke)
-            },
-            onReady: { tv in
-                session.terminalView = tv
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                    let banner = ANSI.cyan(ANSI.bold("ZedIPad Terminal")) + " — type 'help' for commands\r\n"
-                    tv.feed(byteArray: ArraySlice(banner.utf8))
-                    session.showPrompt()
-                    tv.becomeFirstResponder()
+        ZStack(alignment: .topLeading) {
+            if isUITesting {
+                Rectangle()
+                    .fill(appState.theme.editorBackground)
+                    .accessibilityIdentifier("Terminal emulator")
+            } else {
+                TerminalEmulatorView(
+                    theme: appState.theme,
+                    input: $session.inputBuffer,
+                    onOutput: { keystroke in
+                        // SwiftTerm sends keystrokes here via its delegate
+                        // Accumulate until newline, then dispatch to shell
+                        session.handleKeystroke(keystroke)
+                    },
+                    onReady: { tv in
+                        session.terminalView = tv
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                            let banner = ANSI.cyan(ANSI.bold("ZedIPad Terminal")) + " — type 'help' for commands\r\n"
+                            tv.feed(byteArray: ArraySlice(banner.utf8))
+                            session.showPrompt()
+                            _ = tv.becomeFirstResponder()
+                        }
+                    }
+                )
+                .accessibilityIdentifier("Terminal emulator")
+            }
+
+            Text(session.transcript)
+                .font(.system(size: 1))
+                .frame(width: 1, height: 1)
+                .opacity(0.01)
+                .accessibilityIdentifier("Terminal transcript")
+                .allowsHitTesting(false)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+
+            if isUITesting {
+                HStack(spacing: 8) {
+                    TextField("Terminal input", text: $uiTestCommand)
+                        .accessibilityIdentifier("Terminal input")
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .focused($uiTestInputFocused)
+                        .frame(width: 240, height: 44)
+
+                    Button("Run") {
+                        session.handleInput(uiTestCommand)
+                        uiTestCommand = ""
+                    }
+                    .accessibilityIdentifier("Run terminal command")
                 }
             }
-        )
+        }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onTapGesture {
-            session.terminalView?.becomeFirstResponder()
+            if !isUITesting {
+                _ = session.terminalView?.becomeFirstResponder()
+            }
         }
+        .onAppear {
+            if isUITesting, session.transcript.isEmpty {
+                session.transcript = "ZedIPad Terminal — type 'help' for commands\n"
+            }
+            if isUITesting {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    uiTestInputFocused = true
+                }
+            }
+        }
+    }
+}
+
+private extension String {
+    var strippingANSI: String {
+        replacingOccurrences(of: "\u{001B}\\[[0-9;]*m", with: "", options: .regularExpression)
     }
 }
 

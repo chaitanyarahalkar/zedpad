@@ -129,11 +129,11 @@ class ShellInterpreter: ObservableObject {
 
     private func cmdCd(_ args: [String]) -> String {
         if args.isEmpty {
-            cwd = docsRoot
+            cwd = canonicalDirectoryURL(docsRoot)
             return ""
         }
         let target = args[0]
-        let newURL = target == ".." ? cwd.deletingLastPathComponent() : resolve(target)
+        let newURL = canonicalDirectoryURL(target == ".." ? cwd.deletingLastPathComponent() : resolve(target))
         var isDir: ObjCBool = false
         guard fm.fileExists(atPath: newURL.path, isDirectory: &isDir), isDir.boolValue else {
             return ANSI.red("cd: \(target): No such file or directory")
@@ -152,10 +152,12 @@ class ShellInterpreter: ObservableObject {
     }
 
     private func cmdMkdir(_ args: [String]) -> String {
-        guard let name = args.first else { return ANSI.red("mkdir: missing operand") }
+        let targets = args.filter { !$0.hasPrefix("-") }
+        guard let name = targets.first else { return ANSI.red("mkdir: missing operand") }
         let url = resolve(name)
+        let createParents = args.contains("-p")
         do {
-            try fm.createDirectory(at: url, withIntermediateDirectories: true)
+            try fm.createDirectory(at: url, withIntermediateDirectories: createParents)
             return ""
         } catch {
             return ANSI.red("mkdir: \(name): \(error.localizedDescription)")
@@ -234,8 +236,9 @@ class ShellInterpreter: ObservableObject {
         }
         if matched.isEmpty { return "" }
         return matched.map { idx, line -> String in
-            let highlighted = line.replacingOccurrences(of: pattern, with: ANSI.red(ANSI.bold(pattern)),
-                options: ignoreCase ? [.caseInsensitive] : [])
+            let highlighted = ignoreCase
+                ? line
+                : line.replacingOccurrences(of: pattern, with: ANSI.red(ANSI.bold(pattern)))
             return lineNumbers ? "\(ANSI.grey("\(idx+1)")):\(highlighted)" : highlighted
         }.joined(separator: "\n")
     }
@@ -368,10 +371,14 @@ class ShellInterpreter: ObservableObject {
     // MARK: - Helpers
 
     func resolve(_ path: String) -> URL {
-        if path.hasPrefix("/") { return URL(fileURLWithPath: path) }
-        if path == "~" { return docsRoot }
-        if path.hasPrefix("~/") { return docsRoot.appendingPathComponent(String(path.dropFirst(2))) }
-        return cwd.appendingPathComponent(path)
+        if path.hasPrefix("/") { return URL(fileURLWithPath: URL(fileURLWithPath: path).standardized.path) }
+        if path == "~" { return canonicalDirectoryURL(docsRoot) }
+        if path.hasPrefix("~/") { return URL(fileURLWithPath: docsRoot.appendingPathComponent(String(path.dropFirst(2))).standardized.path) }
+        return URL(fileURLWithPath: cwd.appendingPathComponent(path).standardized.path)
+    }
+
+    private func canonicalDirectoryURL(_ url: URL) -> URL {
+        URL(fileURLWithPath: url.standardized.path)
     }
 
     func prompt() -> String {

@@ -198,7 +198,7 @@ final class ShellEdgeCaseTests: XCTestCase {
         for _ in 0..<10 {
             shell.execute("cd ..")
         }
-        XCTAssertEqual(shell.cwd, tmpDir)
+        XCTAssertEqual(shell.cwd.path, tmpDir.path)
     }
 }
 

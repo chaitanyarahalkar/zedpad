@@ -17,6 +17,8 @@ struct FileSearchBar: View {
                 .focused($isFocused)
                 .autocorrectionDisabled()
                 .accessibilityLabel("Filter files")
+                .accessibilityIdentifier("Filter files")
+                .onTapGesture { isFocused = true }
 
             if !query.isEmpty {
                 Button { query = "" } label: {
@@ -35,6 +37,8 @@ struct FileSearchBar: View {
             isFocused ? appState.theme.accentColor : appState.theme.borderColor,
             lineWidth: isFocused ? 1.5 : 1
         ))
+        .contentShape(Rectangle())
+        .onTapGesture { isFocused = true }
         .animation(.easeInOut(duration: 0.15), value: isFocused)
         .padding(.horizontal, 8)
         .padding(.vertical, 6)

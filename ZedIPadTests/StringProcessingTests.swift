@@ -35,7 +35,7 @@ final class StringProcessingTests: XCTestCase {
             ("no_ext", ""),
         ]
         for (name, expectedExt) in testCases {
-            let ext = (name as NSString).pathExtension.lowercased()
+            let ext = FileNode(name: name, type: .file, path: name).fileExtension
             XCTAssertEqual(ext, expectedExt, "Extension of '\(name)'")
         }
     }
