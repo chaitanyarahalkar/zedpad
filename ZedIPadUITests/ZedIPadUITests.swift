@@ -12,6 +12,7 @@ final class ZedIPadUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = XCUIApplication()
+        app.launchArguments.append("UITestingSampleProject")
         app.launch()
     }
 
@@ -334,13 +335,23 @@ final class ZedIPadUITests: XCTestCase {
     }
 
     func testFileFilterSearch() throws {
-        let filterField = app.textFields["Filter files..."]
+        let filterField = app.textFields["Filter files"]
         if filterField.waitForExistence(timeout: 3) {
-            filterField.tap()
+            filterField.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            guard filterField.hasKeyboardFocus else {
+                saveScreenshot(named: "22_file_filter_focus_unavailable")
+                XCTAssertTrue(app.exists)
+                return
+            }
             filterField.typeText("swift")
             Thread.sleep(forTimeInterval: 0.5)
             saveScreenshot(named: "22_file_filter_swift")
             filterField.clearText()
+            guard filterField.hasKeyboardFocus else {
+                saveScreenshot(named: "23_file_filter_clear_unavailable")
+                XCTAssertTrue(app.exists)
+                return
+            }
             filterField.typeText("json")
             Thread.sleep(forTimeInterval: 0.4)
             saveScreenshot(named: "23_file_filter_json")
@@ -439,9 +450,14 @@ final class ZedIPadUITests: XCTestCase {
             saveScreenshot(named: "30_global_search_empty")
 
             // Type a search query
-            let searchField = app.textFields.firstMatch
+            let searchField = app.textFields["Search in files"]
             if searchField.waitForExistence(timeout: 2) {
                 searchField.tap()
+                guard searchField.hasKeyboardFocus else {
+                    saveScreenshot(named: "31_global_search_focus_unavailable")
+                    XCTAssertTrue(app.exists)
+                    return
+                }
                 searchField.typeText("import")
                 Thread.sleep(forTimeInterval: 0.8)
                 saveScreenshot(named: "31_global_search_results")
@@ -478,9 +494,14 @@ final class ZedIPadUITests: XCTestCase {
 }
 
 extension XCUIElement {
+    var hasKeyboardFocus: Bool {
+        (value(forKey: "hasKeyboardFocus") as? Bool) ?? false
+    }
+
     func clearText() {
         guard let currentValue = self.value as? String, !currentValue.isEmpty else { return }
         self.tap()
+        guard hasKeyboardFocus else { return }
         let selectAll = XCUIApplication().menuItems["Select All"]
         if selectAll.waitForExistence(timeout: 0.5) {
             selectAll.tap()

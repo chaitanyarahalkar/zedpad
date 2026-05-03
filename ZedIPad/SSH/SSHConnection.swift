@@ -117,6 +117,7 @@ class ServerStore: ObservableObject {
 
 enum SSHPasswordStore {
     private static let service = "com.zedipad.ssh.passwords"
+    nonisolated(unsafe) private static var fallbackPasswords: [UUID: String] = [:]
 
     static func save(password: String, for id: UUID) {
         let data = password.data(using: .utf8) ?? Data()
@@ -127,7 +128,12 @@ enum SSHPasswordStore {
             kSecValueData as String: data
         ]
         SecItemDelete(query as CFDictionary)
-        SecItemAdd(query as CFDictionary, nil)
+        let status = SecItemAdd(query as CFDictionary, nil)
+        #if DEBUG
+        if status != errSecSuccess {
+            fallbackPasswords[id] = password
+        }
+        #endif
     }
 
     static func load(for id: UUID) -> String? {
@@ -140,7 +146,13 @@ enum SSHPasswordStore {
         ]
         var result: AnyObject?
         guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
-              let data = result as? Data else { return nil }
+              let data = result as? Data else {
+            #if DEBUG
+            return fallbackPasswords[id]
+            #else
+            return nil
+            #endif
+        }
         return String(data: data, encoding: .utf8)
     }
 
@@ -151,5 +163,8 @@ enum SSHPasswordStore {
             kSecAttrAccount as String: id.uuidString
         ]
         SecItemDelete(query as CFDictionary)
+        #if DEBUG
+        fallbackPasswords.removeValue(forKey: id)
+        #endif
     }
 }

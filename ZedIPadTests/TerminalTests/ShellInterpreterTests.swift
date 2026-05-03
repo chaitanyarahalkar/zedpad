@@ -53,7 +53,7 @@ final class ShellInterpreterTests: XCTestCase {
         shell.execute("cd subdir")
         XCTAssertEqual(shell.cwd.lastPathComponent, "subdir")
         shell.execute("cd ..")
-        XCTAssertEqual(shell.cwd, tmpDir)
+        XCTAssertEqual(shell.cwd.path, tmpDir.path)
     }
 
     func testCdNonexistent() {

@@ -19,7 +19,11 @@ class FileNode: Identifiable, ObservableObject {
     }
 
     var fileExtension: String {
-        (name as NSString).pathExtension.lowercased()
+        let ext = (name as NSString).pathExtension
+        if ext.isEmpty, name.hasPrefix("."), name.dropFirst().contains(".") == false {
+            return String(name.dropFirst()).lowercased()
+        }
+        return ext.lowercased()
     }
 
     var icon: String {
@@ -221,6 +225,10 @@ class FileNode: Identifiable, ObservableObject {
                       data: T;
                       status: number;
                       message: string;
+                    }
+
+                    function formatStatus(response: ApiResponse<unknown>): string {
+                      return `${response.status}: ${response.message}`;
                     }
 
                     type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';

@@ -87,11 +87,16 @@ final class TerminalIntegrationTests: XCTestCase {
     }
 
     func testGitWorkflow() throws {
-        // Create a git-enabled directory and test workflow
         let gitResult = shell.execute("git init")
         XCTAssertTrue(gitResult.contains("Initialized") || gitResult.contains("init"))
-        let statusResult = shell.execute("git status")
-        XCTAssertFalse(statusResult.isEmpty)
+        shell.execute("echo 'hello' > README.md")
+        XCTAssertTrue(shell.execute("git status").contains("README.md"))
+        XCTAssertTrue(shell.execute("git add README.md").contains("Staged"))
+        XCTAssertTrue(shell.execute("git commit -m 'Add readme'").contains("Add readme"))
+        XCTAssertTrue(shell.execute("git log").contains("Add readme"))
+        XCTAssertTrue(shell.execute("git status").contains("working tree clean"))
+        shell.execute("echo 'hello again' > README.md")
+        XCTAssertTrue(shell.execute("git diff").contains("diff --git"))
     }
 
     func testFindWorkflow() throws {
@@ -242,9 +247,12 @@ final class GitIntegrationTests: XCTestCase {
     func testGitCommitMessageValidation() {
         let git = GitService(repoURL: tmpDir)
         _ = git.handleGitCommand(["init"])
+        FileManager.default.createFile(atPath: tmpDir.appendingPathComponent("file.txt").path, contents: Data("content".utf8))
+        _ = git.handleGitCommand(["add", "file.txt"])
 
         // Empty message should fail
         let emptyResult = git.handleGitCommand(["commit", "-m", ""])
+        XCTAssertTrue(emptyResult.contains("message must not be empty"))
         // Non-empty should succeed
         let goodResult = git.handleGitCommand(["commit", "-m", "Initial commit"])
         XCTAssertTrue(goodResult.contains("Initial commit"))

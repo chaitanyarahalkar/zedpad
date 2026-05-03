@@ -38,6 +38,10 @@ class AppState: ObservableObject {
 
     init() {
         rootDirectory = FileNode.sampleRoot()
+        if ProcessInfo.processInfo.arguments.contains("UITestingSampleProject") {
+            subscribeToMenuCommands()
+            return
+        }
         loadDocumentsDirectory()
         restoreRecentFiles()
         restoreLastOpenFile()

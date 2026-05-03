@@ -55,10 +55,10 @@ final class FinalIntegrationTests: XCTestCase {
         var code = "func greet(name: String) -> String { return \"Hello, \\(name)!\" }"
         find.query = "String"
         let ranges = find.search(in: code)
-        XCTAssertEqual(ranges.count, 3)
+        XCTAssertEqual(ranges.count, 2)
         find.replaceQuery = "Int"
         let count = find.replaceAll(in: &code)
-        XCTAssertEqual(count, 3)
+        XCTAssertEqual(count, 2)
         XCTAssertFalse(code.contains("String"))
     }
 

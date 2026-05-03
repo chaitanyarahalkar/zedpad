@@ -58,7 +58,32 @@ struct GitBranch: Identifiable {
     let isRemote: Bool
 }
 
-// MARK: - Git Service (executes git binary if available, else simulates)
+private struct StoredGitState: Codable {
+    var commits: [StoredGitCommit] = []
+    var stagedPaths: [String] = []
+}
+
+private struct StoredGitCommit: Codable {
+    let hash: String
+    let parentHash: String?
+    let branch: String
+    let author: String
+    let date: String
+    let message: String
+    let snapshot: [String: String]
+}
+
+private struct GitStatusBuckets {
+    var staged: [GitStatusEntry] = []
+    var unstaged: [GitStatusEntry] = []
+    var untracked: [GitStatusEntry] = []
+
+    var all: [GitStatusEntry] {
+        staged + unstaged + untracked
+    }
+}
+
+// MARK: - Git Service (lightweight filesystem-backed Git simulator)
 
 @MainActor
 class GitService: ObservableObject {
@@ -96,31 +121,61 @@ class GitService: ObservableObject {
         return String(trimmed.prefix(7)) // detached HEAD
     }
 
-    // MARK: - Read status from git index
+    // MARK: - Read status
 
     func readStatus(at url: URL) -> [GitStatusEntry] {
-        // Read .git/index to determine tracked files, compare with working tree
-        // For simplicity: scan working tree for modifications vs HEAD
-        var entries: [GitStatusEntry] = []
-        let gitDir = url.appendingPathComponent(".git")
-        guard FileManager.default.fileExists(atPath: gitDir.path) else { return [] }
+        statusBuckets(at: url).all
+    }
 
-        // Read tracked files from COMMIT_EDITMSG / working tree diff
-        // Parse the index file to find tracked paths
-        entries += untrackedFiles(at: url)
-        entries += modifiedFiles(at: url)
-        return entries
+    private func statusBuckets(at url: URL) -> GitStatusBuckets {
+        let state = loadState(at: url)
+        let staged = Set(state.stagedPaths)
+        let headSnapshot = headCommit(at: url, in: state)?.snapshot ?? [:]
+        let workingSnapshot = workingTreeSnapshot(at: url)
+        let trackedPaths = Set(headSnapshot.keys)
+        let workingPaths = Set(workingSnapshot.keys)
+        let changedPaths = trackedPaths.union(workingPaths).sorted()
+        var buckets = GitStatusBuckets()
+
+        for path in changedPaths {
+            let headContent = headSnapshot[path]
+            let workingContent = workingSnapshot[path]
+            let status: GitFileStatus?
+            if headContent == nil, workingContent != nil {
+                status = .untracked
+            } else if headContent != nil, workingContent == nil {
+                status = .deleted
+            } else if headContent != workingContent {
+                status = .modified
+            } else {
+                status = nil
+            }
+
+            guard let status else { continue }
+            let entry = GitStatusEntry(path: path, status: status == .untracked && staged.contains(path) ? .added : status)
+            if staged.contains(path) {
+                buckets.staged.append(entry)
+            } else if status == .untracked {
+                buckets.untracked.append(entry)
+            } else {
+                buckets.unstaged.append(entry)
+            }
+        }
+
+        return buckets
     }
 
     private func untrackedFiles(at url: URL) -> [GitStatusEntry] {
         guard let enumerator = FileManager.default.enumerator(at: url,
             includingPropertiesForKeys: nil,
-            options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants]) else { return [] }
+            options: [.skipsHiddenFiles]) else { return [] }
         var entries: [GitStatusEntry] = []
         for case let fileURL as URL in enumerator {
             let name = fileURL.lastPathComponent
-            if name == ".git" { continue }
-            // Check if not tracked (simplified: check if in index)
+            if name == ".git" {
+                enumerator.skipDescendants()
+                continue
+            }
             let relativePath = fileURL.path.replacingOccurrences(of: url.path + "/", with: "")
             if !isTracked(relativePath, at: url) {
                 var isDir: ObjCBool = false
@@ -175,6 +230,11 @@ class GitService: ObservableObject {
     }
 
     private func trackedFilePaths(at url: URL) -> [String] {
+        let state = loadState(at: url)
+        if let commit = headCommit(at: url, in: state) {
+            return Array(commit.snapshot.keys).sorted()
+        }
+
         // Read git index (simplified binary parser for version 2)
         let indexPath = url.appendingPathComponent(".git/index")
         guard let data = try? Data(contentsOf: indexPath) else { return [] }
@@ -279,16 +339,19 @@ class GitService: ObservableObject {
     func initRepo(at url: URL) throws {
         let gitDir = url.appendingPathComponent(".git")
         try FileManager.default.createDirectory(at: gitDir, withIntermediateDirectories: true)
-        for subdir in ["objects/pack", "refs/heads", "refs/tags"] {
+        for subdir in ["objects/pack", "refs/heads", "refs/tags", "zedipad"] {
             try FileManager.default.createDirectory(at: gitDir.appendingPathComponent(subdir), withIntermediateDirectories: true)
         }
         let headContent = "ref: refs/heads/main\n"
         try headContent.write(to: gitDir.appendingPathComponent("HEAD"), atomically: true, encoding: .utf8)
+        try "".write(to: gitDir.appendingPathComponent("refs/heads/main"), atomically: true, encoding: .utf8)
         let config = "[core]\n\trepositoryformatversion = 0\n\tfilemode = true\n\tbare = false\n"
         try config.write(to: gitDir.appendingPathComponent("config"), atomically: true, encoding: .utf8)
+        try saveState(StoredGitState(), at: url)
         isRepo = true
         currentBranch = "main"
         branches = [GitBranch(name: "main", isCurrent: true, isRemote: false)]
+        statusEntries = readStatus(at: url)
     }
 
     // MARK: - Shell dispatch
@@ -309,69 +372,293 @@ class GitService: ObservableObject {
             refresh(at: url)
             return formatStatus()
         case "branch":
-            guard isRepo else { return ANSI.red("fatal: not a git repository") }
+            guard isRepo, let url = repoURL else { return ANSI.red("fatal: not a git repository") }
+            refresh(at: url)
             return branches.map { b in
                 b.isCurrent ? ANSI.green("* \(b.name)") : "  \(b.name)"
             }.joined(separator: "\n")
         case "log":
-            guard isRepo else { return ANSI.red("fatal: not a git repository") }
-            return ANSI.grey("(no commits yet — use 'git commit' to create the first commit)")
+            guard isRepo, let url = repoURL else { return ANSI.red("fatal: not a git repository") }
+            return formatLog(at: url)
         case "add":
-            guard isRepo else { return ANSI.red("fatal: not a git repository") }
+            guard isRepo, let url = repoURL else { return ANSI.red("fatal: not a git repository") }
             let files = Array(args.dropFirst())
-            return files.isEmpty ? ANSI.red("git add: nothing specified") : ANSI.grey("Staged: \(files.joined(separator: ", "))")
+            return stage(files, at: url)
         case "commit":
-            guard isRepo else { return ANSI.red("fatal: not a git repository") }
+            guard isRepo, let url = repoURL else { return ANSI.red("fatal: not a git repository") }
             if let msgIdx = args.firstIndex(of: "-m"), msgIdx + 1 < args.count {
-                return ANSI.green("[main] \(args[msgIdx + 1])")
+                return commit(message: args[msgIdx + 1], at: url)
             }
             return ANSI.red("git commit: use -m <message>")
         case "diff":
-            guard isRepo else { return ANSI.red("fatal: not a git repository") }
-            return formatDiff()
+            guard isRepo, let url = repoURL else { return ANSI.red("fatal: not a git repository") }
+            refresh(at: url)
+            return formatDiff(at: url)
         case "checkout":
-            guard isRepo, args.count > 1 else { return ANSI.red("git checkout: missing branch name") }
-            let branch = args[1]
-            currentBranch = branch
-            return ANSI.green("Switched to branch '\(branch)'")
+            guard isRepo, let url = repoURL, args.count > 1 else { return ANSI.red("git checkout: missing branch name") }
+            return checkout(branch: args[1], at: url)
         default:
             return ANSI.red("git: '\(cmd)' is not a git command. See 'git help'.")
         }
     }
 
     private func formatStatus() -> String {
+        guard let url = repoURL else { return ANSI.red("fatal: not a git repository") }
+        let buckets = statusBuckets(at: url)
         var lines: [String] = []
         lines.append("On branch \(ANSI.green(currentBranch))")
-        if statusEntries.isEmpty {
+        if buckets.all.isEmpty {
             lines.append("nothing to commit, working tree clean")
         } else {
-            let untracked = statusEntries.filter { $0.status == .untracked }
-            let modified  = statusEntries.filter { $0.status == .modified }
-            let deleted   = statusEntries.filter { $0.status == .deleted }
-            if !modified.isEmpty || !deleted.isEmpty {
+            if !buckets.staged.isEmpty {
+                lines.append("\nChanges to be committed:")
+                lines.append(ANSI.grey("  (use \"git reset <file>...\" to unstage)"))
+                buckets.staged.forEach { entry in
+                    lines.append("  \(ANSI.green("\(statusLabel(entry.status)):   \(entry.path)"))")
+                }
+            }
+            if !buckets.unstaged.isEmpty {
                 lines.append("\nChanges not staged for commit:")
                 lines.append(ANSI.grey("  (use \"git add <file>...\" to update what will be committed)"))
-                modified.forEach { lines.append("  \(ANSI.red("modified:   \($0.path)"))") }
-                deleted.forEach  { lines.append("  \(ANSI.red("deleted:    \($0.path)"))") }
+                buckets.unstaged.forEach { entry in
+                    lines.append("  \(ANSI.red("\(statusLabel(entry.status)):   \(entry.path)"))")
+                }
             }
-            if !untracked.isEmpty {
+            if !buckets.untracked.isEmpty {
                 lines.append("\nUntracked files:")
                 lines.append(ANSI.grey("  (use \"git add <file>...\" to include in what will be committed)"))
-                untracked.forEach { lines.append("  \(ANSI.grey($0.path))") }
+                buckets.untracked.forEach { lines.append("  \(ANSI.grey($0.path))") }
             }
         }
         return lines.joined(separator: "\n")
     }
 
-    private func formatDiff() -> String {
-        let modified = statusEntries.filter { $0.status == .modified }
-        guard !modified.isEmpty else { return "" }
-        return modified.map { entry -> String in
-            "\(ANSI.bold("diff --git a/\(entry.path) b/\(entry.path)"))\n" +
+    private func statusLabel(_ status: GitFileStatus) -> String {
+        switch status {
+        case .added: return "new file"
+        case .modified: return "modified"
+        case .deleted: return "deleted"
+        case .untracked: return "new file"
+        case .renamed: return "renamed"
+        case .unmodified: return "unmodified"
+        }
+    }
+
+    private func formatDiff(at url: URL) -> String {
+        let buckets = statusBuckets(at: url)
+        guard !buckets.unstaged.isEmpty else { return "" }
+        let state = loadState(at: url)
+        let headSnapshot = headCommit(at: url, in: state)?.snapshot ?? [:]
+        let workingSnapshot = workingTreeSnapshot(at: url)
+        return buckets.unstaged.map { entry -> String in
+            let oldText = headSnapshot[entry.path].flatMap { Data(base64Encoded: $0) }.flatMap { String(data: $0, encoding: .utf8) } ?? ""
+            let newText = workingSnapshot[entry.path].flatMap { Data(base64Encoded: $0) }.flatMap { String(data: $0, encoding: .utf8) } ?? ""
+            return "\(ANSI.bold("diff --git a/\(entry.path) b/\(entry.path)"))\n" +
             "\(ANSI.grey("--- a/\(entry.path)"))\n" +
             "\(ANSI.grey("+++ b/\(entry.path)"))\n" +
-            ANSI.green("+ [modified content]")
+            simpleDiff(oldText: oldText, newText: newText)
         }.joined(separator: "\n\n")
+    }
+
+    private func simpleDiff(oldText: String, newText: String) -> String {
+        let oldLines = oldText.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
+        let newLines = newText.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
+        if oldLines.isEmpty && newLines.isEmpty { return "" }
+        var lines = ["@@ -1,\(oldLines.count) +1,\(newLines.count) @@"]
+        oldLines.prefix(20).forEach { lines.append(ANSI.red("-\($0)")) }
+        newLines.prefix(20).forEach { lines.append(ANSI.green("+\($0)")) }
+        return lines.joined(separator: "\n")
+    }
+
+    private func stage(_ args: [String], at url: URL) -> String {
+        guard !args.isEmpty else { return ANSI.red("git add: nothing specified") }
+        var state = loadState(at: url)
+        let buckets = statusBuckets(at: url)
+        let changedPaths = Set(buckets.all.map(\.path))
+        var pathsToStage = Set<String>()
+
+        for arg in args {
+            if arg == "." || arg == "-A" || arg == "--all" {
+                pathsToStage.formUnion(changedPaths)
+                continue
+            }
+            let normalized = normalizePath(arg)
+            if changedPaths.contains(normalized) {
+                pathsToStage.insert(normalized)
+            } else if FileManager.default.fileExists(atPath: url.appendingPathComponent(normalized).path) {
+                pathsToStage.insert(normalized)
+            }
+        }
+
+        guard !pathsToStage.isEmpty else {
+            return ANSI.grey("No changes matched \(args.joined(separator: ", "))")
+        }
+
+        state.stagedPaths = Array(Set(state.stagedPaths).union(pathsToStage)).sorted()
+        do {
+            try saveState(state, at: url)
+            refresh(at: url)
+            return ANSI.grey("Staged: \(Array(pathsToStage).sorted().joined(separator: ", "))")
+        } catch {
+            return ANSI.red("git add: \(error.localizedDescription)")
+        }
+    }
+
+    private func commit(message: String, at url: URL) -> String {
+        let trimmed = message.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return ANSI.red("git commit: message must not be empty") }
+
+        var state = loadState(at: url)
+        let buckets = statusBuckets(at: url)
+        let stagedChangedPaths = Set(buckets.staged.map(\.path))
+        guard !stagedChangedPaths.isEmpty else { return ANSI.red("nothing to commit") }
+
+        let parent = readHEADSha(at: url).nilIfEmpty
+        let snapshot = workingTreeSnapshot(at: url)
+        let date = ISO8601DateFormatter().string(from: Date())
+        let hash = makeCommitHash(message: trimmed, parent: parent, branch: currentBranch, date: date, snapshot: snapshot)
+        let commit = StoredGitCommit(
+            hash: hash,
+            parentHash: parent,
+            branch: currentBranch,
+            author: "Zed iPad",
+            date: date,
+            message: trimmed,
+            snapshot: snapshot
+        )
+        state.commits.append(commit)
+        state.stagedPaths = []
+
+        do {
+            try saveState(state, at: url)
+            try writeBranchRef(hash, branch: currentBranch, at: url)
+            refresh(at: url)
+            return ANSI.green("[\(currentBranch) \(String(hash.prefix(7)))] \(trimmed)")
+        } catch {
+            return ANSI.red("git commit: \(error.localizedDescription)")
+        }
+    }
+
+    private func checkout(branch: String, at url: URL) -> String {
+        let normalized = normalizeBranchName(branch)
+        guard !normalized.isEmpty else { return ANSI.red("git checkout: missing branch name") }
+
+        do {
+            let headSha = readHEADSha(at: url)
+            let branchRef = url.appendingPathComponent(".git/refs/heads/\(normalized)")
+            if !FileManager.default.fileExists(atPath: branchRef.path) {
+                try FileManager.default.createDirectory(at: branchRef.deletingLastPathComponent(), withIntermediateDirectories: true)
+                try headSha.write(to: branchRef, atomically: true, encoding: .utf8)
+            }
+            try "ref: refs/heads/\(normalized)\n".write(to: url.appendingPathComponent(".git/HEAD"), atomically: true, encoding: .utf8)
+            refresh(at: url)
+            return ANSI.green("Switched to branch '\(normalized)'")
+        } catch {
+            return ANSI.red("git checkout: \(error.localizedDescription)")
+        }
+    }
+
+    private func formatLog(at url: URL) -> String {
+        let state = loadState(at: url)
+        let commitsByHash = Dictionary(uniqueKeysWithValues: state.commits.map { ($0.hash, $0) })
+        var cursor = readHEADSha(at: url).nilIfEmpty
+        var commits: [StoredGitCommit] = []
+
+        while let hash = cursor, let commit = commitsByHash[hash] {
+            commits.append(commit)
+            cursor = commit.parentHash
+        }
+
+        guard !commits.isEmpty else {
+            return ANSI.grey("(no commits yet — use 'git commit' to create the first commit)")
+        }
+
+        return commits.map { commit in
+            GitCommit(
+                hash: commit.hash,
+                shortHash: String(commit.hash.prefix(7)),
+                author: commit.author,
+                date: commit.date,
+                message: commit.message
+            ).oneline
+        }.joined(separator: "\n")
+    }
+
+    private func zedStateURL(at url: URL) -> URL {
+        url.appendingPathComponent(".git/zedipad/state.json")
+    }
+
+    private func loadState(at url: URL) -> StoredGitState {
+        let stateURL = zedStateURL(at: url)
+        guard let data = try? Data(contentsOf: stateURL),
+              let state = try? JSONDecoder().decode(StoredGitState.self, from: data) else {
+            return StoredGitState()
+        }
+        return state
+    }
+
+    private func saveState(_ state: StoredGitState, at url: URL) throws {
+        let stateURL = zedStateURL(at: url)
+        try FileManager.default.createDirectory(at: stateURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        let data = try JSONEncoder().encode(state)
+        try data.write(to: stateURL, options: .atomic)
+    }
+
+    private func headCommit(at url: URL, in state: StoredGitState) -> StoredGitCommit? {
+        let headSha = readHEADSha(at: url)
+        guard !headSha.isEmpty else { return nil }
+        return state.commits.last { $0.hash == headSha }
+    }
+
+    private func workingTreeSnapshot(at url: URL) -> [String: String] {
+        guard let enumerator = FileManager.default.enumerator(
+            at: url,
+            includingPropertiesForKeys: [.isRegularFileKey],
+            options: []
+        ) else { return [:] }
+
+        var snapshot: [String: String] = [:]
+        for case let fileURL as URL in enumerator {
+            let relativePath = normalizePath(fileURL.path.replacingOccurrences(of: url.path + "/", with: ""))
+            if relativePath == ".git" || relativePath.hasPrefix(".git/") {
+                enumerator.skipDescendants()
+                continue
+            }
+            var isDirectory: ObjCBool = false
+            FileManager.default.fileExists(atPath: fileURL.path, isDirectory: &isDirectory)
+            if isDirectory.boolValue {
+                continue
+            }
+            if let data = try? Data(contentsOf: fileURL) {
+                snapshot[relativePath] = data.base64EncodedString()
+            }
+        }
+        return snapshot
+    }
+
+    private func writeBranchRef(_ hash: String, branch: String, at url: URL) throws {
+        let branchRef = url.appendingPathComponent(".git/refs/heads/\(branch)")
+        try FileManager.default.createDirectory(at: branchRef.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try "\(hash)\n".write(to: branchRef, atomically: true, encoding: .utf8)
+    }
+
+    private func normalizePath(_ path: String) -> String {
+        path.replacingOccurrences(of: "\\", with: "/")
+            .trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+            .replacingOccurrences(of: "^\\./", with: "", options: .regularExpression)
+    }
+
+    private func normalizeBranchName(_ branch: String) -> String {
+        branch.trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: "refs/heads/", with: "")
+            .replacingOccurrences(of: "/", with: "-")
+    }
+
+    private func makeCommitHash(message: String, parent: String?, branch: String, date: String, snapshot: [String: String]) -> String {
+        let payload = ([message, parent ?? "", branch, date] + snapshot.keys.sorted().flatMap { [$0, snapshot[$0] ?? ""] })
+            .joined(separator: "\u{0}")
+        let data = Data(payload.utf8)
+        return data.stableHexDigest
     }
 }
 
@@ -379,12 +666,29 @@ class GitService: ObservableObject {
 
 extension Data {
     var sha1Hex: String {
-        var hash = [UInt8](repeating: 0, count: 20)
         withUnsafeBytes { ptr in
             // CC_SHA1 not available without CommonCrypto import
             // Use a simple CRC-based approximation for comparison purposes
         }
         // Fallback: use base64 as a proxy hash for comparison
         return base64EncodedString()
+    }
+
+    var stableHexDigest: String {
+        let bytes = [UInt8](self)
+        var hash1: UInt64 = 0xcbf29ce484222325
+        var hash2: UInt64 = 0x84222325cbf29ce4
+        for byte in bytes {
+            hash1 ^= UInt64(byte)
+            hash1 &*= 0x100000001b3
+            hash2 = (hash2 &<< 5) &+ hash2 &+ UInt64(byte)
+        }
+        return String(format: "%016llx%016llx%08llx", hash1, hash2, UInt64(bytes.count))
+    }
+}
+
+private extension String {
+    var nilIfEmpty: String? {
+        isEmpty ? nil : self
     }
 }

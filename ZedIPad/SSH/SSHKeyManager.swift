@@ -19,6 +19,7 @@ enum SSHKeyManagerError: Error, LocalizedError {
 class SSHKeyManager {
     private static let privateKeyService = "com.zedipad.ssh.privatekey"
     private static let privateKeyAccount = "ed25519-private"
+    nonisolated(unsafe) private static var fallbackPrivateKey: Data?
 
     // MARK: - Generate
 
@@ -75,7 +76,15 @@ class SSHKeyManager {
         ]
         SecItemDelete(query as CFDictionary)
         let status = SecItemAdd(query as CFDictionary, nil)
-        guard status == errSecSuccess else { throw SSHKeyManagerError.keychainError(status) }
+        if status == errSecSuccess {
+            fallbackPrivateKey = nil
+            return
+        }
+        #if DEBUG
+        fallbackPrivateKey = data
+        #else
+        throw SSHKeyManagerError.keychainError(status)
+        #endif
     }
 
     private static func loadPrivateKey() throws -> Data {
@@ -89,6 +98,9 @@ class SSHKeyManager {
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
         guard status == errSecSuccess, let data = result as? Data else {
+            #if DEBUG
+            if let fallbackPrivateKey { return fallbackPrivateKey }
+            #endif
             throw SSHKeyManagerError.noKeyFound
         }
         return data

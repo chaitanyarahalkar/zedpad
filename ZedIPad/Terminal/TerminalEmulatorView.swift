@@ -15,6 +15,9 @@ struct TerminalEmulatorView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> TerminalView {
         let tv = TerminalView(frame: .zero)
+        tv.accessibilityIdentifier = "Terminal emulator"
+        tv.isAccessibilityElement = true
+        tv.accessibilityLabel = "Terminal emulator"
         tv.terminalDelegate = context.coordinator
         tv.nativeForegroundColor = UIColor(theme.primaryText)
         tv.nativeBackgroundColor = UIColor(theme.editorBackground)

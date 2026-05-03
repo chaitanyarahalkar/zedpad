@@ -1,238 +1,1224 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZedIPad — Code Editor for iPad</title>
-  <meta name="description" content="A Zed-inspired code editor built natively for iPadOS. Syntax highlighting, terminal, SSH, Git — all on your iPad." />
-  <meta property="og:title" content="ZedIPad — Code Editor for iPad" />
-  <meta property="og:description" content="A Zed-inspired code editor built natively for iPadOS." />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lattice — iPad IDE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    background: #08090b;
+    color: #f4f5f7;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; cursor: pointer; }
+  ::selection { background: oklch(0.7 0.18 250 / 0.3); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── Nav ── */
+  #nav {
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    background: rgba(8,9,11,0.6);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .nav-inner {
+    max-width: 1180px; margin: 0 auto;
+    padding: 14px 32px;
+    display: flex; align-items: center; gap: 28px;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; font-size: 16px; color: #f4f5f7;
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex; gap: 22px; font-size: 13.5px; color: #c8ccd4;
+    list-style: none; margin: 0; padding: 0;
+  }
+  .nav-links a { color: inherit; text-decoration: none; transition: color .15s; }
+  .nav-links a:hover { color: #f4f5f7; }
+  .nav-cta { margin-left: auto; display: flex; gap: 10px; align-items: center; font-size: 13.5px; }
+  .nav-signin { color: #c8ccd4; }
+  .btn-primary {
+    background: #f4f5f7; color: #08090b; border: 0;
+    padding: 8px 14px; border-radius: 99px; font-size: 13px; font-weight: 600;
+    transition: opacity .15s, transform .15s;
+  }
+  .btn-primary:hover { opacity: .88; transform: translateY(-1px); }
+
+  /* ── Hero ── */
+  .hero-wrap {
+    max-width: 1180px; margin: 0 auto;
+    padding: 80px 32px 0; position: relative;
+    animation: fadeUp .7s ease both;
+  }
+  .halo {
+    position: absolute; inset: 0; height: 1100px;
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, oklch(0.7 0.18 250 / 0.18), transparent 60%);
+    pointer-events: none;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 5px 12px 5px 6px; border-radius: 99px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(10px);
+    font-size: 12px; color: #c8ccd4;
+  }
+  .badge-pill {
+    background: oklch(0.7 0.18 250); color: white;
+    border-radius: 99px; padding: 2px 8px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em;
+  }
+  h1.hero-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 92px; line-height: 0.98; font-weight: 400;
+    margin: 24px 0 0; letter-spacing: -0.025em; max-width: 980px;
+  }
+  h1.hero-title em { font-style: italic; color: #9ba1ad; }
+  .hero-sub {
+    font-size: 19px; line-height: 1.45; color: #c8ccd4;
+    max-width: 580px; margin: 28px 0 0;
+  }
+  .hero-actions {
+    display: flex; gap: 12px; margin-top: 36px;
+    align-items: center; flex-wrap: wrap;
+  }
+  .btn-download {
+    background: #f4f5f7; color: #08090b; border: 0;
+    padding: 13px 22px; border-radius: 99px; font-size: 14.5px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+    transition: opacity .15s, transform .15s;
+  }
+  .btn-download:hover { opacity: .88; transform: translateY(-1px); }
+  .btn-secondary {
+    background: rgba(255,255,255,0.04); color: #f4f5f7;
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 12px 20px; border-radius: 99px; font-size: 14.5px; font-weight: 500;
+    backdrop-filter: blur(10px);
+    transition: background .15s, transform .15s;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.08); transform: translateY(-1px); }
+  .hero-note { font-size: 12.5px; color: #9ba1ad; margin-left: 8px; }
+
+  .hero-preview { margin-top: 72px; position: relative; }
+  .hero-glow {
+    position: absolute; inset: 40px -40px 0;
+    background: radial-gradient(ellipse 60% 40% at 50% 50%, oklch(0.7 0.18 250 / 0.25), transparent 70%);
+    filter: blur(40px); z-index: 0;
+  }
+  .hero-frame {
+    position: relative; height: 620px; z-index: 1;
+    border-radius: 22px; overflow: hidden;
+    box-shadow: 0 50px 120px -30px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08);
+  }
+
+  .logos-strip {
+    margin-top: 80px; padding-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex; align-items: center; gap: 40px;
+    justify-content: space-between; flex-wrap: wrap;
+  }
+  .logos-label { font-size: 12px; color: #9ba1ad; letter-spacing: 0.06em; text-transform: uppercase; }
+  .logos-list { display: flex; gap: 36px; color: #9ba1ad; opacity: 0.6; }
+
+  /* ── Section ── */
+  .section-inner { max-width: 1180px; margin: 0 auto; padding: 120px 32px 0; }
+  .section-header { display: flex; align-items: baseline; gap: 24px; margin-bottom: 48px; flex-wrap: wrap; }
+  .section-kicker {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: oklch(0.7 0.18 250); letter-spacing: 0.1em;
+  }
+  .section-title {
+    font-family: 'Instrument Serif', serif; font-size: 56px; font-weight: 400;
+    line-height: 1; letter-spacing: -0.02em; margin: 0;
+  }
+  .section-title em { font-style: italic; color: #9ba1ad; }
+
+  /* ── Bento ── */
+  .bento-grid {
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    gap: 16px; grid-auto-rows: 210px;
+  }
+  .bento-tile {
+    padding: 24px; border-radius: 16px;
+    background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px); display: flex; flex-direction: column;
+    transition: border-color .2s, background .2s;
+  }
+  .bento-tile:hover { border-color: rgba(255,255,255,0.14); background: rgba(255,255,255,0.04); }
+  .bento-tile.s32 { grid-column: span 3; grid-row: span 2; }
+  .bento-tile.s22 { grid-column: span 2; grid-row: span 2; }
+  .bento-kicker {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: oklch(0.7 0.18 250); letter-spacing: 0.1em; margin-bottom: 8px;
+  }
+  .bento-title {
+    font-family: 'Instrument Serif', serif; font-size: 26px; font-weight: 400;
+    margin: 0; letter-spacing: -0.015em; line-height: 1.1;
+  }
+  .bento-body { font-size: 13.5px; color: #9ba1ad; line-height: 1.5; margin-top: 14px; }
+
+  .lang-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .lang-chip {
+    font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
+    padding: 5px 10px; border-radius: 6px;
+    background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08); color: #c8ccd4;
+  }
+
+  .code-snip {
+    margin-top: 14px; font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; padding: 12px; border-radius: 8px;
+    background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);
+    color: #c8ccd4; line-height: 1.6;
+  }
+
+  /* ── Pricing ── */
+  .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .price-card {
+    padding: 28px; border-radius: 18px;
+    background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);
+    position: relative; transition: border-color .2s;
+  }
+  .price-card.hi { background: linear-gradient(180deg, oklch(0.7 0.18 250 / 0.08), transparent); border-color: oklch(0.7 0.18 250); }
+  .price-card:not(.hi):hover { border-color: rgba(255,255,255,0.14); }
+  .price-popular {
+    position: absolute; top: 14px; right: 14px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+    color: oklch(0.7 0.18 250); text-transform: uppercase;
+  }
+  .price-name { font-size: 13px; color: #9ba1ad; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.08em; }
+  .price-amount { margin-top: 12px; display: flex; align-items: baseline; gap: 6px; }
+  .price-num { font-family: 'Instrument Serif', serif; font-size: 56px; line-height: 1; font-weight: 400; }
+  .price-per { color: #9ba1ad; font-size: 14px; }
+  .price-btn {
+    margin-top: 22px; width: 100%; background: #f4f5f7; color: #08090b; border: 0;
+    padding: 11px 18px; border-radius: 99px; font-size: 14px; font-weight: 600;
+    transition: opacity .15s, transform .15s;
+  }
+  .price-btn:hover { opacity: .88; transform: translateY(-1px); }
+  .price-btn.ac { background: oklch(0.7 0.18 250); color: white; }
+  .price-features { margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .price-feature { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: #c8ccd4; }
+  .pf-check { color: oklch(0.7 0.18 250); margin-top: 2px; }
+
+  /* ── Testimonials ── */
+  .testi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .testi-card {
+    padding: 28px; border-radius: 16px;
+    background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);
+    transition: border-color .2s, background .2s;
+  }
+  .testi-card:hover { border-color: rgba(255,255,255,0.14); background: rgba(255,255,255,0.04); }
+  .testi-quote { font-family: 'Instrument Serif', serif; font-size: 22px; line-height: 1.3; margin: 0; color: #f4f5f7; }
+  .testi-who { margin-top: 22px; font-size: 12.5px; color: #9ba1ad; }
+  .testi-who strong { color: #f4f5f7; font-weight: 600; }
+
+  /* ── Changelog ── */
+  .cl-row {
+    display: grid; grid-template-columns: 100px 140px 1fr auto;
+    align-items: baseline; gap: 24px; padding: 20px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    transition: background .15s;
+  }
+  .cl-row:first-child { border-top: 1px solid rgba(255,255,255,0.08); }
+  .cl-row:hover { background: rgba(255,255,255,0.02); }
+  .cl-ver { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: oklch(0.7 0.18 250); }
+  .cl-date { font-size: 13px; color: #9ba1ad; }
+  .cl-title { font-size: 15px; color: #f4f5f7; }
+  .cl-link { font-size: 13px; color: #9ba1ad; }
+
+  /* ── Footer ── */
+  footer { margin-top: 140px; padding: 60px 32px 40px; border-top: 1px solid rgba(255,255,255,0.08); background: #0d0e11; }
+  .footer-inner { max-width: 1180px; margin: 0 auto; }
+  .footer-cta { display: flex; align-items: flex-end; gap: 32px; padding-bottom: 56px; flex-wrap: wrap; }
+  .footer-h {
+    font-family: 'Instrument Serif', serif; font-size: 96px; font-weight: 400;
+    line-height: 0.95; letter-spacing: -0.025em; margin: 0; flex: 1;
+  }
+  .footer-h em { font-style: italic; color: #9ba1ad; }
+  .btn-footer {
+    background: oklch(0.7 0.18 250); color: white; border: 0;
+    padding: 16px 28px; border-radius: 99px; font-size: 16px; font-weight: 600;
+    white-space: nowrap; transition: opacity .15s, transform .15s;
+  }
+  .btn-footer:hover { opacity: .88; transform: translateY(-1px); }
+  .footer-cols {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 32px; padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 13px; color: #9ba1ad;
+  }
+  .fc-title { color: #f4f5f7; font-weight: 600; margin-bottom: 12px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .fc-links { display: flex; flex-direction: column; gap: 8px; }
+  .fc-links a { color: inherit; text-decoration: none; transition: color .15s; }
+  .fc-links a:hover { color: #f4f5f7; }
+  .footer-bottom { margin-top: 40px; font-size: 12px; color: #9ba1ad; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  /* ── IDE Mock ── */
+  .ide-mock {
+    width: 100%; height: 100%; background: #0b0d10; color: #e4e7ee;
+    border-radius: 18px; overflow: hidden; display: flex; flex-direction: column;
+    font-family: 'Inter Tight', system-ui, sans-serif; font-size: 12px;
+    border: 1px solid rgba(255,255,255,0.10);
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  .ide-titlebar {
+    height: 36px; display: flex; align-items: center; padding: 0 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06); background: #0f1216;
+    gap: 10px; flex-shrink: 0;
+  }
+  .ide-dots { display: flex; gap: 6px; }
+  .ide-dot { width: 11px; height: 11px; border-radius: 99px; }
+  .ide-wtitle { flex: 1; text-align: center; color: #7d8590; font-size: 11px; letter-spacing: 0.02em; }
+  .ide-branch {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: #7d8590; padding: 2px 6px; border: 1px solid rgba(255,255,255,0.10); border-radius: 4px;
+  }
+  .ide-run {
+    background: oklch(0.7 0.18 250); color: white; border: 0;
+    border-radius: 5px; padding: 4px 10px; font-size: 11px; font-weight: 600;
+    display: flex; align-items: center; gap: 5px; transition: opacity .15s;
+  }
+  .ide-run:hover { opacity: .85; }
+  .ide-run:disabled { opacity: 0.6; }
+  .ide-body { flex: 1; display: flex; min-height: 0; }
+  .ide-sidebar {
+    width: 180px; background: #13171c; border-right: 1px solid rgba(255,255,255,0.06);
+    padding: 10px 0; flex-shrink: 0; display: flex; flex-direction: column;
+  }
+  .ide-slabel { padding: 4px 12px; font-size: 10px; font-weight: 600; color: #7d8590; text-transform: uppercase; letter-spacing: 0.08em; }
+  .ide-flist { padding: 6px 8px; font-size: 11.5px; }
+  .ide-fdir { display: flex; align-items: center; gap: 6px; padding: 3px 6px; color: #9da5b4; font-weight: 600; }
+  .ide-fitems { padding-left: 14px; display: flex; flex-direction: column; gap: 2px; margin-top: 2px; }
+  .ide-fbtn {
+    display: flex; align-items: center; gap: 7px; background: transparent; border: 0;
+    padding: 3px 6px; border-radius: 4px; color: #9da5b4; font-size: 11.5px;
+    text-align: left; width: 100%; font-family: inherit; transition: background .1s, color .1s;
+  }
+  .ide-fbtn:hover { background: rgba(255,255,255,0.04); color: #e4e7ee; }
+  .ide-fbtn.active { background: rgba(255,255,255,0.05); color: #e4e7ee; }
+  .ide-ficon {
+    display: inline-flex; width: 16px; height: 16px; border-radius: 3px;
+    color: white; font-size: 8px; font-weight: 700;
+    align-items: center; justify-content: center; letter-spacing: 0.02em;
+    font-family: 'JetBrains Mono', monospace; flex-shrink: 0;
+  }
+  .ide-sstatus {
+    margin-top: auto; padding: 8px 12px; border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 10px; color: #7d8590; display: flex; flex-direction: column; gap: 3px;
+  }
+  .s-dot {
+    width: 6px; height: 6px; border-radius: 99px; display: inline-block; margin-right: 5px;
+    animation: pulse-dot 2s infinite;
+  }
+  .ide-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .ide-tabs { height: 32px; display: flex; border-bottom: 1px solid rgba(255,255,255,0.06); background: #13171c; flex-shrink: 0; }
+  .ide-tab {
+    display: flex; align-items: center; gap: 6px; padding: 0 10px;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    background: transparent; color: #7d8590; font-size: 11px; cursor: pointer;
+    position: relative; transition: color .1s; user-select: none;
+  }
+  .ide-tab.active { background: #0b0d10; color: #e4e7ee; }
+  .ide-tab-bar { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: oklch(0.7 0.18 250); }
+  .ide-tab-x {
+    margin-left: 4px; opacity: 0.5; font-size: 14px; line-height: 14px;
+    width: 14px; height: 14px; display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 3px; transition: opacity .1s, background .1s;
+    background: transparent; border: 0; color: inherit; padding: 0;
+  }
+  .ide-tab-x:hover { opacity: 1; background: rgba(255,255,255,0.10); }
+  .ide-editor {
+    flex: 1; overflow: auto; min-height: 0;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12.5px; line-height: 20px; background: #0b0d10; position: relative;
+  }
+  .ide-ei { display: flex; min-height: 100%; }
+  .ide-gutter {
+    padding: 12px 10px 12px 14px; text-align: right;
+    color: #3a414b; user-select: none; flex-shrink: 0;
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+  .ide-gl { height: 20px; }
+  .ide-code { padding: 12px 16px; flex: 1; }
+  .ide-cl { height: 20px; white-space: pre; }
+  .ide-cl.al { background: rgba(255,255,255,0.03); margin: 0 -16px; padding: 0 16px; }
+  .ide-cursor {
+    display: inline-block; width: 1.5px; height: 16px;
+    background: oklch(0.7 0.18 250); margin-left: 1px;
+    vertical-align: text-bottom; animation: blink 1.06s step-end infinite;
+  }
+  .ide-term {
+    border-top: 1px solid rgba(255,255,255,0.06); background: #0f1216;
+    flex-shrink: 0; display: flex; flex-direction: column;
+  }
+  .ide-term-tabs {
+    height: 26px; display: flex; align-items: center; padding: 0 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 10px; color: #7d8590; gap: 16px; flex-shrink: 0;
+  }
+  .ide-tta {
+    color: #e4e7ee; font-weight: 600;
+    border-bottom: 1.5px solid oklch(0.7 0.18 250);
+    padding-bottom: 5px; margin-top: 5px;
+  }
+  .ide-tmin { margin-left: auto; cursor: pointer; transition: color .1s; }
+  .ide-tmin:hover { color: #e4e7ee; }
+  .ide-tbody {
+    flex: 1; padding: 8px 12px; overflow: auto;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 16px;
+  }
+  .ts { color: #7d8590; }
+  .to { color: #e4e7ee; }
+  .tok { color: #28c840; }
+  .ter { color: #ff5f57; }
+  .ide-tprompt { display: flex; align-items: center; }
+  .ide-tbc { width: 7px; height: 13px; background: #e4e7ee; display: inline-block; animation: blink 1.06s step-end infinite; }
+  .ide-sbar {
+    height: 22px; display: flex; align-items: center; padding: 0 12px;
+    background: oklch(0.7 0.18 250); color: white;
+    font-size: 10px; gap: 14px; font-family: 'JetBrains Mono', monospace; flex-shrink: 0;
+  }
+  .sbar-r { margin-left: auto; display: flex; gap: 14px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    h1.hero-title { font-size: 56px; }
+    .bento-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: auto; }
+    .bento-tile.s32, .bento-tile.s22 { grid-column: span 2; grid-row: span 1; }
+    .price-grid { grid-template-columns: 1fr; }
+    .testi-grid { grid-template-columns: 1fr; }
+    .footer-h { font-size: 56px; }
+    .footer-cols { grid-template-columns: 1fr 1fr; }
+    .cl-row { grid-template-columns: 80px 1fr; }
+    .cl-date, .cl-link { display: none; }
+  }
+</style>
 </head>
 <body>
 
-<!-- ─── Nav ────────────────────────────────────────────────────────────────── -->
-<nav>
-  <a href="#" class="nav-logo">
-    <div class="nav-logo-icon">&lt;/&gt;</div>
-    ZedIPad
-  </a>
-  <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#screenshots">Screenshots</a></li>
-    <li><a href="#tech">Tech</a></li>
-    <li><a href="https://github.com/chaitanyarahalkar/zedpad" target="_blank" rel="noopener">GitHub</a></li>
-  </ul>
-  <a href="https://github.com/chaitanyarahalkar/zedpad/releases" class="nav-cta" target="_blank" rel="noopener">
-    Download ↗
-  </a>
-</nav>
-
-<!-- ─── Hero ────────────────────────────────────────────────────────────────── -->
-<section class="hero">
-  <div class="hero-glow hero-glow-1"></div>
-  <div class="hero-glow hero-glow-2"></div>
-
-  <div class="hero-content">
-    <div class="hero-text">
-      <div class="hero-badge fade-up">Now available for iPadOS 18</div>
-      <h1 class="fade-up delay-1">Code beautifully.<br>On iPad.</h1>
-      <p class="hero-sub fade-up delay-2">
-        A Zed-inspired code editor built natively for iPadOS. Syntax highlighting,
-        terminal, SSH, Git — all running locally on your device.
-      </p>
-      <div class="hero-buttons fade-up delay-3">
-        <a href="https://github.com/chaitanyarahalkar/zedpad" class="btn btn-primary" target="_blank" rel="noopener">
-          ★ View on GitHub
-        </a>
-        <a href="https://github.com/chaitanyarahalkar/zedpad/releases" class="btn btn-secondary" target="_blank" rel="noopener">
-          Download →
-        </a>
-      </div>
-    </div>
-
-    <div class="hero-visual fade-up delay-2">
-      <div class="code-window">
-        <div class="code-window-bar">
-          <div class="dot dot-r"></div>
-          <div class="dot dot-y"></div>
-          <div class="dot dot-g"></div>
-          <div class="code-tab">Editor.swift</div>
-        </div>
-        <div class="code-body">
-          <div class="line-nums" id="line-nums">1</div>
-          <div class="code-content">
-            <div id="typewriter"></div>
-            <span class="cursor"></span>
-          </div>
-        </div>
-      </div>
+<!-- NAV -->
+<header id="nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">
+      <svg width="22" height="22" viewBox="0 0 22 22">
+        <rect x="1" y="1" width="9" height="9" rx="1.5" fill="none" stroke="oklch(0.7 0.18 250)" stroke-width="1.5"/>
+        <rect x="12" y="1" width="9" height="9" rx="1.5" fill="oklch(0.7 0.18 250)"/>
+        <rect x="1" y="12" width="9" height="9" rx="1.5" fill="oklch(0.7 0.18 250)" opacity="0.5"/>
+        <rect x="12" y="12" width="9" height="9" rx="1.5" fill="none" stroke="oklch(0.7 0.18 250)" stroke-width="1.5"/>
+      </svg>
+      Lattice
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#demo">Demo</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#changelog">Changelog</a></li>
+      <li><a href="#docs">Docs</a></li>
+    </ul>
+    <div class="nav-cta">
+      <span class="nav-signin">Sign in</span>
+      <button class="btn-primary">Get the app</button>
     </div>
   </div>
-</section>
+</header>
 
-<!-- ─── Stats ────────────────────────────────────────────────────────────────── -->
-<div class="stats">
-  <div class="stats-inner">
-    <div class="stat-item fade-up">
-      <span class="stat-num" data-target="21" data-suffix="">21</span>
-      <span class="stat-label">Languages</span>
+<!-- HERO -->
+<div style="position:relative;overflow:hidden;">
+  <div class="halo"></div>
+  <div class="hero-wrap">
+    <div class="badge">
+      <span class="badge-pill">NEW</span>
+      Lattice 2.0 — SSH/SFTP, full VT100 terminal, 20+ language syntax highlighting
+      <span style="color:#9ba1ad">↗</span>
     </div>
-    <div class="stat-item fade-up delay-1">
-      <span class="stat-num" data-target="1100" data-suffix="+">1,100+</span>
-      <span class="stat-label">Unit Tests</span>
+
+    <h1 class="hero-title">
+      A real dev environment.<br>
+      <em>Now in your hands.</em>
+    </h1>
+
+    <p class="hero-sub">
+      Lattice is a polyglot IDE for iPad with syntax-aware editing for 20+ languages,
+      a full VT100 terminal, SSH + SFTP remote access, built-in Git, and project-wide
+      search. iPadOS 17+. Free forever.
+    </p>
+
+    <div class="hero-actions">
+      <button class="btn-download">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.04c-.03-2.94 2.4-4.36 2.51-4.43-1.37-2-3.5-2.28-4.26-2.31-1.81-.18-3.54 1.07-4.46 1.07s-2.34-1.04-3.86-1.01c-1.99.03-3.82 1.16-4.84 2.94-2.07 3.59-.53 8.9 1.49 11.81.99 1.42 2.16 3.02 3.69 2.96 1.49-.06 2.05-.96 3.85-.96 1.79 0 2.3.96 3.87.93 1.6-.03 2.61-1.45 3.59-2.88 1.13-1.65 1.6-3.25 1.62-3.33-.04-.02-3.11-1.19-3.14-4.79-.02-3.02 2.46-4.46 2.57-4.53-1.41-2.07-3.6-2.3-4.37-2.34M14.15 3.34c.81-.99 1.36-2.36 1.21-3.73-1.17.05-2.59.78-3.43 1.76-.75.87-1.41 2.27-1.23 3.61 1.31.1 2.64-.66 3.45-1.64"/></svg>
+        Download for iPad
+      </button>
+      <button class="btn-secondary" id="heroWatchBtn">Watch the demo — 1:48</button>
+      <span class="hero-note">Free forever · Requires iPadOS 17+</span>
     </div>
-    <div class="stat-item fade-up delay-2">
-      <span class="stat-num" data-target="350" data-suffix="+">350+</span>
-      <span class="stat-label">Iterations</span>
+
+    <div class="hero-preview">
+      <div class="hero-glow"></div>
+      <div class="hero-frame" id="heroIDE"></div>
     </div>
-    <div class="stat-item fade-up delay-3">
-      <span class="stat-num" data-target="4" data-suffix="">4</span>
-      <span class="stat-label">Themes</span>
+
+    <div class="logos-strip">
+      <span class="logos-label">Trusted by engineers shipping on the move</span>
+      <div class="logos-list" style="font-family:'Instrument Serif',serif;font-size:22px;">
+        <span>Halftone</span>
+        <span style="font-family:'Inter Tight';font-weight:700;letter-spacing:-0.04em">Forge×</span>
+        <span style="font-style:italic">quanta</span>
+        <span style="font-family:'JetBrains Mono';font-size:16px">./shipyard</span>
+        <span>Meridian</span>
+        <span style="letter-spacing:0.3em">NORTH</span>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ─── Features ────────────────────────────────────────────────────────────── -->
+<!-- FEATURES -->
 <section id="features">
-  <div class="section-inner">
-    <div class="section-label fade-up">Features</div>
-    <h2 class="section-title fade-up delay-1">Everything you need.<br>Nothing you don't.</h2>
-    <p class="section-sub fade-up delay-2">
-      Built from the ground up for iPad's large canvas — not a port, not a web app.
-      A native SwiftUI editor that respects your workflow.
-    </p>
-
-    <div class="features-grid">
-      <div class="feature-card fade-up">
-        <span class="feature-icon">🎨</span>
-        <div class="feature-title">Syntax Highlighting</div>
-        <p class="feature-desc">21 languages with beautiful color themes. Zed Dark, One Dark, Solarized, and Light — all using real AST-based token coloring.</p>
-      </div>
-      <div class="feature-card fade-up delay-1">
-        <span class="feature-icon">⚡</span>
-        <div class="feature-title">Local Completions</div>
-        <p class="feature-desc">Powered by swift-syntax and JavaScriptCore. Real Swift AST completions, React hooks, Node.js builtins — zero network required.</p>
-      </div>
-      <div class="feature-card fade-up delay-2">
-        <span class="feature-icon">📁</span>
-        <div class="feature-title">Real Filesystem</div>
-        <p class="feature-desc">Browse, create, rename and delete files directly from your iPad's filesystem and iCloud Drive. Full FileManager integration.</p>
-      </div>
-      <div class="feature-card fade-up delay-3">
-        <span class="feature-icon">🖥️</span>
-        <div class="feature-title">Built-in Terminal</div>
-        <p class="feature-desc">Full VT100 terminal with 24 shell commands. SSH into remote servers, browse files, run git — all without leaving the editor.</p>
-      </div>
-      <div class="feature-card fade-up delay-4">
-        <span class="feature-icon">🌿</span>
-        <div class="feature-title">Git Integration</div>
-        <p class="feature-desc">git status, commit, diff, log, branch — all from the terminal or dedicated commit panel. Gutter indicators show changed lines.</p>
-      </div>
-      <div class="feature-card fade-up delay-5">
-        <span class="feature-icon">🔍</span>
-        <div class="feature-title">Find &amp; Replace</div>
-        <p class="feature-desc">Regex-powered search across files. Replace with live match highlighting, keyboard shortcut support, and case sensitivity toggle.</p>
-      </div>
+  <div class="section-inner reveal">
+    <div class="section-header">
+      <span class="section-kicker">02 — CAPABILITIES</span>
+      <h2 class="section-title">Built for what an IDE <em>actually does.</em></h2>
     </div>
-  </div>
-</section>
 
-<!-- ─── Screenshots ──────────────────────────────────────────────────────────── -->
-<section id="screenshots" class="screenshots">
-  <div class="section-inner">
-    <div class="section-label fade-up">Screenshots</div>
-    <h2 class="section-title fade-up delay-1">See it in action.</h2>
-    <p class="section-sub fade-up delay-2">
-      Running on a real iPad Pro. Every pixel native SwiftUI.
-    </p>
+    <div class="bento-grid">
 
-    <div class="screenshots-grid">
-      <div class="fade-up">
-        <div class="ipad-frame">
-          <img src="screenshots/editor_dark.png" alt="Syntax highlighted Swift code in ZedIPad dark theme" loading="lazy" />
+      <!-- 20+ Languages -->
+      <div class="bento-tile s32">
+        <div class="bento-kicker">01</div>
+        <h3 class="bento-title">20+ languages, properly.</h3>
+        <div class="lang-chips">
+          <span class="lang-chip">Swift</span>
+          <span class="lang-chip">Python</span>
+          <span class="lang-chip">TypeScript</span>
+          <span class="lang-chip">Rust</span>
+          <span class="lang-chip">Go</span>
+          <span class="lang-chip">Kotlin</span>
+          <span class="lang-chip">Ruby</span>
+          <span class="lang-chip">C / C++</span>
+          <span class="lang-chip">SQL</span>
+          <span class="lang-chip">HTML</span>
+          <span class="lang-chip">CSS</span>
+          <span class="lang-chip">PHP</span>
+          <span class="lang-chip">Lua</span>
+          <span class="lang-chip">R</span>
+          <span class="lang-chip">Scala</span>
+          <span class="lang-chip">Bash</span>
         </div>
-        <p class="screenshot-label">Syntax Highlighting</p>
+        <p class="bento-body" style="margin-top:12px">
+          Semantic token highlighting — keywords, types, strings, and comments
+          per-grammar, not generic regex. Includes JSON, YAML, Markdown, and SQL.
+        </p>
       </div>
-      <div class="fade-up delay-2">
-        <div class="ipad-frame">
-          <img src="screenshots/palette.png" alt="Command palette in ZedIPad" loading="lazy" />
+
+      <!-- SSH + SFTP -->
+      <div class="bento-tile s32">
+        <div class="bento-kicker">02</div>
+        <h3 class="bento-title">SSH + SFTP remote access.</h3>
+        <div class="code-snip">
+          <div style="font-size:10px;color:#7d8590;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px">saved connections</div>
+          <div style="color:#9ba1ad"><span style="color:oklch(0.7 0.18 250)">●</span> dev.server.io · <span style="color:#c8ccd4">alice</span> · key-pair</div>
+          <div style="color:#9ba1ad"><span style="color:#3a414b">○</span> staging · <span style="color:#c8ccd4">deploy</span> · password</div>
+          <div style="color:#9ba1ad"><span style="color:#3a414b">○</span> raspi-local · <span style="color:#c8ccd4">pi</span> · key-pair</div>
         </div>
-        <p class="screenshot-label">Command Palette</p>
+        <p class="bento-body">
+          Connect to any server, browse the remote filesystem via SFTP, edit files
+          in-place, and run commands in a dedicated SSH terminal session.
+        </p>
       </div>
-      <div class="fade-up delay-3">
-        <div class="ipad-frame">
-          <img src="screenshots/light_theme.png" alt="ZedIPad light theme welcome screen" loading="lazy" />
+
+      <!-- Terminal -->
+      <div class="bento-tile s22">
+        <div class="bento-kicker">03</div>
+        <h3 class="bento-title">Full VT100 terminal.</h3>
+        <div class="code-snip" style="font-size:11px">
+          <div><span style="color:oklch(0.7 0.18 250)">$</span> git log --oneline</div>
+          <div style="color:#c8ccd4">b6e7969 <span style="color:#9ba1ad">file tree tap fix</span></div>
+          <div style="color:#c8ccd4">68808b1 <span style="color:#9ba1ad">autosave + keybindings</span></div>
+          <div><span style="color:oklch(0.7 0.18 250)">$</span> grep -r <span style="color:#c3e88d">"func"</span> ./ZedIPad</div>
+          <div style="color:#28c840">47 matches in 12 files</div>
         </div>
-        <p class="screenshot-label">Light Theme</p>
       </div>
+
+      <!-- Git -->
+      <div class="bento-tile s22">
+        <div class="bento-kicker">04</div>
+        <h3 class="bento-title">Built-in Git.</h3>
+        <div class="code-snip" style="margin-top:12px;font-size:11px">
+          <div style="color:#9ba1ad">M <span style="color:oklch(0.7 0.18 250)">SyntaxHighlighter.swift</span></div>
+          <div style="color:#9ba1ad">A <span style="color:#28c840">FindBar.swift</span></div>
+          <div style="color:#9ba1ad">D <span style="color:#ff5f57">LegacyView.swift</span></div>
+          <div style="margin-top:4px;color:#9ba1ad">branch: <span style="color:#c8ccd4">main</span> · 3 staged</div>
+        </div>
+        <p class="bento-body" style="margin-top:8px;font-size:12.5px">
+          Stage, commit, branch, and view history directly from the app.
+        </p>
+      </div>
+
+      <!-- Global search -->
+      <div class="bento-tile s22">
+        <div class="bento-kicker">05</div>
+        <h3 class="bento-title">Project-wide search.</h3>
+        <p class="bento-body" style="margin-top:12px">
+          Case-insensitive search across every file in your project with line context
+          and one-tap jump to the match — even across nested directories.
+        </p>
+        <div class="code-snip" style="margin-top:10px;font-size:10.5px">
+          <div><span style="color:oklch(0.7 0.18 250)">⌘⇧F</span> <span style="color:#9ba1ad">→ 14 results in 6 files</span></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- ─── Tech stack ────────────────────────────────────────────────────────────── -->
-<section id="tech">
-  <div class="section-inner">
-    <div class="section-label fade-up">Stack</div>
-    <h2 class="section-title fade-up delay-1">Built on solid foundations.</h2>
-    <p class="section-sub fade-up delay-2">
-      Pure Swift, zero JavaScript frameworks, no Electron.
-      Just SwiftUI and Apple frameworks all the way down.
+<!-- DEMO -->
+<section id="demo">
+  <div class="section-inner reveal">
+    <div class="section-header">
+      <span class="section-kicker">03 — TRY IT</span>
+      <h2 class="section-title">Click around. <em>It's the real thing.</em></h2>
+    </div>
+    <p style="font-size:16px;color:#c8ccd4;max-width:560px;margin:0 0 32px">
+      Open files, switch languages, hit Run. The tokenizer running here is the same
+      logic as the iPad app — Swift, Python, TypeScript, and CSS syntax highlighting,
+      a live terminal, and file tabs.
     </p>
+    <div style="height:580px;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,0.08)" id="demoIDE"></div>
+  </div>
+</section>
 
-    <div class="tech-grid fade-up delay-2">
-      <div class="tech-pill"><span class="dot-color" style="background:#f05138"></span>SwiftUI</div>
-      <div class="tech-pill"><span class="dot-color" style="background:#fa7343"></span>Swift 6</div>
-      <div class="tech-pill"><span class="dot-color" style="background:#89b4fa"></span>SwiftTerm</div>
-      <div class="tech-pill"><span class="dot-color" style="background:#cba6f7"></span>swift-syntax</div>
-      <div class="tech-pill"><span class="dot-color" style="background:#f9e2af"></span>JavaScriptCore</div>
-      <div class="tech-pill"><span class="dot-color" style="background:#a6e3a1"></span>SwiftGit2</div>
-      <div class="tech-pill"><span class="dot-color" style="background:#94e2d5"></span>FileManager</div>
-      <div class="tech-pill"><span class="dot-color" style="background:#fab387"></span>CryptoKit</div>
-      <div class="tech-pill"><span class="dot-color" style="background:#f38ba8"></span>XCTest</div>
-      <div class="tech-pill"><span class="dot-color" style="background:#6e738d"></span>SwiftNIO-SSH</div>
+<!-- EDITOR DETAILS -->
+<section>
+  <div class="section-inner reveal">
+    <div style="
+      display:grid;grid-template-columns:1fr 1fr;gap:48px;
+      padding:48px;border-radius:24px;
+      background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.08);
+      align-items:center;
+    ">
+      <div>
+        <span class="section-kicker" style="display:block;margin-bottom:16px">EDITOR DETAILS</span>
+        <h2 style="font-family:'Instrument Serif',serif;font-size:44px;font-weight:400;
+          line-height:1.05;letter-spacing:-0.02em;margin:0 0 20px">
+          Everything you expect<br>from a desktop editor.
+        </h2>
+        <p style="font-size:16px;color:#c8ccd4;line-height:1.6;margin:0 0 28px">
+          Autosave with a 1.5 s debounce, 14 standard keyboard shortcuts,
+          find &amp; replace, word wrap, configurable tab size, and a
+          command palette one chord away.
+        </p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:16px;align-items:center;font-size:14px;color:#c8ccd4">
+            <span style="font-family:'JetBrains Mono';font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:oklch(0.7 0.18 250)">⌘S</span>
+            Save · autosaves after 1.5 s idle
+          </div>
+          <div style="display:flex;gap:16px;align-items:center;font-size:14px;color:#c8ccd4">
+            <span style="font-family:'JetBrains Mono';font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:oklch(0.7 0.18 250)">⌘/</span>
+            Toggle line comment (language-aware)
+          </div>
+          <div style="display:flex;gap:16px;align-items:center;font-size:14px;color:#c8ccd4">
+            <span style="font-family:'JetBrains Mono';font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:oklch(0.7 0.18 250)">⌘⇧P</span>
+            Command palette
+          </div>
+          <div style="display:flex;gap:16px;align-items:center;font-size:14px;color:#c8ccd4">
+            <span style="font-family:'JetBrains Mono';font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:oklch(0.7 0.18 250)">⌥↑↓</span>
+            Move line up / down
+          </div>
+          <div style="display:flex;gap:16px;align-items:center;font-size:14px;color:#c8ccd4">
+            <span style="font-family:'JetBrains Mono';font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:oklch(0.7 0.18 250)">⌘D</span>
+            Duplicate line
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="
+          border-radius:14px;overflow:hidden;
+          border:1px solid rgba(255,255,255,0.08);
+          font-family:'JetBrains Mono',monospace;font-size:12.5px;
+          background:#0b0d10;line-height:20px;padding:16px;
+        ">
+          <div style="color:#9ba1ad;margin-bottom:8px;font-size:10px;letter-spacing:0.06em;text-transform:uppercase">
+            command palette — <span style="color:oklch(0.7 0.18 250)">⌘⇧P</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 12px;border:1px solid rgba(255,255,255,0.08);font-size:12px;color:#9ba1ad;display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M14 14l4 4"/></svg>
+            <span style="color:#c8ccd4">Toggle Theme</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.04);border-radius:6px;padding:6px 12px;font-size:11.5px;color:#7d8590;display:flex;justify-content:space-between"><span>Toggle Terminal</span><span style="color:#3a414b">⌘`</span></div>
+          <div style="border-radius:6px;padding:6px 12px;font-size:11.5px;color:#7d8590;display:flex;justify-content:space-between"><span>Increase Font Size</span><span style="color:#3a414b">⌘+</span></div>
+          <div style="border-radius:6px;padding:6px 12px;font-size:11.5px;color:#7d8590;display:flex;justify-content:space-between"><span>Open SSH Connection</span><span style="color:#3a414b">⌘K</span></div>
+          <div style="border-radius:6px;padding:6px 12px;font-size:11.5px;color:#7d8590;display:flex;justify-content:space-between"><span>Global Search</span><span style="color:#3a414b">⌘⇧F</span></div>
+          <div style="border-radius:6px;padding:6px 12px;font-size:11.5px;color:#7d8590;display:flex;justify-content:space-between"><span>Git Commit</span><span style="color:#3a414b">⌘⇧G</span></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ─── CTA ──────────────────────────────────────────────────────────────────── -->
-<section class="cta-section">
-  <div class="cta-card fade-up">
-    <h2 class="cta-title">Ready to code on iPad?</h2>
-    <p class="cta-sub">Open source, free to build and run. Join the project on GitHub.</p>
-    <div class="cta-buttons">
-      <a href="https://github.com/chaitanyarahalkar/zedpad" class="btn btn-primary" target="_blank" rel="noopener">
-        ★ Star on GitHub
-      </a>
-      <a href="https://github.com/chaitanyarahalkar/zedpad/releases" class="btn btn-secondary" target="_blank" rel="noopener">
-        Download Release →
-      </a>
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-inner reveal">
+    <div class="section-header">
+      <span class="section-kicker">04 — PRICING</span>
+      <h2 class="section-title">Pay for the runtime. <em>Not the editor.</em></h2>
+    </div>
+    <div class="price-grid">
+
+      <div class="price-card">
+        <div class="price-name">Community</div>
+        <div class="price-amount">
+          <span class="price-num">Free</span>
+          <span class="price-per">Forever</span>
+        </div>
+        <button class="price-btn">Download</button>
+        <div class="price-features">
+          <div class="price-feature"><span class="pf-check">✓</span>Full offline editor</div>
+          <div class="price-feature"><span class="pf-check">✓</span>20+ language syntax</div>
+          <div class="price-feature"><span class="pf-check">✓</span>VT100 terminal (ls, cd, grep, find…)</div>
+          <div class="price-feature"><span class="pf-check">✓</span>Local filesystem access</div>
+          <div class="price-feature"><span class="pf-check">✓</span>Find &amp; replace + global search</div>
+          <div class="price-feature"><span class="pf-check">✓</span>Built-in Git</div>
+        </div>
+      </div>
+
+      <div class="price-card hi">
+        <div class="price-popular">Most popular</div>
+        <div class="price-name">Cloud</div>
+        <div class="price-amount">
+          <span class="price-num">$18</span>
+          <span class="price-per">/month</span>
+        </div>
+        <button class="price-btn ac">Start 14-day trial</button>
+        <div class="price-features">
+          <div class="price-feature"><span class="pf-check">✓</span>Everything in Community</div>
+          <div class="price-feature"><span class="pf-check">✓</span>SSH + SFTP remote access</div>
+          <div class="price-feature"><span class="pf-check">✓</span>Saved server connections</div>
+          <div class="price-feature"><span class="pf-check">✓</span>Key-pair auth management</div>
+          <div class="price-feature"><span class="pf-check">✓</span>Persistent workspace sync</div>
+          <div class="price-feature"><span class="pf-check">✓</span>Priority support</div>
+        </div>
+      </div>
+
+      <div class="price-card">
+        <div class="price-name">Team</div>
+        <div class="price-amount">
+          <span class="price-num">$48</span>
+          <span class="price-per">/seat/mo</span>
+        </div>
+        <button class="price-btn">Talk to us</button>
+        <div class="price-features">
+          <div class="price-feature"><span class="pf-check">✓</span>Everything in Cloud</div>
+          <div class="price-feature"><span class="pf-check">✓</span>Self-hosted SSH runners</div>
+          <div class="price-feature"><span class="pf-check">✓</span>SSO + audit logs</div>
+          <div class="price-feature"><span class="pf-check">✓</span>Shared secrets vault</div>
+          <div class="price-feature"><span class="pf-check">✓</span>Dedicated support SLA</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- ─── Footer ────────────────────────────────────────────────────────────────── -->
+<!-- TESTIMONIALS -->
+<section>
+  <div class="section-inner reveal">
+    <div class="section-header">
+      <span class="section-kicker">05 — VOICES</span>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <p class="testi-quote">"I shipped three PRs from a coffee shop on an unstable hotspot. The SSH tab never dropped."</p>
+        <div class="testi-who"><strong>Aanya T.</strong> · Staff eng, Halftone</div>
+      </div>
+      <div class="testi-card">
+        <p class="testi-quote">"Finally a tablet IDE that doesn't apologize for being a tablet IDE. Real terminal, real Git, real syntax."</p>
+        <div class="testi-who"><strong>Jonas S.</strong> · Founder, Forge×</div>
+      </div>
+      <div class="testi-card">
+        <p class="testi-quote">"The 20-language highlighter is surprisingly accurate. My Scala and Lua files finally look right."</p>
+        <div class="testi-who"><strong>Mei R.</strong> · Principal engineer, Meridian</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHANGELOG -->
+<section id="changelog">
+  <div class="section-inner reveal">
+    <div class="section-header">
+      <span class="section-kicker">06 — CHANGELOG</span>
+      <h2 class="section-title" style="font-size:40px">Recently shipped</h2>
+    </div>
+    <div>
+      <div class="cl-row">
+        <span class="cl-ver">2.0.0</span>
+        <span class="cl-date">May 3, 2026</span>
+        <span class="cl-title">Terminal FAB, command palette (⌘⇧P), SSH/SFTP server manager</span>
+        <span class="cl-link">Read →</span>
+      </div>
+      <div class="cl-row">
+        <span class="cl-ver">1.9.0</span>
+        <span class="cl-date">Apr 28, 2026</span>
+        <span class="cl-title">Autosave (1.5 s debounce) + 14 standard editor keyboard shortcuts</span>
+        <span class="cl-link">Read →</span>
+      </div>
+      <div class="cl-row">
+        <span class="cl-ver">1.8.2</span>
+        <span class="cl-date">Apr 22, 2026</span>
+        <span class="cl-title">File-tree tap — highPriorityGesture coexists with context menus on iPadOS</span>
+        <span class="cl-link">Read →</span>
+      </div>
+      <div class="cl-row">
+        <span class="cl-ver">1.7.0</span>
+        <span class="cl-date">Apr 14, 2026</span>
+        <span class="cl-title">Global search, find &amp; replace, landscape split-editor layout</span>
+        <span class="cl-link">Read →</span>
+      </div>
+      <div class="cl-row">
+        <span class="cl-ver">1.6.0</span>
+        <span class="cl-date">Mar 30, 2026</span>
+        <span class="cl-title">Git commit view, branch management, SFTP file browser with permissions</span>
+        <span class="cl-link">Read →</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
-  <a href="#" class="footer-logo">
-    <div class="nav-logo-icon" style="width:22px;height:22px;font-size:11px;">&lt;/&gt;</div>
-    ZedIPad
-  </a>
-  <ul class="footer-links">
-    <li><a href="https://github.com/chaitanyarahalkar/zedpad" target="_blank" rel="noopener">GitHub</a></li>
-    <li><a href="https://github.com/chaitanyarahalkar/zedpad/releases" target="_blank" rel="noopener">Releases</a></li>
-    <li><a href="https://github.com/chaitanyarahalkar/zedpad/issues" target="_blank" rel="noopener">Issues</a></li>
-  </ul>
-  <p class="footer-credit">
-    Built with <a href="https://claude.ai/code" target="_blank" rel="noopener">Claude Code</a> ·
-    Open source on <a href="https://github.com/chaitanyarahalkar/zedpad" target="_blank" rel="noopener">GitHub</a>
-  </p>
+  <div class="footer-inner">
+    <div class="footer-cta">
+      <h2 class="footer-h">Code from <em>anywhere.</em></h2>
+      <button class="btn-footer">Download for iPad →</button>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <div class="fc-title">
+          <svg width="20" height="20" viewBox="0 0 22 22">
+            <rect x="1" y="1" width="9" height="9" rx="1.5" fill="none" stroke="oklch(0.7 0.18 250)" stroke-width="1.5"/>
+            <rect x="12" y="1" width="9" height="9" rx="1.5" fill="oklch(0.7 0.18 250)"/>
+            <rect x="1" y="12" width="9" height="9" rx="1.5" fill="oklch(0.7 0.18 250)" opacity="0.5"/>
+            <rect x="12" y="12" width="9" height="9" rx="1.5" fill="none" stroke="oklch(0.7 0.18 250)" stroke-width="1.5"/>
+          </svg>
+          Lattice
+        </div>
+        <p style="margin-top:12px;line-height:1.5;max-width:280px;color:#9ba1ad;font-size:13px">
+          A real code editor for iPad. Built with SwiftUI + SwiftTerm, open-source on GitHub.
+        </p>
+      </div>
+      <div>
+        <div class="fc-title">Product</div>
+        <div class="fc-links">
+          <a href="#">Editor</a>
+          <a href="#">Terminal</a>
+          <a href="#">SSH / SFTP</a>
+          <a href="#">Git</a>
+          <a href="#">Pricing</a>
+        </div>
+      </div>
+      <div>
+        <div class="fc-title">Resources</div>
+        <div class="fc-links">
+          <a href="#">Docs</a>
+          <a href="#">Changelog</a>
+          <a href="#">GitHub</a>
+          <a href="#">Status</a>
+        </div>
+      </div>
+      <div>
+        <div class="fc-title">Community</div>
+        <div class="fc-links">
+          <a href="#">Discussions</a>
+          <a href="#">Issues</a>
+          <a href="#">Releases</a>
+          <a href="#">Contributing</a>
+        </div>
+      </div>
+      <div>
+        <div class="fc-title">Legal</div>
+        <div class="fc-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Security</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Lattice — iPad IDE</span>
+      <span>v2.0.0 · iPadOS 17+ · SwiftUI + SwiftTerm</span>
+    </div>
+  </div>
 </footer>
 
-<script src="script.js"></script>
+<script>
+(function () {
+'use strict';
+
+// ── Token palette ────────────────────────────────────────────
+const TC = {
+  kw:'#c792ea', str:'#c3e88d', num:'#f78c6c', com:'#5c6773',
+  fn:'#82aaff', type:'#ffcb6b', base:'#e4e7ee', tag:'#f07178',
+};
+
+// ── Files registry ───────────────────────────────────────────
+const FILES = {
+  'main.swift': {
+    lang: 'swift', icon: { bg:'#f05138', label:'sw' },
+    code: `import SwiftUI
+
+@main
+struct LatticeApp: App {
+    @StateObject private var appState = AppState()
+
+    var body: some Scene {
+        WindowGroup {
+            RootView()
+                .environmentObject(appState)
+        }
+    }
+}
+
+func fibonacci(_ n: Int) -> [Int] {
+    var a = 0, b = 1
+    return (0..<n).map { _ in
+        defer { (a, b) = (b, a + b) }
+        return a
+    }
+}`,
+  },
+  'server.py': {
+    lang: 'python', icon: { bg:'#3776ab', label:'py' },
+    code: `from http.server import HTTPServer, BaseHTTPRequestHandler
+import json
+
+users = [
+    {"id": 1, "name": "Alice", "lang": "Swift"},
+    {"id": 2, "name": "Bob",   "lang": "Rust"},
+]
+
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == "/users":
+            body = json.dumps(users).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(body)
+
+if __name__ == "__main__":
+    print("Listening on :8080")
+    HTTPServer(("", 8080), Handler).serve_forever()`,
+  },
+  'styles.css': {
+    lang: 'css', icon: { bg:'#1572b6', label:'css' },
+    code: `:root {
+  --bg: #0b0d10;
+  --fg: #e8ecf1;
+  --accent: oklch(0.7 0.18 250);
+  --border: rgba(255, 255, 255, 0.08);
+}
+
+.card {
+  background: color-mix(in oklab, var(--bg), white 4%);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  padding: 24px;
+  transition: border-color 0.2s;
+}
+
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}`,
+  },
+  'README.md': {
+    lang: 'markdown', icon: { bg:'#6b7280', label:'md' },
+    code: `# Lattice — iPad IDE
+
+A real code editor for iPadOS 17+.
+
+## Features
+
+- 20+ language syntax highlighting
+- Full VT100 terminal (SwiftTerm)
+- SSH + SFTP remote access
+- Built-in Git (commit, branch, status)
+- Global project search (case-insensitive)
+- Autosave + 14 keyboard shortcuts
+- Light / dark theme toggle
+- Landscape split-editor layout
+
+## Requirements
+
+- iPadOS 17 or later
+- Xcode 15+ to build from source`,
+  },
+};
+
+// ── Tokenizer ────────────────────────────────────────────────
+// Uses matchAll() so each call produces a fresh iterator — no shared lastIndex state.
+function tokenize(code, lang) {
+  const KW = {
+    swift:  /\b(import|struct|class|enum|protocol|extension|func|var|let|if|else|guard|return|switch|case|for|in|while|do|try|catch|throw|async|await|static|final|init|self|true|false|nil|defer|private|public|internal|fileprivate|open|override|mutating|inout)\b/g,
+    python: /\b(import|from|def|class|return|for|in|if|elif|else|try|except|with|as|yield|lambda|None|True|False|print|pass|break|continue|raise|and|or|not|is|global|nonlocal|del|assert)\b/g,
+    css:    /\b(root|color-mix|transition|animation|transform)\b/g,
+  };
+  return code.split('\n').map(line => {
+    if (lang === 'markdown') {
+      const c = line.startsWith('#') ? TC.kw : line.startsWith('-') || line.startsWith('*') ? TC.fn : TC.base;
+      return [{ t: line, c }];
+    }
+    const spans = [];
+    const push = (s, e, c) => spans.push({ s, e, c });
+
+    // Comments
+    const comPat = lang === 'python' ? /#.*/g : /\/\/.*/g;
+    for (const m of line.matchAll(comPat)) push(m.index, m.index + m[0].length, TC.com);
+    // Strings
+    for (const m of line.matchAll(/(["'`])(?:[^"'`\\]|\\.)*?\1/g)) push(m.index, m.index + m[0].length, TC.str);
+    // Numbers
+    for (const m of line.matchAll(/\b\d+\.?\d*\b/g)) push(m.index, m.index + m[0].length, TC.num);
+    // Keywords
+    if (KW[lang]) for (const m of line.matchAll(new RegExp(KW[lang].source, 'g'))) push(m.index, m.index + m[0].length, TC.kw);
+    // Function calls
+    for (const m of line.matchAll(/\b([a-zA-Z_]\w*)\s*\(/g)) push(m.index, m.index + m[1].length, TC.fn);
+    // Types (capitalized identifiers in swift)
+    if (lang === 'swift') for (const m of line.matchAll(/\b([A-Z][a-zA-Z0-9_]*)\b/g)) push(m.index, m.index + m[0].length, TC.type);
+    // CSS-specific
+    if (lang === 'css') {
+      for (const m of line.matchAll(/[\w-]+(?=\s*:)/g)) push(m.index, m.index + m[0].length, TC.fn);
+      for (const m of line.matchAll(/^\s*\.([\w-]+)/g)) push(m.index, m.index + m[0].length, TC.tag);
+    }
+
+    // Resolve overlapping spans: sort by start, keep earliest, break ties by longest
+    spans.sort((a, b) => a.s - b.s || (b.e - b.s) - (a.e - a.s));
+    const res = []; let cur = 0;
+    for (const sp of spans) { if (sp.s < cur) continue; res.push(sp); cur = sp.e; }
+    // Build segments
+    const segs = []; cur = 0;
+    for (const sp of res) {
+      if (sp.s > cur) segs.push({ t: line.slice(cur, sp.s), c: TC.base });
+      segs.push({ t: line.slice(sp.s, sp.e), c: sp.c });
+      cur = sp.e;
+    }
+    if (cur < line.length) segs.push({ t: line.slice(cur), c: TC.base });
+    return segs.length ? segs : [{ t: '', c: TC.base }];
+  });
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Build IDE ────────────────────────────────────────────────
+function buildIDE(container, opts) {
+  const th = opts.termHeight || 130;
+  let active = opts.initialFile || 'main.swift';
+  let openFiles = [opts.initialFile || 'main.swift', Object.keys(FILES)[1]];
+  let running = false, termOpen = true;
+  let output = [
+    { k:'ts', t:'$ lattice run main.swift' },
+    { k:'tok', t:'Build succeeded · 0 errors' },
+    { k:'ts', t:'fibonacci(20) → [0,1,1,2,3,5,8,13,21,34...]' },
+    { k:'ts', t:'✓ exited 0 · 220ms' },
+  ];
+
+  function render() {
+    const file = FILES[active];
+    const tokens = tokenize(file.code, file.lang);
+
+    const ficon = (name) => {
+      const ic = (FILES[name] || {}).icon || { bg:'#6b7280', label:'?' };
+      return `<span class="ide-ficon" style="background:${ic.bg}">${ic.label}</span>`;
+    };
+
+    const gutter = tokens.map((_, i) => `<div class="ide-gl">${i+1}</div>`).join('');
+    const codeHTML = tokens.map((segs, i) => {
+      const inner = segs.map(s => `<span style="color:${esc(s.c)}">${esc(s.t)}</span>`).join('');
+      const cursor = i === tokens.length - 1 ? '<span class="ide-cursor"></span>' : '';
+      const al = i === Math.min(6, tokens.length - 1) ? ' al' : '';
+      return `<div class="ide-cl${al}">${inner}${cursor}</div>`;
+    }).join('');
+
+    const tabs = openFiles.map(f => {
+      const act = f === active;
+      return `<div class="ide-tab${act ? ' active' : ''}" data-file="${esc(f)}">
+        ${act ? '<div class="ide-tab-bar"></div>' : ''}
+        ${ficon(f)} ${esc(f)}
+        <button class="ide-tab-x" data-close="${esc(f)}">×</button>
+      </div>`;
+    }).join('');
+
+    const sidebar = Object.keys(FILES).map(f =>
+      `<button class="ide-fbtn${f === active ? ' active' : ''}" data-file="${esc(f)}">${ficon(f)} ${esc(f)}</button>`
+    ).join('');
+
+    const outHTML = output.map(l => `<div class="${l.k}">${esc(l.t)}</div>`).join('');
+    const termHTML = termOpen
+      ? `<div class="ide-term" style="height:${th}px">
+          <div class="ide-term-tabs">
+            <span class="ide-tta">Terminal</span>
+            <span>Problems</span>
+            <span>Output</span>
+            <span class="ide-tmin" data-action="closeterm">—</span>
+          </div>
+          <div class="ide-tbody">
+            ${outHTML}
+            <div class="ide-tprompt">
+              <span style="color:oklch(0.7 0.18 250);margin-right:6px">›</span>
+              <span class="ide-tbc"></span>
+            </div>
+          </div>
+        </div>`
+      : `<div style="height:22px;background:#0f1216;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;padding:0 12px;font-size:10px;color:#7d8590;gap:16px;flex-shrink:0;">
+          <span style="cursor:pointer" data-action="openterm">▲ Terminal</span>
+          <span>Problems</span><span>Output</span>
+        </div>`;
+
+    container.innerHTML = `<div class="ide-mock">
+      <div class="ide-titlebar">
+        <div class="ide-dots">
+          <span class="ide-dot" style="background:#ff5f57"></span>
+          <span class="ide-dot" style="background:#febc2e"></span>
+          <span class="ide-dot" style="background:#28c840"></span>
+        </div>
+        <div class="ide-wtitle">lattice — ~/projects/my-app</div>
+        <span class="ide-branch">main</span>
+        <button class="ide-run${running?' running':''}" data-action="run" ${running?'disabled':''}>
+          <svg width="9" height="9" viewBox="0 0 9 9"><path d="M1 0 L9 4.5 L1 9 Z" fill="currentColor"/></svg>
+          ${running ? 'Running…' : 'Run'}
+        </button>
+      </div>
+      <div class="ide-body">
+        <div class="ide-sidebar">
+          <div class="ide-slabel">Explorer</div>
+          <div class="ide-flist">
+            <div class="ide-fdir">
+              <svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 3 L5 7 L8 3" stroke="currentColor" fill="none" stroke-width="1.4" stroke-linecap="round"/></svg>
+              my-app
+            </div>
+            <div class="ide-fitems">${sidebar}</div>
+          </div>
+          <div class="ide-sstatus">
+            <div><span class="s-dot" style="background:#28c840"></span>local workspace</div>
+            <div style="color:#5c6773">iPadOS 17 · 20+ langs</div>
+          </div>
+        </div>
+        <div class="ide-main">
+          <div class="ide-tabs">${tabs}</div>
+          <div class="ide-editor">
+            <div class="ide-ei">
+              <div class="ide-gutter">${gutter}</div>
+              <div class="ide-code">${codeHTML}</div>
+            </div>
+          </div>
+          ${termHTML}
+        </div>
+      </div>
+      <div class="ide-sbar">
+        <span>main</span>
+        <span>${esc(file.lang)}</span>
+        <span>UTF-8</span>
+        <span>LF</span>
+        <div class="sbar-r">
+          <span>Ln 7, Col 12</span>
+          <span>spaces: 4</span>
+          <span>⚡ lattice/2.0</span>
+        </div>
+      </div>
+    </div>`;
+
+    container.querySelectorAll('[data-file]').forEach(el => {
+      el.addEventListener('click', e => {
+        e.stopPropagation();
+        const f = el.dataset.file;
+        if (!openFiles.includes(f)) openFiles = [...openFiles, f];
+        active = f; render();
+      });
+    });
+    container.querySelectorAll('[data-close]').forEach(el => {
+      el.addEventListener('click', e => {
+        e.stopPropagation();
+        const f = el.dataset.close;
+        openFiles = openFiles.filter(x => x !== f);
+        if (!openFiles.length) { openFiles = ['main.swift']; active = 'main.swift'; }
+        else if (active === f) active = openFiles[openFiles.length - 1];
+        render();
+      });
+    });
+    const runBtn = container.querySelector('[data-action="run"]');
+    if (runBtn) runBtn.addEventListener('click', () => {
+      if (running) return;
+      running = true; termOpen = true;
+      output = [...output, { k:'ts', t:`$ lattice run ${active}` }];
+      render();
+      const msgs = {
+        'main.swift':  [{ k:'tok', t:'Build succeeded · 3 targets' }, { k:'ts', t:'fibonacci(20) = [0,1,1,2,3,5,8,13,21,34,55...]' }],
+        'server.py':   [{ k:'ts', t:'Listening on :8080' }],
+        'styles.css':  [{ k:'tok', t:'CSS validated — 0 errors' }],
+        'README.md':   [{ k:'ts', t:'Rendered 18 lines' }],
+      };
+      setTimeout(() => {
+        output = [...output, ...(msgs[active] || [{ k:'ts', t:'done.' }]), { k:'tok', t:'✓ exited 0 · 142ms' }];
+        running = false; render();
+      }, 700);
+    });
+    const ct = container.querySelector('[data-action="closeterm"]');
+    if (ct) ct.addEventListener('click', () => { termOpen = false; render(); });
+    const ot = container.querySelector('[data-action="openterm"]');
+    if (ot) ot.addEventListener('click', () => { termOpen = true; render(); });
+  }
+
+  render();
+}
+
+// ── Mount ────────────────────────────────────────────────────
+const heroEl = document.getElementById('heroIDE');
+if (heroEl) buildIDE(heroEl, { initialFile: 'main.swift', termHeight: 110 });
+
+const demoEl = document.getElementById('demoIDE');
+if (demoEl) buildIDE(demoEl, { initialFile: 'server.py', termHeight: 130 });
+
+// ── Scroll reveal ────────────────────────────────────────────
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// ── Watch button ─────────────────────────────────────────────
+const wb = document.getElementById('heroWatchBtn');
+if (wb) wb.addEventListener('click', () => {
+  wb.textContent = '▶ Loading…';
+  setTimeout(() => { wb.textContent = 'Watch the demo — 1:48'; }, 2000);
+});
+
+})();
+</script>
 </body>
 </html>

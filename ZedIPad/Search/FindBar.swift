@@ -17,7 +17,7 @@ class FindState: ObservableObject {
             return []
         }
         var options: NSRegularExpression.Options = []
-        if !isCaseSensitive { options.insert(.caseInsensitive) }
+        if !isRegex && !isCaseSensitive { options.insert(.caseInsensitive) }
 
         let pattern = isRegex ? query : NSRegularExpression.escapedPattern(for: query)
         guard let regex = try? NSRegularExpression(pattern: pattern, options: options) else { return [] }
@@ -54,7 +54,7 @@ class FindState: ObservableObject {
         guard !ranges.isEmpty else { return 0 }
         var count = 0
         var options: NSRegularExpression.Options = []
-        if !isCaseSensitive { options.insert(.caseInsensitive) }
+        if !isRegex && !isCaseSensitive { options.insert(.caseInsensitive) }
         let pattern = isRegex ? query : NSRegularExpression.escapedPattern(for: query)
         guard let regex = try? NSRegularExpression(pattern: pattern, options: options) else { return 0 }
         let replaced = regex.stringByReplacingMatches(
@@ -72,7 +72,7 @@ class FindState: ObservableObject {
     private func searchRanges(in text: String) -> [Range<String.Index>] {
         guard !query.isEmpty else { return [] }
         var options: NSRegularExpression.Options = []
-        if !isCaseSensitive { options.insert(.caseInsensitive) }
+        if !isRegex && !isCaseSensitive { options.insert(.caseInsensitive) }
         let pattern = isRegex ? query : NSRegularExpression.escapedPattern(for: query)
         guard let regex = try? NSRegularExpression(pattern: pattern, options: options) else { return [] }
         return regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
@@ -108,6 +108,7 @@ struct FindBar: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Toggle replace")
+                .accessibilityIdentifier("Toggle replace")
 
                 // Search field
                 HStack(spacing: 6) {
@@ -121,6 +122,7 @@ struct FindBar: View {
                         .focused($isSearchFocused)
                         .onSubmit { findState.nextMatch() }
                         .accessibilityLabel("Search field")
+                        .accessibilityIdentifier("Search field")
 
                     if !findState.query.isEmpty {
                         Text(findState.matchCount == 0 ? "No results" : "\(findState.currentMatch + 1)/\(findState.matchCount)")
@@ -194,6 +196,7 @@ struct FindBar: View {
                             .font(.system(size: 13, design: .monospaced))
                             .foregroundColor(appState.theme.primaryText)
                             .accessibilityLabel("Replace field")
+                            .accessibilityIdentifier("Replace field")
                     }
                     .padding(.horizontal, 8)
                     .padding(.vertical, 5)

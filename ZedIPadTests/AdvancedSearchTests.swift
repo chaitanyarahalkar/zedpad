@@ -45,9 +45,7 @@ final class AdvancedSearchTests: XCTestCase {
         state.query = "\\b[A-Z][a-z]+\\b" // Capitalized words
         let text = "The Quick Brown Fox jumps over the Lazy Dog"
         let ranges = state.search(in: text)
-        XCTAssertEqual(ranges.count, 5) // The, Quick, Brown, Fox, Lazy, Dog — 6... actually
-        // "The", "Quick", "Brown", "Fox", "Lazy", "Dog" = 6
-        XCTAssertGreaterThanOrEqual(ranges.count, 5)
+        XCTAssertEqual(ranges.count, 6)
     }
 
     func testSearchEmptyResultsNoNavigation() {
